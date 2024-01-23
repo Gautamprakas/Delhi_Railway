@@ -1,0 +1,733 @@
+sno,indicator,gender,input,input_value,output,-3sd,-2sd,-1sd,median,1sd,2sd,3sd
+1,weight for age,female,age,0,weight,2,2.4,2.8,3.2,3.7,4.2,4.8
+2,weight for age,female,age,1,weight,2.7,3.2,3.6,4.2,4.8,5.5,6.2
+3,weight for age,female,age,2,weight,3.4,3.9,4.5,5.1,5.8,6.6,7.5
+4,weight for age,female,age,3,weight,4,4.5,5.2,5.8,6.6,7.5,8.5
+5,weight for age,female,age,4,weight,4.4,5,5.7,6.4,7.3,8.2,9.3
+6,weight for age,female,age,5,weight,4.8,5.4,6.1,6.9,7.8,8.8,10
+7,weight for age,female,age,6,weight,5.1,5.7,6.5,7.3,8.2,9.3,10.6
+8,weight for age,female,age,7,weight,5.3,6,6.8,7.6,8.6,9.8,11.1
+9,weight for age,female,age,8,weight,5.6,6.3,7,7.9,9,10.2,11.6
+10,weight for age,female,age,9,weight,5.8,6.5,7.3,8.2,9.3,10.5,12
+11,weight for age,female,age,10,weight,5.9,6.7,7.5,8.5,9.6,10.9,12.4
+12,weight for age,female,age,11,weight,6.1,6.9,7.7,8.7,9.9,11.2,12.8
+13,weight for age,female,age,12,weight,6.3,7,7.9,8.9,10.1,11.5,13.1
+14,weight for age,female,age,13,weight,6.4,7.2,8.1,9.2,10.4,11.8,13.5
+15,weight for age,female,age,14,weight,6.6,7.4,8.3,9.4,10.6,12.1,13.8
+16,weight for age,female,age,15,weight,6.7,7.6,8.5,9.6,10.9,12.4,14.1
+17,weight for age,female,age,16,weight,6.9,7.7,8.7,9.8,11.1,12.6,14.5
+18,weight for age,female,age,17,weight,7,7.9,8.9,10,11.4,12.9,14.8
+19,weight for age,female,age,18,weight,7.2,8.1,9.1,10.2,11.6,13.2,15.1
+20,weight for age,female,age,19,weight,7.3,8.2,9.2,10.4,11.8,13.5,15.4
+21,weight for age,female,age,20,weight,7.5,8.4,9.4,10.6,12.1,13.7,15.7
+22,weight for age,female,age,21,weight,7.6,8.6,9.6,10.9,12.3,14,16
+23,weight for age,female,age,22,weight,7.8,8.7,9.8,11.1,12.5,14.3,16.4
+24,weight for age,female,age,23,weight,7.9,8.9,10,11.3,12.8,14.6,16.7
+25,weight for age,female,age,24,weight,8.1,9,10.2,11.5,13,14.8,17
+26,weight for age,female,age,25,weight,8.2,9.2,10.3,11.7,13.3,15.1,17.3
+27,weight for age,female,age,26,weight,8.4,9.4,10.5,11.9,13.5,15.4,17.7
+28,weight for age,female,age,27,weight,8.5,9.5,10.7,12.1,13.7,15.7,18
+29,weight for age,female,age,28,weight,8.6,9.7,10.9,12.3,14,16,18.3
+30,weight for age,female,age,29,weight,8.8,9.8,11.1,12.5,14.2,16.2,18.7
+31,weight for age,female,age,30,weight,8.9,10,11.2,12.7,14.4,16.5,19
+32,weight for age,female,age,31,weight,9,10.1,11.4,12.9,14.7,16.8,19.3
+33,weight for age,female,age,32,weight,9.1,10.3,11.6,13.1,14.9,17.1,19.6
+34,weight for age,female,age,33,weight,9.3,10.4,11.7,13.3,15.1,17.3,20
+35,weight for age,female,age,34,weight,9.4,10.5,11.9,13.5,15.4,17.6,20.3
+36,weight for age,female,age,35,weight,9.5,10.7,12,13.7,15.6,17.9,20.6
+37,weight for age,female,age,36,weight,9.6,10.8,12.2,13.9,15.8,18.1,20.9
+38,weight for age,female,age,37,weight,9.7,10.9,12.4,14,16,18.4,21.3
+39,weight for age,female,age,38,weight,9.8,11.1,12.5,14.2,16.3,18.7,21.6
+40,weight for age,female,age,39,weight,9.9,11.2,12.7,14.4,16.5,19,22
+41,weight for age,female,age,40,weight,10.1,11.3,12.8,14.6,16.7,19.2,22.3
+42,weight for age,female,age,41,weight,10.2,11.5,13,14.8,16.9,19.5,22.7
+43,weight for age,female,age,42,weight,10.3,11.6,13.1,15,17.2,19.8,23
+44,weight for age,female,age,43,weight,10.4,11.7,13.3,15.2,17.4,20.1,23.4
+45,weight for age,female,age,44,weight,10.5,11.8,13.4,15.3,17.6,20.4,23.7
+46,weight for age,female,age,45,weight,10.6,12,13.6,15.5,17.8,20.7,24.1
+47,weight for age,female,age,46,weight,10.7,12.1,13.7,15.7,18.1,20.9,24.5
+48,weight for age,female,age,47,weight,10.8,12.2,13.9,15.9,18.3,21.2,24.8
+49,weight for age,female,age,48,weight,10.9,12.3,14,16.1,18.5,21.5,25.2
+50,weight for age,female,age,49,weight,11,12.4,14.2,16.3,18.8,21.8,25.5
+51,weight for age,female,age,50,weight,11.1,12.6,14.3,16.4,19,22.1,25.9
+52,weight for age,female,age,51,weight,11.2,12.7,14.5,16.6,19.2,22.4,26.3
+53,weight for age,female,age,52,weight,11.3,12.8,14.6,16.8,19.4,22.6,26.6
+54,weight for age,female,age,53,weight,11.4,12.9,14.8,17,19.7,22.9,27
+55,weight for age,female,age,54,weight,11.5,13,14.9,17.2,19.9,23.2,27.4
+56,weight for age,female,age,55,weight,11.6,13.2,15.1,17.3,20.1,23.5,27.7
+57,weight for age,female,age,56,weight,11.7,13.3,15.2,17.5,20.3,23.8,28.1
+58,weight for age,female,age,57,weight,11.8,13.4,15.3,17.7,20.6,24.1,28.5
+59,weight for age,female,age,58,weight,11.9,13.5,15.5,17.9,20.8,24.4,28.8
+60,weight for age,female,age,59,weight,12,13.6,15.6,18,21,24.6,29.2
+61,weight for age,female,age,60,weight,12.1,13.7,15.8,18.2,21.2,24.9,29.5
+62,weight for age,female,age,61,weight,12.4,14,15.9,18.3,21.2,24.8,29.5
+63,weight for age,female,age,62,weight,12.5,14.1,16,18.4,21.4,25.1,29.8
+64,weight for age,female,age,63,weight,12.6,14.2,16.2,18.6,21.6,25.4,30.2
+65,weight for age,female,age,64,weight,12.7,14.3,16.3,18.8,21.8,25.6,30.5
+66,weight for age,female,age,65,weight,12.8,14.4,16.5,19,22,25.9,30.9
+67,weight for age,female,age,66,weight,12.9,14.6,16.6,19.1,22.2,26.2,31.3
+68,weight for age,female,age,67,weight,13,14.7,16.8,19.3,22.5,26.5,31.6
+69,weight for age,female,age,68,weight,13.1,14.8,16.9,19.5,22.7,26.7,32
+70,weight for age,female,age,69,weight,13.2,14.9,17,19.6,22.9,27,32.3
+71,weight for age,female,age,70,weight,13.3,15,17.2,19.8,23.1,27.3,32.7
+72,weight for age,female,age,71,weight,13.4,15.2,17.3,20,23.3,27.6,33.1
+73,weight for age,female,age,72,weight,13.5,15.3,17.5,20.2,23.5,27.8,33.4
+74,weight for age,female,age,73,weight,13.6,15.4,17.6,20.3,23.8,28.1,33.8
+75,weight for age,female,age,74,weight,13.7,15.5,17.8,20.5,24,28.4,34.2
+76,weight for age,female,age,75,weight,13.8,15.6,17.9,20.7,24.2,28.7,34.6
+77,weight for age,female,age,76,weight,13.9,15.8,18,20.9,24.4,29,35
+78,weight for age,female,age,77,weight,14,15.9,18.2,21,24.6,29.3,35.4
+79,weight for age,female,age,78,weight,14.1,16,18.3,21.2,24.9,29.6,35.8
+80,weight for age,female,age,79,weight,14.2,16.1,18.5,21.4,25.1,29.9,36.2
+81,weight for age,female,age,80,weight,14.3,16.3,18.6,21.6,25.3,30.2,36.6
+82,weight for age,female,age,81,weight,14.4,16.4,18.8,21.8,25.6,30.5,37
+83,weight for age,female,age,82,weight,14.5,16.5,18.9,22,25.8,30.8,37.4
+84,weight for age,female,age,83,weight,14.6,16.6,19.1,22.2,26.1,31.1,37.8
+85,weight for age,male,age,0,weight,2.1,2.5,2.9,3.3,3.9,4.4,5
+86,weight for age,male,age,1,weight,2.9,3.4,3.9,4.5,5.1,5.8,6.6
+87,weight for age,male,age,2,weight,3.8,4.3,4.9,5.6,6.3,7.1,8
+88,weight for age,male,age,3,weight,4.4,5,5.7,6.4,7.2,8,9
+89,weight for age,male,age,4,weight,4.9,5.6,6.2,7,7.8,8.7,9.7
+90,weight for age,male,age,5,weight,5.3,6,6.7,7.5,8.4,9.3,10.4
+91,weight for age,male,age,6,weight,5.7,6.4,7.1,7.9,8.8,9.8,10.9
+92,weight for age,male,age,7,weight,5.9,6.7,7.4,8.3,9.2,10.3,11.4
+93,weight for age,male,age,8,weight,6.2,6.9,7.7,8.6,9.6,10.7,11.9
+94,weight for age,male,age,9,weight,6.4,7.1,8,8.9,9.9,11,12.3
+95,weight for age,male,age,10,weight,6.6,7.4,8.2,9.2,10.2,11.4,12.7
+96,weight for age,male,age,11,weight,6.8,7.6,8.4,9.4,10.5,11.7,13
+97,weight for age,male,age,12,weight,6.9,7.7,8.6,9.6,10.8,12,13.3
+98,weight for age,male,age,13,weight,7.1,7.9,8.8,9.9,11,12.3,13.7
+99,weight for age,male,age,14,weight,7.2,8.1,9,10.1,11.3,12.6,14
+100,weight for age,male,age,15,weight,7.4,8.3,9.2,10.3,11.5,12.8,14.3
+101,weight for age,male,age,16,weight,7.5,8.4,9.4,10.5,11.7,13.1,14.6
+102,weight for age,male,age,17,weight,7.7,8.6,9.6,10.7,12,13.4,14.9
+103,weight for age,male,age,18,weight,7.8,8.8,9.8,10.9,12.2,13.7,15.3
+104,weight for age,male,age,19,weight,8,8.9,10,11.1,12.5,13.9,15.6
+105,weight for age,male,age,20,weight,8.1,9.1,10.1,11.3,12.7,14.2,15.9
+106,weight for age,male,age,21,weight,8.2,9.2,10.3,11.5,12.9,14.5,16.2
+107,weight for age,male,age,22,weight,8.4,9.4,10.5,11.8,13.2,14.7,16.5
+108,weight for age,male,age,23,weight,8.5,9.5,10.7,12,13.4,15,16.8
+109,weight for age,male,age,24,weight,8.6,9.7,10.8,12.2,13.6,15.3,17.1
+110,weight for age,male,age,25,weight,8.8,9.8,11,12.4,13.9,15.5,17.5
+111,weight for age,male,age,26,weight,8.9,10,11.2,12.5,14.1,15.8,17.8
+112,weight for age,male,age,27,weight,9,10.1,11.3,12.7,14.3,16.1,18.1
+113,weight for age,male,age,28,weight,9.1,10.2,11.5,12.9,14.5,16.3,18.4
+114,weight for age,male,age,29,weight,9.2,10.4,11.7,13.1,14.8,16.6,18.7
+115,weight for age,male,age,30,weight,9.4,10.5,11.8,13.3,15,16.9,19
+116,weight for age,male,age,31,weight,9.5,10.7,12,13.5,15.2,17.1,19.3
+117,weight for age,male,age,32,weight,9.6,10.8,12.1,13.7,15.4,17.4,19.6
+118,weight for age,male,age,33,weight,9.7,10.9,12.3,13.8,15.6,17.6,19.9
+119,weight for age,male,age,34,weight,9.8,11,12.4,14,15.8,17.8,20.2
+120,weight for age,male,age,35,weight,9.9,11.2,12.6,14.2,16,18.1,20.4
+121,weight for age,male,age,36,weight,10,11.3,12.7,14.3,16.2,18.3,20.7
+122,weight for age,male,age,37,weight,10.1,11.4,12.9,14.5,16.4,18.6,21
+123,weight for age,male,age,38,weight,10.2,11.5,13,14.7,16.6,18.8,21.3
+124,weight for age,male,age,39,weight,10.3,11.6,13.1,14.8,16.8,19,21.6
+125,weight for age,male,age,40,weight,10.4,11.8,13.3,15,17,19.3,21.9
+126,weight for age,male,age,41,weight,10.5,11.9,13.4,15.2,17.2,19.5,22.1
+127,weight for age,male,age,42,weight,10.6,12,13.6,15.3,17.4,19.7,22.4
+128,weight for age,male,age,43,weight,10.7,12.1,13.7,15.5,17.6,20,22.7
+129,weight for age,male,age,44,weight,10.8,12.2,13.8,15.7,17.8,20.2,23
+130,weight for age,male,age,45,weight,10.9,12.4,14,15.8,18,20.5,23.3
+131,weight for age,male,age,46,weight,11,12.5,14.1,16,18.2,20.7,23.6
+132,weight for age,male,age,47,weight,11.1,12.6,14.3,16.2,18.4,20.9,23.9
+133,weight for age,male,age,48,weight,11.2,12.7,14.4,16.3,18.6,21.2,24.2
+134,weight for age,male,age,49,weight,11.3,12.8,14.5,16.5,18.8,21.4,24.5
+135,weight for age,male,age,50,weight,11.4,12.9,14.7,16.7,19,21.7,24.8
+136,weight for age,male,age,51,weight,11.5,13.1,14.8,16.8,19.2,21.9,25.1
+137,weight for age,male,age,52,weight,11.6,13.2,15,17,19.4,22.2,25.4
+138,weight for age,male,age,53,weight,11.7,13.3,15.1,17.2,19.6,22.4,25.7
+139,weight for age,male,age,54,weight,11.8,13.4,15.2,17.3,19.8,22.7,26
+140,weight for age,male,age,55,weight,11.9,13.5,15.4,17.5,20,22.9,26.3
+141,weight for age,male,age,56,weight,12,13.6,15.5,17.7,20.2,23.2,26.6
+142,weight for age,male,age,57,weight,12.1,13.7,15.6,17.8,20.4,23.4,26.9
+143,weight for age,male,age,58,weight,12.2,13.8,15.8,18,20.6,23.7,27.2
+144,weight for age,male,age,59,weight,12.3,14,15.9,18.2,20.8,23.9,27.6
+145,weight for age,male,age,60,weight,12.4,14.1,16,18.3,21,24.2,27.9
+146,weight for age,male,age,61,weight,12.7,14.4,16.3,18.5,21.1,24.2,27.8
+147,weight for age,male,age,62,weight,12.8,14.5,16.4,18.7,21.3,24.4,28.1
+148,weight for age,male,age,63,weight,13,14.6,16.6,18.9,21.5,24.7,28.4
+149,weight for age,male,age,64,weight,13.1,14.8,16.7,19,21.7,24.9,28.8
+150,weight for age,male,age,65,weight,13.2,14.9,16.9,19.2,22,25.2,29.1
+151,weight for age,male,age,66,weight,13.3,15,17,19.4,22.2,25.5,29.4
+152,weight for age,male,age,67,weight,13.4,15.2,17.2,19.6,22.4,25.7,29.8
+153,weight for age,male,age,68,weight,13.6,15.3,17.4,19.8,22.6,26,30.1
+154,weight for age,male,age,69,weight,13.7,15.4,17.5,19.9,22.8,26.3,30.4
+155,weight for age,male,age,70,weight,13.8,15.6,17.7,20.1,23.1,26.6,30.8
+156,weight for age,male,age,71,weight,13.9,15.7,17.8,20.3,23.3,26.8,31.2
+157,weight for age,male,age,72,weight,14.1,15.9,18,20.5,23.5,27.1,31.5
+158,weight for age,male,age,73,weight,14.2,16,18.2,20.7,23.7,27.4,31.9
+159,weight for age,male,age,74,weight,14.3,16.2,18.3,20.9,24,27.7,32.2
+160,weight for age,male,age,75,weight,14.5,16.3,18.5,21.1,24.2,28,32.6
+161,weight for age,male,age,76,weight,14.6,16.5,18.7,21.3,24.4,28.3,33
+162,weight for age,male,age,77,weight,14.7,16.6,18.8,21.5,24.7,28.6,33.3
+163,weight for age,male,age,78,weight,14.9,16.8,19,21.7,24.9,28.9,33.7
+164,weight for age,male,age,79,weight,15,16.9,19.2,21.9,25.2,29.2,34.1
+165,weight for age,male,age,80,weight,15.1,17.1,19.3,22.1,25.4,29.5,34.5
+166,weight for age,male,age,81,weight,15.3,17.2,19.5,22.3,25.6,29.8,34.9
+167,weight for age,male,age,82,weight,15.4,17.4,19.7,22.5,25.9,30.1,35.3
+168,weight for age,male,age,83,weight,15.5,17.5,19.9,22.7,26.1,30.4,35.7
+169,weight for length,female,length,45,weight,1.9,2.1,2.3,2.5,2.7,2.9,3.1
+170,weight for length,female,length,46,weight,2,2.2,2.4,2.6,2.8,3,3.2
+171,weight for length,female,length,47,weight,2.2,2.4,2.6,2.8,3,3.2,3.4
+172,weight for length,female,length,48,weight,2.3,2.5,2.75,3,3.25,3.5,3.75
+173,weight for length,female,length,49,weight,2.4,2.6,2.9,3.2,3.5,3.8,4.1
+174,weight for length,female,length,50,weight,2.6,2.8,3.1,3.4,3.7,4,4.3
+175,weight for length,female,length,51,weight,2.8,3,3.3,3.6,3.9,4.2,4.5
+176,weight for length,female,length,52,weight,2.9,3.2,3.5,3.8,4.1,4.4,4.7
+177,weight for length,female,length,53,weight,3.1,3.4,3.7,4,4.3,4.6,4.9
+178,weight for length,female,length,54,weight,3.3,3.6,3.95,4.3,4.65,5,5.35
+179,weight for length,female,length,55,weight,3.5,3.8,4.15,4.5,4.85,5.2,5.55
+180,weight for length,female,length,56,weight,3.7,4,4.4,4.8,5.2,5.6,6
+181,weight for length,female,length,57,weight,3.9,4.3,4.7,5.1,5.5,5.9,6.3
+182,weight for length,female,length,58,weight,4.1,4.5,4.95,5.4,5.85,6.3,6.75
+183,weight for length,female,length,59,weight,4.3,4.7,5.15,5.6,6.05,6.5,6.95
+184,weight for length,female,length,60,weight,4.5,4.9,5.4,5.9,6.4,6.9,7.4
+185,weight for length,female,length,61,weight,4.7,5.1,5.6,6.1,6.6,7.1,7.6
+186,weight for length,female,length,62,weight,4.9,5.3,5.85,6.4,6.95,7.5,8.05
+187,weight for length,female,length,63,weight,5.1,5.5,6.05,6.6,7.15,7.7,8.25
+188,weight for length,female,length,64,weight,5.3,5.7,6.3,6.9,7.5,8.1,8.7
+189,weight for length,female,length,65,weight,5.5,5.9,6.5,7.1,7.7,8.3,8.9
+190,weight for length,female,length,66,weight,5.6,6.1,6.7,7.3,7.9,8.5,9.1
+191,weight for length,female,length,67,weight,5.8,6.3,6.9,7.5,8.1,8.7,9.3
+192,weight for length,female,length,68,weight,6,6.5,7.1,7.7,8.3,8.9,9.5
+193,weight for length,female,length,69,weight,6.1,6.7,7.35,8,8.65,9.3,9.95
+194,weight for length,female,length,70,weight,6.3,6.9,7.55,8.2,8.85,9.5,10.15
+195,weight for length,female,length,71,weight,6.5,7,7.7,8.4,9.1,9.8,10.5
+196,weight for length,female,length,72,weight,6.6,7.2,7.9,8.6,9.3,10,10.7
+197,weight for length,female,length,73,weight,6.8,7.4,8.1,8.8,9.5,10.2,10.9
+198,weight for length,female,length,74,weight,6.9,7.5,8.25,9,9.75,10.5,11.25
+199,weight for length,female,length,75,weight,7.1,7.7,8.4,9.1,9.8,10.5,11.2
+200,weight for length,female,length,76,weight,7.2,7.8,8.55,9.3,10.05,10.8,11.55
+201,weight for length,female,length,77,weight,7.4,8,8.75,9.5,10.25,11,11.75
+202,weight for length,female,length,78,weight,7.5,8.2,8.95,9.7,10.45,11.2,11.95
+203,weight for length,female,length,79,weight,7.7,8.3,9.1,9.9,10.7,11.5,12.3
+204,weight for length,female,length,80,weight,7.8,8.5,9.3,10.1,10.9,11.7,12.5
+205,weight for length,female,length,81,weight,8,8.7,9.5,10.3,11.1,11.9,12.7
+206,weight for length,female,length,82,weight,8.1,8.8,9.65,10.5,11.35,12.2,13.05
+207,weight for length,female,length,83,weight,8.3,9,9.85,10.7,11.55,12.4,13.25
+208,weight for length,female,length,84,weight,8.5,9.2,10.1,11,11.9,12.8,13.7
+209,weight for length,female,length,85,weight,8.7,9.4,10.3,11.2,12.1,13,13.9
+210,weight for length,female,length,86,weight,8.9,9.7,10.6,11.5,12.4,13.3,14.2
+211,weight for length,male,length,45,weight,1.9,2,2.2,2.4,2.6,2.8,3
+212,weight for length,male,length,46,weight,2,2.2,2.4,2.6,2.8,3,3.2
+213,weight for length,male,length,47,weight,2.1,2.3,2.55,2.8,3.05,3.3,3.55
+214,weight for length,male,length,48,weight,2.3,2.5,2.7,2.9,3.1,3.3,3.5
+215,weight for length,male,length,49,weight,2.4,2.6,2.85,3.1,3.35,3.6,3.85
+216,weight for length,male,length,50,weight,2.6,2.8,3.05,3.3,3.55,3.8,4.05
+217,weight for length,male,length,51,weight,2.7,3,3.25,3.5,3.75,4,4.25
+218,weight for length,male,length,52,weight,2.9,3.2,3.5,3.8,4.1,4.4,4.7
+219,weight for length,male,length,53,weight,3.1,3.4,3.7,4,4.3,4.6,4.9
+220,weight for length,male,length,54,weight,3.3,3.6,3.95,4.3,4.65,5,5.35
+221,weight for length,male,length,55,weight,3.6,3.8,4.15,4.5,4.85,5.2,5.55
+222,weight for length,male,length,56,weight,3.8,4.1,4.45,4.8,5.15,5.5,5.85
+223,weight for length,male,length,57,weight,4,4.3,4.7,5.1,5.5,5.9,6.3
+224,weight for length,male,length,58,weight,4.3,4.6,5,5.4,5.8,6.2,6.6
+225,weight for length,male,length,59,weight,4.5,4.8,5.25,5.7,6.15,6.6,7.05
+226,weight for length,male,length,60,weight,4.7,5.1,5.55,6,6.45,6.9,7.35
+227,weight for length,male,length,61,weight,4.9,5.3,5.8,6.3,6.8,7.3,7.8
+228,weight for length,male,length,62,weight,5.1,5.6,6.05,6.5,6.95,7.4,7.85
+229,weight for length,male,length,63,weight,5.3,5.8,6.3,6.8,7.3,7.8,8.3
+230,weight for length,male,length,64,weight,5.5,6,6.5,7,7.5,8,8.5
+231,weight for length,male,length,65,weight,5.7,6.2,6.75,7.3,7.85,8.4,8.95
+232,weight for length,male,length,66,weight,5.9,6.4,6.95,7.5,8.05,8.6,9.15
+233,weight for length,male,length,67,weight,6.1,6.6,7.15,7.7,8.25,8.8,9.35
+234,weight for length,male,length,68,weight,6.3,6.8,7.4,8,8.6,9.2,9.8
+235,weight for length,male,length,69,weight,6.5,7,7.6,8.2,8.8,9.4,10
+236,weight for length,male,length,70,weight,6.6,7.2,7.8,8.4,9,9.6,10.2
+237,weight for length,male,length,71,weight,6.8,7.4,8,8.6,9.2,9.8,10.4
+238,weight for length,male,length,72,weight,7,7.6,8.25,8.9,9.55,10.2,10.85
+239,weight for length,male,length,73,weight,7.2,7.7,8.4,9.1,9.8,10.5,11.2
+240,weight for length,male,length,74,weight,7.3,7.9,8.6,9.3,10,10.7,11.4
+241,weight for length,male,length,75,weight,7.5,8.1,8.8,9.5,10.2,10.9,11.6
+242,weight for length,male,length,76,weight,7.6,8.3,9,9.7,10.4,11.1,11.8
+243,weight for length,male,length,77,weight,7.8,8.4,9.15,9.9,10.65,11.4,12.15
+244,weight for length,male,length,78,weight,7.9,8.6,9.35,10.1,10.85,11.6,12.35
+245,weight for length,male,length,79,weight,8.1,8.7,9.5,10.3,11.1,11.9,12.7
+246,weight for length,male,length,80,weight,8.2,8.9,9.65,10.4,11.15,11.9,12.65
+247,weight for length,male,length,81,weight,8.4,9.1,9.85,10.6,11.35,12.1,12.85
+248,weight for length,male,length,82,weight,8.5,9.2,10,10.8,11.6,12.4,13.2
+249,weight for length,male,length,83,weight,8.7,9.4,10.2,11,11.8,12.6,13.4
+250,weight for length,male,length,84,weight,8.9,9.6,10.45,11.3,12.15,13,13.85
+251,weight for length,male,length,85,weight,9.1,9.8,10.65,11.5,12.35,13.2,14.05
+252,weight for length,male,length,86,weight,9.3,10,10.85,11.7,12.55,13.4,14.25
+253,weight for length,female,length,87,weight,9.2,10,10.95,11.9,12.85,13.8,14.75
+254,weight for length,female,length,88,weight,9.4,10.2,11.15,12.1,13.05,14,14.95
+255,weight for length,female,length,89,weight,9.6,10.4,11.4,12.4,13.4,14.4,15.4
+256,weight for length,female,length,90,weight,9.8,10.6,11.6,12.6,13.6,14.6,15.6
+257,weight for length,female,length,91,weight,10,10.9,11.9,12.9,13.9,14.9,15.9
+258,weight for length,female,length,92,weight,10.2,11.1,12.1,13.1,14.1,15.1,16.1
+259,weight for length,female,length,93,weight,10.4,11.3,12.35,13.4,14.45,15.5,16.55
+260,weight for length,female,length,94,weight,10.6,11.5,12.55,13.6,14.65,15.7,16.75
+261,weight for length,female,length,95,weight,10.8,11.7,12.8,13.9,15,16.1,17.2
+262,weight for length,female,length,96,weight,10.9,11.9,13,14.1,15.2,16.3,17.4
+263,weight for length,female,length,97,weight,11.1,12.1,13.25,14.4,15.55,16.7,17.85
+264,weight for length,female,length,98,weight,11.3,12.3,13.5,14.7,15.9,17.1,18.3
+265,weight for length,female,length,99,weight,11.5,12.5,13.7,14.9,16.1,17.3,18.5
+266,weight for length,female,length,100,weight,11.7,12.8,14,15.2,16.4,17.6,18.8
+267,weight for length,female,length,101,weight,12,13,14.25,15.5,16.75,18,19.25
+268,weight for length,female,length,102,weight,12.2,13.3,14.55,15.8,17.05,18.3,19.55
+269,weight for length,female,length,103,weight,12.4,13.5,14.8,16.1,17.4,18.7,20
+270,weight for length,female,length,104,weight,12.6,13.8,15.1,16.4,17.7,19,20.3
+271,weight for length,female,length,105,weight,12.9,14,15.4,16.8,18.2,19.6,21
+272,weight for length,female,length,106,weight,13.1,14.3,15.7,17.1,18.5,19.9,21.3
+273,weight for length,female,length,107,weight,13.4,14.6,16.05,17.5,18.95,20.4,21.85
+274,weight for length,female,length,108,weight,13.7,14.9,16.35,17.8,19.25,20.7,22.15
+275,weight for length,female,length,109,weight,13.9,15.2,16.7,18.2,19.7,21.2,22.7
+276,weight for length,female,length,110,weight,14.2,15.5,17.05,18.6,20.15,21.7,23.25
+277,weight for length,female,length,111,weight,14.5,15.8,17.4,19,20.6,22.2,23.8
+278,weight for length,female,length,112,weight,14.8,16.2,17.8,19.4,21,22.6,24.2
+279,weight for length,female,length,113,weight,15.1,16.5,18.15,19.8,21.45,23.1,24.75
+280,weight for length,female,length,114,weight,15.4,16.8,18.5,20.2,21.9,23.6,25.3
+281,weight for length,female,length,115,weight,15.7,17.2,18.95,20.7,22.45,24.2,25.95
+282,weight for length,female,length,116,weight,16,17.5,19.3,21.1,22.9,24.7,26.5
+283,weight for length,female,length,117,weight,16.3,17.8,19.65,21.5,23.35,25.2,27.05
+284,weight for length,female,length,118,weight,16.6,18.2,20.1,22,23.9,25.8,27.7
+285,weight for length,female,length,119,weight,16.9,18.5,20.45,22.4,24.35,26.3,28.25
+286,weight for length,female,length,120,weight,17.3,18.9,20.85,22.8,24.75,26.7,28.65
+287,weight for length,male,length,87,weight,9.6,10.4,11.3,12.2,13.1,14,14.9
+288,weight for length,male,length,88,weight,9.8,10.6,11.5,12.4,13.3,14.2,15.1
+289,weight for length,male,length,89,weight,10,10.8,11.7,12.6,13.5,14.4,15.3
+290,weight for length,male,length,90,weight,10.2,11,11.95,12.9,13.85,14.8,15.75
+291,weight for length,male,length,91,weight,10.4,11.2,12.15,13.1,14.05,15,15.95
+292,weight for length,male,length,92,weight,10.6,11.4,12.4,13.4,14.4,15.4,16.4
+293,weight for length,male,length,93,weight,10.8,11.6,12.6,13.6,14.6,15.6,16.6
+294,weight for length,male,length,94,weight,11,11.8,12.8,13.8,14.8,15.8,16.8
+295,weight for length,male,length,95,weight,11.1,12,13.05,14.1,15.15,16.2,17.25
+296,weight for length,male,length,96,weight,11.3,12.2,13.25,14.3,15.35,16.4,17.45
+297,weight for length,male,length,97,weight,11.5,12.4,13.5,14.6,15.7,16.8,17.9
+298,weight for length,male,length,98,weight,11.7,12.6,13.7,14.8,15.9,17,18.1
+299,weight for length,male,length,99,weight,11.9,12.9,14,15.1,16.2,17.3,18.4
+300,weight for length,male,length,100,weight,12.1,13.1,14.25,15.4,16.55,17.7,18.85
+301,weight for length,male,length,101,weight,12.3,13.3,14.45,15.6,16.75,17.9,19.05
+302,weight for length,male,length,102,weight,12.5,13.6,14.75,15.9,17.05,18.2,19.35
+303,weight for length,male,length,103,weight,12.8,13.8,15,16.2,17.4,18.6,19.8
+304,weight for length,male,length,104,weight,13,14,15.25,16.5,17.75,19,20.25
+305,weight for length,male,length,105,weight,13.2,14.3,15.55,16.8,18.05,19.3,20.55
+306,weight for length,male,length,106,weight,13.4,14.5,15.85,17.2,18.55,19.9,21.25
+307,weight for length,male,length,107,weight,13.7,14.8,16.15,17.5,18.85,20.2,21.55
+308,weight for length,male,length,108,weight,13.9,15.1,16.45,17.8,19.15,20.5,21.85
+309,weight for length,male,length,109,weight,14.1,15.3,16.75,18.2,19.65,21.1,22.55
+310,weight for length,male,length,110,weight,14.4,15.6,17.05,18.5,19.95,21.4,22.85
+311,weight for length,male,length,111,weight,14.6,15.9,17.4,18.9,20.4,21.9,23.4
+312,weight for length,male,length,112,weight,14.9,16.2,17.7,19.2,20.7,22.2,23.7
+313,weight for length,male,length,113,weight,15.2,16.5,18.05,19.6,21.15,22.7,24.25
+314,weight for length,male,length,114,weight,15.4,16.8,18.4,20,21.6,23.2,24.8
+315,weight for length,male,length,115,weight,15.7,17.1,18.75,20.4,22.05,23.7,25.35
+316,weight for length,male,length,116,weight,16,17.4,19.1,20.8,22.5,24.2,25.9
+317,weight for length,male,length,117,weight,16.2,17.7,19.45,21.2,22.95,24.7,26.45
+318,weight for length,male,length,118,weight,16.5,18,19.8,21.6,23.4,25.2,27
+319,weight for length,male,length,119,weight,16.8,18.3,20.15,22,23.85,25.7,27.55
+320,weight for length,male,length,120,weight,17.1,18.6,20.5,22.4,24.3,26.2,28.1
+321,head circumference for age,male,age,0,head circumference,30.7,31.9,33.25,34.5,35.75,37,38.3
+322,head circumference for age,male,age,1,head circumference,33.8,34.9,36.15,37.3,38.45,39.6,40.8
+323,head circumference for age,male,age,2,head circumference,35.6,36.8,37.9,39.1,40.3,41.5,42.6
+324,head circumference for age,male,age,3,head circumference,37,38.1,39.3,40.5,41.7,42.9,44.1
+325,head circumference for age,male,age,4,head circumference,38,39.2,40.4,41.6,42.8,44,45.2
+326,head circumference for age,male,age,5,head circumference,38.9,40.1,41.4,42.6,43.8,45,46.2
+327,head circumference for age,male,age,6,head circumference,39.7,40.9,42.05,43.3,44.55,45.8,47
+328,head circumference for age,male,age,7,head circumference,40.3,41.5,42.8,44,45.2,46.4,47.7
+329,head circumference for age,male,age,8,head circumference,40.8,42,43.25,44.5,45.75,47,48.3
+330,head circumference for age,male,age,9,head circumference,41.2,42.5,43.75,45,46.25,47.5,48.8
+331,head circumference for age,male,age,10,head circumference,41.6,42.9,44.15,45.4,46.65,47.9,49.2
+332,head circumference for age,male,age,11,head circumference,41.9,43.2,44.55,45.8,47.05,48.3,49.6
+333,head circumference for age,male,age,12,head circumference,42.2,43.5,44.85,46.1,47.35,48.6,49.9
+334,head circumference for age,male,age,13,head circumference,42.5,43.8,45,46.3,47.6,48.9,50.2
+335,head circumference for age,male,age,14,head circumference,42.7,44,45.3,46.6,47.9,49.2,50.5
+336,head circumference for age,male,age,15,head circumference,42.9,44.2,45.5,46.8,48.1,49.4,50.7
+337,head circumference for age,male,age,16,head circumference,43.1,44.4,45.7,47,48.3,49.6,51
+338,head circumference for age,male,age,17,head circumference,43.2,44.6,45.9,47.2,48.5,49.8,51.2
+339,head circumference for age,male,age,18,head circumference,43.4,44.7,46.1,47.4,48.7,50,51.4
+340,head circumference for age,male,age,19,head circumference,43.5,44.9,46.15,47.5,48.85,50.2,51.5
+341,head circumference for age,male,age,20,head circumference,43.7,45,46.35,47.7,49.05,50.4,51.7
+342,head circumference for age,male,age,21,head circumference,43.8,45.2,46.45,47.8,49.15,50.5,51.9
+343,head circumference for age,male,age,22,head circumference,43.9,45.3,46.65,48,49.35,50.7,52
+344,head circumference for age,male,age,23,head circumference,44.1,45.4,46.75,48.1,49.45,50.8,52.2
+345,head circumference for age,male,age,24,head circumference,44.2,45.5,46.95,48.3,49.65,51,52.3
+346,head circumference for age,male,age,25,head circumference,44.3,45.6,47.05,48.4,49.75,51.1,52.5
+347,head circumference for age,male,age,26,head circumference,44.4,45.8,47.15,48.5,49.85,51.2,52.6
+348,head circumference for age,male,age,27,head circumference,44.5,45.9,47.2,48.6,50,51.4,52.7
+349,head circumference for age,male,age,28,head circumference,44.6,46,47.3,48.7,50.1,51.5,52.9
+350,head circumference for age,male,age,29,head circumference,44.7,46.1,47.4,48.8,50.2,51.6,53
+351,head circumference for age,male,age,30,head circumference,44.8,46.1,47.5,48.9,50.3,51.7,53.1
+352,head circumference for age,male,age,31,head circumference,44.8,46.2,47.6,49,50.4,51.8,53.2
+353,head circumference for age,male,age,32,head circumference,44.9,46.3,47.7,49.1,50.5,51.9,53.3
+354,head circumference for age,male,age,33,head circumference,45,46.4,47.8,49.2,50.6,52,53.4
+355,head circumference for age,male,age,34,head circumference,45.1,46.5,47.9,49.3,50.7,52.1,53.5
+356,head circumference for age,male,age,35,head circumference,45.1,46.6,48,49.4,50.8,52.2,53.6
+357,head circumference for age,male,age,36,head circumference,45.2,46.6,48.1,49.5,50.9,52.3,53.7
+358,head circumference for age,male,age,37,head circumference,45.3,46.7,48.05,49.5,50.95,52.4,38.3
+359,head circumference for age,male,age,38,head circumference,45.3,46.8,48.15,49.6,51.05,52.5,40.8
+360,head circumference for age,male,age,39,head circumference,45.4,46.8,48.3,49.7,51.1,52.5,42.6
+361,head circumference for age,male,age,40,head circumference,45.4,46.9,48.25,49.7,51.15,52.6,44.1
+362,head circumference for age,male,age,41,head circumference,45.5,46.9,48.35,49.8,51.25,52.7,45.2
+363,head circumference for age,male,age,42,head circumference,45.5,47,48.45,49.9,51.35,52.8,46.2
+364,head circumference for age,male,age,43,head circumference,45.6,47,48.45,49.9,51.35,52.8,47
+365,head circumference for age,male,age,44,head circumference,45.6,47.1,48.55,50,51.45,52.9,47.7
+366,head circumference for age,male,age,45,head circumference,45.7,47.1,48.65,50.1,51.55,53,48.3
+367,head circumference for age,male,age,46,head circumference,45.7,47.2,48.65,50.1,51.55,53,48.8
+368,head circumference for age,male,age,47,head circumference,45.8,47.2,48.75,50.2,51.65,53.1,49.2
+369,head circumference for age,male,age,48,head circumference,45.8,47.3,48.75,50.2,51.65,53.1,49.6
+370,head circumference for age,male,age,49,head circumference,45.9,47.3,48.85,50.3,51.75,53.2,49.9
+371,head circumference for age,male,age,50,head circumference,45.9,47.4,48.85,50.3,51.75,53.2,50.2
+372,head circumference for age,male,age,51,head circumference,45.9,47.4,48.95,50.4,51.85,53.3,50.5
+373,head circumference for age,male,age,52,head circumference,46,47.5,48.9,50.4,51.9,53.4,50.7
+374,head circumference for age,male,age,53,head circumference,46,47.5,48.9,50.4,51.9,53.4,51
+375,head circumference for age,male,age,54,head circumference,46.1,47.5,49,50.5,52,53.5,51.2
+376,head circumference for age,male,age,55,head circumference,46.1,47.6,49,50.5,52,53.5,51.4
+377,head circumference for age,male,age,56,head circumference,46.1,47.6,49.15,50.6,52.05,53.5,51.5
+378,head circumference for age,male,age,57,head circumference,46.2,47.6,49.1,50.6,52.1,53.6,51.7
+379,head circumference for age,male,age,58,head circumference,46.2,47.7,49.25,50.7,52.15,53.6,51.9
+380,head circumference for age,male,age,59,head circumference,46.2,47.7,49.2,50.7,52.2,53.7,52
+381,head circumference for age,male,age,60,head circumference,46.3,47.7,49.2,50.7,52.2,53.7,52.2
+382,head circumference for age,female,age,0,head circumference,30.3,31.5,32.75,33.9,35.05,36.2,37.4
+383,head circumference for age,female,age,1,head circumference,33,34.2,35.3,36.5,37.7,38.9,40.1
+384,head circumference for age,female,age,2,head circumference,34.6,35.8,37.1,38.3,39.5,40.7,41.9
+385,head circumference for age,female,age,3,head circumference,35.8,37.1,38.25,39.5,40.75,42,43.3
+386,head circumference for age,female,age,4,head circumference,36.8,38.1,39.35,40.6,41.85,43.1,44.4
+387,head circumference for age,female,age,5,head circumference,37.6,38.9,40.25,41.5,42.75,44,45.3
+388,head circumference for age,female,age,6,head circumference,38.3,39.6,40.9,42.2,43.5,44.8,46.1
+389,head circumference for age,female,age,7,head circumference,38.9,40.2,41.45,42.8,44.15,45.5,46.8
+390,head circumference for age,female,age,8,head circumference,39.4,40.7,42.1,43.4,44.7,46,47.4
+391,head circumference for age,female,age,9,head circumference,39.8,41.2,42.45,43.8,45.15,46.5,47.8
+392,head circumference for age,female,age,10,head circumference,40.2,41.5,42.85,44.2,45.55,46.9,48.3
+393,head circumference for age,female,age,11,head circumference,40.5,41.9,43.25,44.6,45.95,47.3,48.6
+394,head circumference for age,female,age,12,head circumference,40.8,42.2,43.55,44.9,46.25,47.6,49
+395,head circumference for age,female,age,13,head circumference,41.1,42.4,43.85,45.2,46.55,47.9,49.3
+396,head circumference for age,female,age,14,head circumference,41.3,42.7,44,45.4,46.8,48.2,49.5
+397,head circumference for age,female,age,15,head circumference,41.5,42.9,44.35,45.7,47.05,48.4,49.8
+398,head circumference for age,female,age,16,head circumference,41.7,43.1,44.55,45.9,47.25,48.6,50
+399,head circumference for age,female,age,17,head circumference,41.9,43.3,44.75,46.1,47.45,48.8,50.2
+400,head circumference for age,female,age,18,head circumference,42.1,43.5,44.8,46.2,47.6,49,50.4
+401,head circumference for age,female,age,19,head circumference,42.3,43.6,45,46.4,47.8,49.2,50.6
+402,head circumference for age,female,age,20,head circumference,42.4,43.8,45.2,46.6,48,49.4,50.7
+403,head circumference for age,female,age,21,head circumference,42.6,44,45.3,46.7,48.1,49.5,50.9
+404,head circumference for age,female,age,22,head circumference,42.7,44.1,45.5,46.9,48.3,49.7,51.1
+405,head circumference for age,female,age,23,head circumference,42.9,44.3,45.6,47,48.4,49.8,51.2
+406,head circumference for age,female,age,24,head circumference,43,44.4,45.8,47.2,48.6,50,51.4
+407,head circumference for age,female,age,25,head circumference,43.1,44.5,45.9,47.3,48.7,50.1,51.5
+408,head circumference for age,female,age,26,head circumference,43.3,44.7,46.1,47.5,48.9,50.3,51.7
+409,head circumference for age,female,age,27,head circumference,43.4,44.8,46.2,47.6,49,50.4,51.8
+410,head circumference for age,female,age,28,head circumference,43.5,44.9,46.3,47.7,49.1,50.5,51.9
+411,head circumference for age,female,age,29,head circumference,43.6,45,46.4,47.8,49.2,50.6,52
+412,head circumference for age,female,age,30,head circumference,43.7,45.1,46.5,47.9,49.3,50.7,52.2
+413,head circumference for age,female,age,31,head circumference,43.8,45.2,46.55,48,49.45,50.9,52.3
+414,head circumference for age,female,age,32,head circumference,43.9,45.3,46.65,48.1,49.55,51,52.4
+415,head circumference for age,female,age,33,head circumference,44,45.4,46.75,48.2,49.65,51.1,52.5
+416,head circumference for age,female,age,34,head circumference,44.1,45.5,46.85,48.3,49.75,51.2,52.6
+417,head circumference for age,female,age,35,head circumference,44.2,45.6,47,48.4,49.8,51.2,52.7
+418,head circumference for age,female,age,36,head circumference,44.3,45.7,47.1,48.5,49.9,51.3,52.7
+419,head circumference for age,female,age,37,head circumference,30.3,31.5,32.75,33.9,35.05,36.2,37.4
+420,head circumference for age,female,age,38,head circumference,33,34.2,35.3,36.5,37.7,38.9,40.1
+421,head circumference for age,female,age,39,head circumference,34.6,35.8,37.1,38.3,39.5,40.7,41.9
+422,head circumference for age,female,age,40,head circumference,35.8,37.1,38.25,39.5,40.75,42,43.3
+423,head circumference for age,female,age,41,head circumference,36.8,38.1,39.35,40.6,41.85,43.1,44.4
+424,head circumference for age,female,age,42,head circumference,37.6,38.9,40.25,41.5,42.75,44,45.3
+425,head circumference for age,female,age,43,head circumference,38.3,39.6,40.9,42.2,43.5,44.8,46.1
+426,head circumference for age,female,age,44,head circumference,38.9,40.2,41.45,42.8,44.15,45.5,46.8
+427,head circumference for age,female,age,45,head circumference,39.4,40.7,42.1,43.4,44.7,46,47.4
+428,head circumference for age,female,age,46,head circumference,39.8,41.2,42.45,43.8,45.15,46.5,47.8
+429,head circumference for age,female,age,47,head circumference,40.2,41.5,42.85,44.2,45.55,46.9,48.3
+430,head circumference for age,female,age,48,head circumference,40.5,41.9,43.25,44.6,45.95,47.3,48.6
+431,head circumference for age,female,age,49,head circumference,40.8,42.2,43.55,44.9,46.25,47.6,49
+432,head circumference for age,female,age,50,head circumference,41.1,42.4,43.85,45.2,46.55,47.9,49.3
+433,head circumference for age,female,age,51,head circumference,41.3,42.7,44,45.4,46.8,48.2,49.5
+434,head circumference for age,female,age,52,head circumference,41.5,42.9,44.35,45.7,47.05,48.4,49.8
+435,head circumference for age,female,age,53,head circumference,41.7,43.1,44.55,45.9,47.25,48.6,50
+436,head circumference for age,female,age,54,head circumference,41.9,43.3,44.75,46.1,47.45,48.8,50.2
+437,head circumference for age,female,age,55,head circumference,42.1,43.5,44.8,46.2,47.6,49,50.4
+438,head circumference for age,female,age,56,head circumference,42.3,43.6,45,46.4,47.8,49.2,50.6
+439,head circumference for age,female,age,57,head circumference,42.4,43.8,45.2,46.6,48,49.4,50.7
+440,head circumference for age,female,age,58,head circumference,42.6,44,45.3,46.7,48.1,49.5,50.9
+441,head circumference for age,female,age,59,head circumference,42.7,44.1,45.5,46.9,48.3,49.7,51.1
+442,head circumference for age,female,age,60,head circumference,42.9,44.3,45.6,47,48.4,49.8,51.2
+443,bmi for age,female,age,72,bmi,11.7,12.7,13.35,15.3,17.25,19.2,22.1
+444,bmi for age,female,age,73,bmi,11.7,12.7,13.3,15.3,17.3,19.3,22.2
+445,bmi for age,female,age,74,bmi,11.7,12.7,13.3,15.3,17.3,19.3,22.3
+446,bmi for age,female,age,75,bmi,11.7,12.7,13.3,15.3,17.3,19.3,22.4
+447,bmi for age,female,age,76,bmi,11.7,12.7,13.25,15.3,17.35,19.4,22.5
+448,bmi for age,female,age,77,bmi,11.7,12.7,13.25,15.3,17.35,19.4,22.6
+449,bmi for age,female,age,78,bmi,11.7,12.7,13.2,15.3,17.4,19.5,22.7
+450,bmi for age,female,age,79,bmi,11.7,12.7,13.2,15.3,17.4,19.5,22.8
+451,bmi for age,female,age,80,bmi,11.7,12.7,13.15,15.3,17.45,19.6,22.9
+452,bmi for age,female,age,81,bmi,11.7,12.7,13.3,15.4,17.5,19.6,23
+453,bmi for age,female,age,82,bmi,11.7,12.7,13.25,15.4,17.55,19.7,23.1
+454,bmi for age,female,age,83,bmi,11.7,12.7,13.25,15.4,17.55,19.7,23.2
+455,bmi for age,female,age,84,bmi,11.8,12.7,13.2,15.4,17.6,19.8,23.3
+456,bmi for age,female,age,85,bmi,11.8,12.7,13.2,15.4,17.6,19.8,23.4
+457,bmi for age,female,age,86,bmi,11.8,12.8,13.15,15.4,17.65,19.9,23.5
+458,bmi for age,female,age,87,bmi,11.8,12.8,13.25,15.5,17.75,20,23.6
+459,bmi for age,female,age,88,bmi,11.8,12.8,13.25,15.5,17.75,20,23.7
+460,bmi for age,female,age,89,bmi,11.8,12.8,13.2,15.5,17.8,20.1,23.9
+461,bmi for age,female,age,90,bmi,11.8,12.8,13.2,15.5,17.8,20.1,24
+462,bmi for age,female,age,91,bmi,11.8,12.8,13.15,15.5,17.85,20.2,24.1
+463,bmi for age,female,age,92,bmi,11.8,12.8,13.25,15.6,17.95,20.3,24.2
+464,bmi for age,female,age,93,bmi,11.8,12.8,13.25,15.6,17.95,20.3,24.4
+465,bmi for age,female,age,94,bmi,11.9,12.9,13.2,15.6,18,20.4,24.5
+466,bmi for age,female,age,95,bmi,11.9,12.9,13.3,15.7,18.1,20.5,24.6
+467,bmi for age,female,age,96,bmi,11.9,12.9,13.25,15.7,18.15,20.6,24.8
+468,bmi for age,female,age,97,bmi,11.9,12.9,13.25,15.7,18.15,20.6,24.9
+469,bmi for age,female,age,98,bmi,11.9,12.9,13.2,15.7,18.2,20.7,25.1
+470,bmi for age,female,age,99,bmi,11.9,12.9,13.3,15.8,18.3,20.8,25.2
+471,bmi for age,female,age,100,bmi,11.9,13,13.25,15.8,18.35,20.9,25.3
+472,bmi for age,female,age,101,bmi,12,13,13.25,15.8,18.35,20.9,25.5
+473,bmi for age,female,age,102,bmi,12,13,13.35,15.9,18.45,21,25.6
+474,bmi for age,female,age,103,bmi,12,13,13.3,15.9,18.5,21.1,25.8
+475,bmi for age,female,age,104,bmi,12,13,13.25,15.9,18.55,21.2,25.9
+476,bmi for age,female,age,105,bmi,12,13.1,13.35,16,18.65,21.3,26.1
+477,bmi for age,female,age,106,bmi,12.1,13.1,13.35,16,18.65,21.3,26.2
+478,bmi for age,female,age,107,bmi,12.1,13.1,13.45,16.1,18.75,21.4,26.4
+479,bmi for age,female,age,108,bmi,12.1,13.1,13.4,16.1,18.8,21.5,26.5
+480,bmi for age,female,age,109,bmi,12.1,13.2,13.35,16.1,18.85,21.6,26.7
+481,bmi for age,female,age,110,bmi,12.1,13.2,13.45,16.2,18.95,21.7,26.8
+482,bmi for age,female,age,111,bmi,12.2,13.2,13.4,16.2,19,21.8,27
+483,bmi for age,female,age,112,bmi,12.2,13.2,13.5,16.3,19.1,21.9,27.2
+484,bmi for age,female,age,113,bmi,12.2,13.3,13.5,16.3,19.1,21.9,27.3
+485,bmi for age,female,age,114,bmi,12.2,13.3,13.45,16.3,19.15,22,27.5
+486,bmi for age,female,age,115,bmi,12.3,13.3,13.55,16.4,19.25,22.1,27.6
+487,bmi for age,female,age,116,bmi,12.3,13.4,13.5,16.4,19.3,22.2,27.8
+488,bmi for age,female,age,117,bmi,12.3,13.4,13.6,16.5,19.4,22.3,27.9
+489,bmi for age,female,age,118,bmi,12.3,13.4,13.55,16.5,19.45,22.4,28.1
+490,bmi for age,female,age,119,bmi,12.4,13.4,13.65,16.6,19.55,22.5,28.2
+491,bmi for age,female,age,120,bmi,12.4,13.5,13.6,16.6,19.6,22.6,28.4
+492,bmi for age,female,age,121,bmi,12.4,13.5,13.7,16.7,19.7,22.7,28.5
+493,bmi for age,female,age,122,bmi,12.4,13.5,13.65,16.7,19.75,22.8,28.7
+494,bmi for age,female,age,123,bmi,12.5,13.6,13.8,16.8,19.8,22.8,28.8
+495,bmi for age,female,age,124,bmi,12.5,13.6,13.75,16.8,19.85,22.9,29
+496,bmi for age,female,age,125,bmi,12.5,13.6,13.85,16.9,19.95,23,29.1
+497,bmi for age,female,age,126,bmi,12.5,13.7,13.8,16.9,20,23.1,29.3
+498,bmi for age,female,age,127,bmi,12.6,13.7,13.9,17,20.1,23.2,29.4
+499,bmi for age,female,age,128,bmi,12.6,13.7,13.85,17,20.15,23.3,29.6
+500,bmi for age,female,age,129,bmi,12.6,13.8,13.95,17.1,20.25,23.4,29.7
+501,bmi for age,female,age,130,bmi,12.7,13.8,13.9,17.1,20.3,23.5,29.9
+502,bmi for age,female,age,131,bmi,12.7,13.8,14,17.2,20.4,23.6,30
+503,bmi for age,female,age,132,bmi,12.7,13.9,13.95,17.2,20.45,23.7,30.2
+504,bmi for age,female,age,133,bmi,12.8,13.9,14.05,17.3,20.55,23.8,30.3
+505,bmi for age,female,age,134,bmi,12.8,14,14.15,17.4,20.65,23.9,30.5
+506,bmi for age,female,age,135,bmi,12.8,14,14.1,17.4,20.7,24,30.6
+507,bmi for age,female,age,136,bmi,12.9,14,14.2,17.5,20.8,24.1,30.8
+508,bmi for age,female,age,137,bmi,12.9,14.1,14.15,17.5,20.85,24.2,30.9
+509,bmi for age,female,age,138,bmi,12.9,14.1,14.25,17.6,20.95,24.3,31.1
+510,bmi for age,female,age,139,bmi,13,14.2,14.35,17.7,21.05,24.4,31.2
+511,bmi for age,female,age,140,bmi,13,14.2,14.3,17.7,21.1,24.5,31.4
+512,bmi for age,female,age,141,bmi,13,14.3,14.35,17.8,21.25,24.7,31.5
+513,bmi for age,female,age,142,bmi,13.1,14.3,14.45,17.9,21.35,24.8,31.6
+514,bmi for age,female,age,143,bmi,13.1,14.3,14.4,17.9,21.4,24.9,31.8
+515,bmi for age,female,age,144,bmi,13.2,14.4,14.5,18,21.5,25,31.9
+516,bmi for age,female,age,145,bmi,13.2,14.4,14.6,18.1,21.6,25.1,32
+517,bmi for age,female,age,146,bmi,13.2,14.5,14.55,18.1,21.65,25.2,32.2
+518,bmi for age,female,age,147,bmi,13.3,14.5,14.65,18.2,21.75,25.3,32.3
+519,bmi for age,female,age,148,bmi,13.3,14.6,14.75,18.3,21.85,25.4,32.4
+520,bmi for age,female,age,149,bmi,13.3,14.6,14.7,18.3,21.9,25.5,32.6
+521,bmi for age,female,age,150,bmi,13.4,14.7,14.8,18.4,22,25.6,32.7
+522,bmi for age,female,age,151,bmi,13.4,14.7,14.9,18.5,22.1,25.7,32.8
+523,bmi for age,female,age,152,bmi,13.5,14.8,14.85,18.5,22.15,25.8,33
+524,bmi for age,female,age,153,bmi,13.5,14.8,14.95,18.6,22.25,25.9,33.1
+525,bmi for age,female,age,154,bmi,13.5,14.8,15.05,18.7,22.35,26,33.2
+526,bmi for age,female,age,155,bmi,13.6,14.9,15,18.7,22.4,26.1,33.3
+527,bmi for age,female,age,156,bmi,13.6,14.9,15.1,18.8,22.5,26.2,33.4
+528,bmi for age,female,age,157,bmi,13.6,15,15.2,18.9,22.6,26.3,33.6
+529,bmi for age,female,age,158,bmi,13.7,15,15.15,18.9,22.65,26.4,33.7
+530,bmi for age,female,age,159,bmi,13.7,15.1,15.25,19,22.75,26.5,33.8
+531,bmi for age,female,age,160,bmi,13.8,15.1,15.35,19.1,22.85,26.6,33.9
+532,bmi for age,female,age,161,bmi,13.8,15.2,15.3,19.1,22.9,26.7,34
+533,bmi for age,female,age,162,bmi,13.8,15.2,15.4,19.2,23,26.8,34.1
+534,bmi for age,female,age,163,bmi,13.9,15.2,15.5,19.3,23.1,26.9,34.2
+535,bmi for age,female,age,164,bmi,13.9,15.3,15.45,19.3,23.15,27,34.3
+536,bmi for age,female,age,165,bmi,13.9,15.3,15.55,19.4,23.25,27.1,34.4
+537,bmi for age,female,age,166,bmi,14,15.4,15.55,19.4,23.25,27.1,34.5
+538,bmi for age,female,age,167,bmi,14,15.4,15.65,19.5,23.35,27.2,34.6
+539,bmi for age,female,age,168,bmi,14,15.4,15.75,19.6,23.45,27.3,34.7
+540,bmi for age,female,age,169,bmi,14.1,15.5,15.7,19.6,23.5,27.4,34.7
+541,bmi for age,female,age,170,bmi,14.1,15.5,15.8,19.7,23.6,27.5,34.8
+542,bmi for age,female,age,171,bmi,14.1,15.6,15.75,19.7,23.65,27.6,34.9
+543,bmi for age,female,age,172,bmi,14.1,15.6,15.85,19.8,23.75,27.7,35
+544,bmi for age,female,age,173,bmi,14.2,15.6,16,19.9,23.8,27.7,35.1
+545,bmi for age,female,age,174,bmi,14.2,15.7,15.95,19.9,23.85,27.8,35.1
+546,bmi for age,female,age,175,bmi,14.2,15.7,16.05,20,23.95,27.9,35.2
+547,bmi for age,female,age,176,bmi,14.3,15.7,16,20,24,28,35.3
+548,bmi for age,female,age,177,bmi,14.3,15.8,16.15,20.1,24.05,28,35.4
+549,bmi for age,female,age,178,bmi,14.3,15.8,16.1,20.1,24.1,28.1,35.4
+550,bmi for age,female,age,179,bmi,14.3,15.8,16.2,20.2,24.2,28.2,35.5
+551,bmi for age,female,age,180,bmi,14.4,15.9,16.2,20.2,24.2,28.2,35.5
+552,bmi for age,female,age,181,bmi,14.4,15.9,16.3,20.3,24.3,28.3,35.6
+553,bmi for age,female,age,182,bmi,14.4,15.9,16.25,20.3,24.35,28.4,35.7
+554,bmi for age,female,age,183,bmi,14.4,16,16.4,20.4,24.4,28.4,35.7
+555,bmi for age,female,age,184,bmi,14.5,16,16.35,20.4,24.45,28.5,35.8
+556,bmi for age,female,age,185,bmi,14.5,16,16.35,20.4,24.45,28.5,35.8
+557,bmi for age,female,age,186,bmi,14.5,16,16.45,20.5,24.55,28.6,35.8
+558,bmi for age,female,age,187,bmi,14.5,16.1,16.45,20.5,24.55,28.6,35.9
+559,bmi for age,female,age,188,bmi,14.5,16.1,16.55,20.6,24.65,28.7,35.9
+560,bmi for age,female,age,189,bmi,14.5,16.1,16.55,20.6,24.65,28.7,36
+561,bmi for age,female,age,190,bmi,14.6,16.1,16.5,20.6,24.7,28.8,36
+562,bmi for age,female,age,191,bmi,14.6,16.2,16.65,20.7,24.75,28.8,36
+563,bmi for age,female,age,192,bmi,14.6,16.2,16.6,20.7,24.8,28.9,36.1
+564,bmi for age,female,age,193,bmi,14.6,16.2,16.6,20.7,24.8,28.9,36.1
+565,bmi for age,female,age,194,bmi,14.6,16.2,16.7,20.8,24.9,29,36.1
+566,bmi for age,female,age,195,bmi,14.6,16.2,16.7,20.8,24.9,29,36.1
+567,bmi for age,female,age,196,bmi,14.6,16.2,16.7,20.8,24.9,29,36.2
+568,bmi for age,female,age,197,bmi,14.6,16.3,16.8,20.9,25,29.1,36.2
+569,bmi for age,female,age,198,bmi,14.7,16.3,16.8,20.9,25,29.1,36.2
+570,bmi for age,female,age,199,bmi,14.7,16.3,16.8,20.9,25,29.1,36.2
+571,bmi for age,female,age,200,bmi,14.7,16.3,16.75,20.9,25.05,29.2,36.2
+572,bmi for age,female,age,201,bmi,14.7,16.3,16.9,21,25.1,29.2,36.3
+573,bmi for age,female,age,202,bmi,14.7,16.3,16.9,21,25.1,29.2,36.3
+574,bmi for age,female,age,203,bmi,14.7,16.3,16.85,21,25.15,29.3,36.3
+575,bmi for age,female,age,204,bmi,14.7,16.4,16.85,21,25.15,29.3,36.3
+576,bmi for age,female,age,205,bmi,14.7,16.4,17,21.1,25.2,29.3,36.3
+577,bmi for age,female,age,206,bmi,14.7,16.4,17,21.1,25.2,29.3,36.3
+578,bmi for age,female,age,207,bmi,14.7,16.4,16.95,21.1,25.25,29.4,36.3
+579,bmi for age,female,age,208,bmi,14.7,16.4,16.95,21.1,25.25,29.4,36.3
+580,bmi for age,female,age,209,bmi,14.7,16.4,16.95,21.1,25.25,29.4,36.3
+581,bmi for age,female,age,210,bmi,14.7,16.4,17.1,21.2,25.3,29.4,36.3
+582,bmi for age,female,age,210,bmi,14.7,16.4,17.1,21.2,25.3,29.4,36.3
+583,bmi for age,female,age,212,bmi,14.7,16.4,17.05,21.2,25.35,29.5,36.3
+584,bmi for age,female,age,213,bmi,14.7,16.4,17.05,21.2,25.35,29.5,36.3
+585,bmi for age,female,age,214,bmi,14.7,16.4,17.05,21.2,25.35,29.5,36.3
+586,bmi for age,female,age,215,bmi,14.7,16.4,17.05,21.2,25.35,29.5,36.3
+587,bmi for age,female,age,216,bmi,14.7,16.4,17.2,21.3,25.4,29.5,36.3
+588,bmi for age,male,age,72,bmi,12.1,13,13.7,15.3,16.9,18.5,20.7
+589,bmi for age,male,age,73,bmi,12.1,13,13.65,15.3,16.95,18.6,20.8
+590,bmi for age,male,age,74,bmi,12.2,13.1,13.65,15.3,16.95,18.6,20.8
+591,bmi for age,male,age,75,bmi,12.2,13.1,13.65,15.3,16.95,18.6,20.9
+592,bmi for age,male,age,76,bmi,12.2,13.1,13.75,15.4,17.05,18.7,21
+593,bmi for age,male,age,77,bmi,12.2,13.1,13.75,15.4,17.05,18.7,21
+594,bmi for age,male,age,78,bmi,12.2,13.1,13.75,15.4,17.05,18.7,21.1
+595,bmi for age,male,age,79,bmi,12.2,13.1,13.7,15.4,17.1,18.8,21.2
+596,bmi for age,male,age,80,bmi,12.2,13.1,13.7,15.4,17.1,18.8,21.3
+597,bmi for age,male,age,81,bmi,12.2,13.1,13.65,15.4,17.15,18.9,21.3
+598,bmi for age,male,age,82,bmi,12.2,13.1,13.65,15.4,17.15,18.9,21.4
+599,bmi for age,male,age,83,bmi,12.2,13.1,13.75,15.5,17.25,19,21.5
+600,bmi for age,male,age,84,bmi,12.3,13.1,13.75,15.5,17.25,19,21.6
+601,bmi for age,male,age,85,bmi,12.3,13.2,13.7,15.5,17.3,19.1,21.7
+602,bmi for age,male,age,86,bmi,12.3,13.2,13.7,15.5,17.3,19.1,21.8
+603,bmi for age,male,age,87,bmi,12.3,13.2,13.65,15.5,17.35,19.2,21.9
+604,bmi for age,male,age,88,bmi,12.3,13.2,13.8,15.6,17.4,19.2,22
+605,bmi for age,male,age,89,bmi,12.3,13.2,13.75,15.6,17.45,19.3,22
+606,bmi for age,male,age,90,bmi,12.3,13.2,13.75,15.6,17.45,19.3,22.1
+607,bmi for age,male,age,91,bmi,12.3,13.2,13.7,15.6,17.5,19.4,22.2
+608,bmi for age,male,age,92,bmi,12.3,13.2,13.7,15.6,17.5,19.4,22.4
+609,bmi for age,male,age,93,bmi,12.4,13.3,13.8,15.7,17.6,19.5,22.5
+610,bmi for age,male,age,94,bmi,12.4,13.3,13.75,15.7,17.65,19.6,22.6
+611,bmi for age,male,age,95,bmi,12.4,13.3,13.75,15.7,17.65,19.6,22.7
+612,bmi for age,male,age,96,bmi,12.4,13.3,13.7,15.7,17.7,19.7,22.8
+613,bmi for age,male,age,97,bmi,12.4,13.3,13.85,15.8,17.75,19.7,22.9
+614,bmi for age,male,age,98,bmi,12.4,13.3,13.8,15.8,17.8,19.8,23
+615,bmi for age,male,age,99,bmi,12.4,13.3,13.75,15.8,17.85,19.9,23.1
+616,bmi for age,male,age,100,bmi,12.4,13.4,13.75,15.8,17.85,19.9,23.3
+617,bmi for age,male,age,101,bmi,12.5,13.4,13.85,15.9,17.95,20,23.4
+618,bmi for age,male,age,102,bmi,12.5,13.4,13.8,15.9,18,20.1,23.5
+619,bmi for age,male,age,103,bmi,12.5,13.4,13.8,15.9,18,20.1,23.6
+620,bmi for age,male,age,104,bmi,12.5,13.4,13.75,15.9,18.05,20.2,23.8
+621,bmi for age,male,age,105,bmi,12.5,13.4,13.85,16,18.15,20.3,23.9
+622,bmi for age,male,age,106,bmi,12.5,13.5,13.85,16,18.15,20.3,24
+623,bmi for age,male,age,107,bmi,12.5,13.5,13.8,16,18.2,20.4,24.2
+624,bmi for age,male,age,108,bmi,12.6,13.5,13.75,16,18.25,20.5,24.3
+625,bmi for age,male,age,109,bmi,12.6,13.5,13.9,16.1,18.3,20.5,24.4
+626,bmi for age,male,age,110,bmi,12.6,13.5,13.85,16.1,18.35,20.6,24.6
+627,bmi for age,male,age,111,bmi,12.6,13.5,13.8,16.1,18.4,20.7,24.7
+628,bmi for age,male,age,112,bmi,12.6,13.6,13.9,16.2,18.5,20.8,24.9
+629,bmi for age,male,age,113,bmi,12.6,13.6,13.9,16.2,18.5,20.8,25
+630,bmi for age,male,age,114,bmi,12.7,13.6,13.85,16.2,18.55,20.9,25.1
+631,bmi for age,male,age,115,bmi,12.7,13.6,13.95,16.3,18.65,21,25.3
+632,bmi for age,male,age,116,bmi,12.7,13.6,13.9,16.3,18.7,21.1,25.5
+633,bmi for age,male,age,117,bmi,12.7,13.7,13.85,16.3,18.75,21.2,25.6
+634,bmi for age,male,age,118,bmi,12.7,13.7,14,16.4,18.8,21.2,25.8
+635,bmi for age,male,age,119,bmi,12.8,13.7,13.95,16.4,18.85,21.3,25.9
+636,bmi for age,male,age,120,bmi,12.8,13.7,13.9,16.4,18.9,21.4,26.1
+637,bmi for age,male,age,121,bmi,12.8,13.8,14,16.5,19,21.5,26.2
+638,bmi for age,male,age,122,bmi,12.8,13.8,13.95,16.5,19.05,21.6,26.4
+639,bmi for age,male,age,123,bmi,12.8,13.8,14.05,16.6,19.15,21.7,26.6
+640,bmi for age,male,age,124,bmi,12.9,13.8,14.05,16.6,19.15,21.7,26.7
+641,bmi for age,male,age,125,bmi,12.9,13.9,14,16.6,19.2,21.8,26.9
+642,bmi for age,male,age,126,bmi,12.9,13.9,14.1,16.7,19.3,21.9,27
+643,bmi for age,male,age,127,bmi,12.9,13.9,14.05,16.7,19.35,22,27.2
+644,bmi for age,male,age,128,bmi,13,13.9,14.15,16.8,19.45,22.1,27.4
+645,bmi for age,male,age,129,bmi,13,14,14.1,16.8,19.5,22.2,27.5
+646,bmi for age,male,age,130,bmi,13,14,14.2,16.9,19.6,22.3,27.7
+647,bmi for age,male,age,131,bmi,13,14,14.15,16.9,19.65,22.4,27.9
+648,bmi for age,male,age,132,bmi,13.1,14.1,14.1,16.9,19.7,22.5,28
+649,bmi for age,male,age,133,bmi,13.1,14.1,14.25,17,19.75,22.5,28.2
+650,bmi for age,male,age,134,bmi,13.1,14.1,14.2,17,19.8,22.6,28.4
+651,bmi for age,male,age,135,bmi,13.1,14.1,14.3,17.1,19.9,22.7,28.5
+652,bmi for age,male,age,136,bmi,13.2,14.2,14.25,17.1,19.95,22.8,28.7
+653,bmi for age,male,age,137,bmi,13.2,14.2,14.35,17.2,20.05,22.9,28.8
+654,bmi for age,male,age,138,bmi,13.2,14.2,14.3,17.2,20.1,23,29
+655,bmi for age,male,age,139,bmi,13.2,14.3,14.4,17.3,20.2,23.1,29.2
+656,bmi for age,male,age,140,bmi,13.3,14.3,14.35,17.3,20.25,23.2,29.3
+657,bmi for age,male,age,141,bmi,13.3,14.3,14.45,17.4,20.35,23.3,29.5
+658,bmi for age,male,age,142,bmi,13.3,14.4,14.4,17.4,20.4,23.4,29.6
+659,bmi for age,male,age,143,bmi,13.4,14.4,14.5,17.5,20.5,23.5,29.8
+660,bmi for age,male,age,144,bmi,13.4,14.5,14.45,17.5,20.55,23.6,30
+661,bmi for age,male,age,145,bmi,13.4,14.5,14.55,17.6,20.65,23.7,30.1
+662,bmi for age,male,age,146,bmi,13.5,14.5,14.5,17.6,20.7,23.8,30.3
+663,bmi for age,male,age,147,bmi,13.5,14.6,14.6,17.7,20.8,23.9,30.4
+664,bmi for age,male,age,148,bmi,13.5,14.6,14.7,17.8,20.9,24,30.6
+665,bmi for age,male,age,149,bmi,13.6,14.6,14.65,17.8,20.95,24.1,30.7
+666,bmi for age,male,age,150,bmi,13.6,14.7,14.75,17.9,21.05,24.2,30.9
+667,bmi for age,male,age,151,bmi,13.6,14.7,14.7,17.9,21.1,24.3,31
+668,bmi for age,male,age,152,bmi,13.7,14.8,14.8,18,21.2,24.4,31.1
+669,bmi for age,male,age,153,bmi,13.7,14.8,14.75,18,21.25,24.5,31.3
+670,bmi for age,male,age,154,bmi,13.7,14.8,14.85,18.1,21.35,24.6,31.4
+671,bmi for age,male,age,155,bmi,13.8,14.9,14.95,18.2,21.45,24.7,31.6
+672,bmi for age,male,age,156,bmi,13.8,14.9,14.9,18.2,21.5,24.8,31.7
+673,bmi for age,male,age,157,bmi,13.8,15,15,18.3,21.6,24.9,31.8
+674,bmi for age,male,age,158,bmi,13.9,15,15.1,18.4,21.7,25,31.9
+675,bmi for age,male,age,159,bmi,13.9,15.1,15.05,18.4,21.75,25.1,32.1
+676,bmi for age,male,age,160,bmi,14,15.1,15.15,18.5,21.85,25.2,32.2
+677,bmi for age,male,age,161,bmi,14,15.2,15.3,18.6,21.9,25.2,32.3
+678,bmi for age,male,age,162,bmi,14,15.2,15.25,18.6,21.95,25.3,32.4
+679,bmi for age,male,age,163,bmi,14.1,15.2,15.35,18.7,22.05,25.4,32.6
+680,bmi for age,male,age,164,bmi,14.1,15.3,15.3,18.7,22.1,25.5,32.7
+681,bmi for age,male,age,165,bmi,14.1,15.3,15.4,18.8,22.2,25.6,32.8
+682,bmi for age,male,age,166,bmi,14.2,15.4,15.5,18.9,22.3,25.7,32.9
+683,bmi for age,male,age,167,bmi,14.2,15.4,15.45,18.9,22.35,25.8,33
+684,bmi for age,male,age,168,bmi,14.3,15.5,15.55,19,22.45,25.9,33.1
+685,bmi for age,male,age,169,bmi,14.3,15.5,15.65,19.1,22.55,26,33.2
+686,bmi for age,male,age,170,bmi,14.3,15.6,15.6,19.1,22.6,26.1,33.3
+687,bmi for age,male,age,171,bmi,14.4,15.6,15.7,19.2,22.7,26.2,33.4
+688,bmi for age,male,age,172,bmi,14.4,15.7,15.8,19.3,22.8,26.3,33.5
+689,bmi for age,male,age,173,bmi,14.5,15.7,15.75,19.3,22.85,26.4,33.5
+690,bmi for age,male,age,174,bmi,14.5,15.7,15.85,19.4,22.95,26.5,33.6
+691,bmi for age,male,age,175,bmi,14.5,15.8,16,19.5,23,26.5,33.7
+692,bmi for age,male,age,176,bmi,14.6,15.8,15.95,19.5,23.05,26.6,33.8
+693,bmi for age,male,age,177,bmi,14.6,15.9,16.05,19.6,23.15,26.7,33.9
+694,bmi for age,male,age,178,bmi,14.6,15.9,16,19.6,23.2,26.8,33.9
+695,bmi for age,male,age,179,bmi,14.7,16,16.1,19.7,23.3,26.9,34
+696,bmi for age,male,age,180,bmi,14.7,16,16.2,19.8,23.4,27,34.1
+697,bmi for age,male,age,181,bmi,14.7,16.1,16.15,19.8,23.45,27.1,34.1
+698,bmi for age,male,age,182,bmi,14.8,16.1,16.3,19.9,23.5,27.1,34.2
+699,bmi for age,male,age,183,bmi,14.8,16.1,16.4,20,23.6,27.2,34.3
+700,bmi for age,male,age,184,bmi,14.8,16.2,16.35,20,23.65,27.3,34.3
+701,bmi for age,male,age,185,bmi,14.9,16.2,16.45,20.1,23.75,27.4,34.4
+702,bmi for age,male,age,186,bmi,14.9,16.3,16.45,20.1,23.75,27.4,34.5
+703,bmi for age,male,age,187,bmi,15,16.3,16.55,20.2,23.85,27.5,34.5
+704,bmi for age,male,age,188,bmi,15,16.3,16.65,20.3,23.95,27.6,34.6
+705,bmi for age,male,age,189,bmi,15,16.4,16.6,20.3,24,27.7,34.6
+706,bmi for age,male,age,190,bmi,15,16.4,16.75,20.4,24.05,27.7,34.7
+707,bmi for age,male,age,191,bmi,15.1,16.5,16.7,20.4,24.1,27.8,34.7
+708,bmi for age,male,age,192,bmi,15.1,16.5,16.8,20.5,24.2,27.9,34.8
+709,bmi for age,male,age,193,bmi,15.1,16.5,16.95,20.6,24.25,27.9,34.8
+710,bmi for age,male,age,194,bmi,15.2,16.6,16.9,20.6,24.3,28,34.8
+711,bmi for age,male,age,195,bmi,15.2,16.6,17,20.7,24.4,28.1,34.9
+712,bmi for age,male,age,196,bmi,15.2,16.7,17,20.7,24.4,28.1,34.9
+713,bmi for age,male,age,197,bmi,15.3,16.7,17.1,20.8,24.5,28.2,35
+714,bmi for age,male,age,198,bmi,15.3,16.7,17.05,20.8,24.55,28.3,35
+715,bmi for age,male,age,199,bmi,15.3,16.8,17.2,20.9,24.6,28.3,35
+716,bmi for age,male,age,200,bmi,15.3,16.8,17.15,20.9,24.65,28.4,35.1
+717,bmi for age,male,age,201,bmi,15.4,16.8,17.25,21,24.75,28.5,35.1
+718,bmi for age,male,age,202,bmi,15.4,16.9,17.25,21,24.75,28.5,35.1
+719,bmi for age,male,age,203,bmi,15.4,16.9,17.35,21.1,24.85,28.6,35.2
+720,bmi for age,male,age,204,bmi,15.4,16.9,17.35,21.1,24.85,28.6,35.2
+721,bmi for age,male,age,205,bmi,15.5,17,17.45,21.2,24.95,28.7,35.2
+722,bmi for age,male,age,206,bmi,15.5,17,17.45,21.2,24.95,28.7,35.2
+723,bmi for age,male,age,207,bmi,15.5,17,17.55,21.3,25.05,28.8,35.3
+724,bmi for age,male,age,208,bmi,15.5,17.1,17.5,21.3,25.1,28.9,35.3
+725,bmi for age,male,age,209,bmi,15.6,17.1,17.65,21.4,25.15,28.9,35.3
+726,bmi for age,male,age,210,bmi,15.6,17.1,17.6,21.4,25.2,29,35.3
+727,bmi for age,male,age,210,bmi,15.6,17.1,17.75,21.5,25.25,29,35.4
+728,bmi for age,male,age,212,bmi,15.6,17.2,17.7,21.5,25.3,29.1,35.4
+729,bmi for age,male,age,213,bmi,15.6,17.2,17.85,21.6,25.35,29.1,35.4
+730,bmi for age,male,age,214,bmi,15.7,17.2,17.8,21.6,25.4,29.2,35.4
+731,bmi for age,male,age,215,bmi,15.7,17.3,17.95,21.7,25.45,29.2,35.4
+732,bmi for age,male,age,216,bmi,15.7,17.3,17.95,21.7,25.45,29.2,35.4

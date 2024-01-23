@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Maid Service Attendance</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="evo-calendar.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+</head>
+<style>
+.calendar-months{
+height:80%;
+overflow-y:scroll;
+}
+.calendar-months::-webkit-scrollbar { width: 0 !important }
+body{
+background:url('074ea10d689f8e899dc9814495028a15.png');
+background-position:center;
+}
+
+
+#jquery-script-menu {
+    padding-top: 0px;
+    border-top-width: 0px;
+	#margin-top:28%;
+}
+</style>
+<body><div id="jquery-script-menu">
+
+
+
+    <main>
+        <!--<h1>Evo <span>j Event Calendar Example</span></h1>
+        <hr/>-->
+        <div id="evoCalendar" class='sidebar-hide'></div>
+    </main>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous"></script>
+    <script src="evo-calendar.js"></script>
+    <script>
+		$.post('server.php',{
+			req_type : 'fetch'
+		},function(json){
+			console.log(json);
+			data = JSON.parse(json);
+			$('#evoCalendar').evoCalendar({
+	            todayHighlight: true,
+	            sidebarToggler: true,
+	            eventListToggler: true,
+	            canAddEvent: true,
+				format:"yyyy-mm-dd",
+	            calendarEvents: data,
+	            onSelectDate: function() {
+	                console.log('onSelectDate!')
+	            },
+	            onAddEvent: function() {
+					console.log('onAddEvent!');
+					date = $('.calendar-active').attr('date-val');
+					var person = prompt("Enter Something", "");
+
+					if (person != null) {
+						$.post('server.php',{
+							name:person,
+							date:date,
+							type:"event",
+							everyYear:false,
+							req_type:'save'
+						},function(data1){
+							if(data1=='1'){
+								$("#evoCalendar").evoCalendar('addCalendarEvent', [{
+									name:person,
+									date:date,
+									type:"event",
+									everyYear:false
+								}]);
+							}
+						});
+					}else{
+						//alert("no");
+					}
+	                
+					
+	            }
+	        });
+
+		});
+        
+    </script>
+
+</body>
+</html>

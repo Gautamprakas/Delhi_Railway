@@ -1,0 +1,8 @@
+id,name,type,inserted_at,updated_at
+1,gender,string,,
+2,age,number,,
+3,location,string,,
+4,caste,string,,
+5,qualification,string,,
+6,skill,string,,
+7,speciality,string,,

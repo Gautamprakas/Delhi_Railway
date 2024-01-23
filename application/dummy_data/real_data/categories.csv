@@ -1,0 +1,11 @@
+id,name,parent_id,order_by,inserted_at,updated_at
+1,root,,0,,
+2,maid,1,5,,
+3,support staff,1,3,,
+4,teacher,1,4,,
+5,guard,1,8,,
+6,driver,1,7,,
+7,computer operator,1,6,,
+8,electrician,1,9,,
+9,doctor,1,2,,
+10,super specialist,1,1,,

@@ -1,0 +1,26 @@
+{
+  "child_info" : {
+    "child_id" : "1000",
+    "name" : "Test Name",
+    "age_in_months" : 2,
+    "weight_in_kg" : 4,
+    "height_in_cm" : 120,
+    "gender" : "Male",
+    "record_datetime" : "2019-11-21 15:54:00"
+  },
+  "media" : {
+    "record_datetime" : "2019-11-21 15:54:00",
+    "data" : [
+        {
+          "media_type" : "Image",
+          "label" : "Face",
+          "filename" : "123456789.jpg"
+        },
+        {
+          "media_type" : "Video",
+          "label" : "Eye Gazing",
+          "filename" : "12345678978.mp4"
+        }
+      ]
+  }
+}
