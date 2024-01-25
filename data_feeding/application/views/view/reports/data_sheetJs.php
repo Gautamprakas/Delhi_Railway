@@ -334,34 +334,39 @@ jQuery(document).ready(function(){
                     remark: remarksInput
                 });
             });
-
-            if (req_ids.length === 0) {
+            var status = $(this).attr("data-status");
+            if (remarks.length === 0) {
                 // No checkboxes are selected
                 swal("Please select at least one item.");
                 return;
             }
             console.log(req_ids);
             console.log(remarks);
-            return;
-
+            
+            remarks.forEach((item,index)=>{
+                var reqId=item.req_id;
+                var remark=item.remark;
+                console.log("Req id is"+reqId+"and remarks is "+remark+status);
+            });
+            //return;
             swal({
                 title: "Are you sure?",
-                text: "You want to update the status of selected items.",
+                text: "You want to "+status+ " the status of selected items.",
                 type: "info",
                 showCancelButton: true,
                 closeOnConfirm: false,
                 showLoaderOnConfirm: true,
             }, function () {
-                $.post("<?php echo base_url("view/CreateForm/updateStatusOfReq"); ?>", {
-                    req_ids: req_ids,
-                    status: "Verified", // You can update the status as needed
+                $.post("<?php echo base_url("view/CreateForm/updateStatusOfReqPrakash"); ?>", {
+                    status: status, // You can update the status as needed
                     remarks: remarks
                 }, function (data) {
                     if (data == "200") {
                         swal("Data updated successfully.");
                         // You might want to refresh or update the UI accordingly
                     } else {
-                        swal("Something went wrong.");
+                        console.log(data);
+                        // swal("Something went wrong.");
                     }
                 });
             });

@@ -67,7 +67,8 @@ class Api2 extends CI_Controller{
 					"warranty_status"=>$warrantyStatus,
 					"item_use_date"=>$item_use_date,
 					"warranty_days"=>$warrantyInDay,
-					"remaining_days"=>$remaining_days);
+					"remaining_days"=>$remaining_days
+				);
 			}else if($interval->days > $warrantyInDay){
 				$warrantyStatus=0;
 				$response['status']=200;
@@ -76,7 +77,8 @@ class Api2 extends CI_Controller{
 					"warranty_status"=>$warrantyStatus,
 					"item_use_date"=>$item_use_date,
 					"warranty_days"=>$warrantyInDay,
-					"remaining_days"=>0);
+					"remaining_days"=>0
+				);
 			}
 
 		}else{

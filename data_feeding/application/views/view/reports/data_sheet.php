@@ -136,7 +136,7 @@
         <td class="font-12" style="/*background: #e3f2fd;*/"></td>
         <td class="font-12" style="/*background: #e3f2fd;*/"></td>
         <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"><button type="button" id="submitCheckedData" class="btn btn-success">Verify</button></td>
+        <td class="font-12" style="/*background: #e3f2fd;*/"><button type="button" id="submitCheckedData" class="ont-bold col-teal" data-status="Verified">Verify</button><button type="button" id="submitCheckedData" class="ont-bold col-pink" data-status="Rejected">Reject</button></td>
         <td class="font-12" style="/*background: #e3f2fd;*/"></td>
         <td class="font-12" style="/*background: #e3f2fd;*/"></td>
     </tr>

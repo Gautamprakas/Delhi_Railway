@@ -1821,8 +1821,8 @@ class CreateForm extends CI_Controller {
             if( $row->status == "Pending" ){
               $status_1 .= "<div class='icon-button-demo' style='display: inline-flex;'>
                   <div class='checkbox-wrapper'>
-                      <input type='checkbox' class='checkbox bg-teal' data-status='Verified' value='<?php echo $row->req_id; ?>' id='checkbox_<?php echo $row->req_id; ?>' />
-                      <label for='checkbox_<?php echo $row->req_id; ?>' class='checkbox-label'></label>
+                      <input type='checkbox' class='checkbox bg-teal' data-status='Verified' value='{$row->req_id}' id='checkbox_{$row->req_id}' />
+                      <label for='checkbox_{$row->req_id}' class='checkbox-label'></label>
                   </div>
                   <input type='text' class='remarks-input' placeholder='Add remarks...' />
               </div>";
@@ -6089,6 +6089,50 @@ class CreateForm extends CI_Controller {
     if($status=="Verified"){
       $this->db->where("req_id",$req_id);
       $this->db->update("form_data",["status"=>"Verified","approve_datetime"=>$datetime,"approve_id"=>$id]);
+    }
+    if($status=="Rejected"){
+      $this->db->where("req_id",$req_id);
+      $this->db->update("form_data",["status"=>"Rejected","approve_datetime"=>$datetime,"approve_id"=>$id]);
+
+      $res = $this->db->get_where("form_data",["req_id"=>$req_id]);
+
+      $arr = [];
+      foreach($res->result_array() as $index => $row){
+        foreach($row as $key => $value){
+          if($key!="record_id"){
+            $arr[$index][$key] = $value; 
+          }
+        }
+      }
+      $this->db->insert_batch("form_data_rejected",$arr);
+
+      $this->db->delete("form_data",["req_id"=>$req_id]);
+
+    }
+    echo "200";
+  }
+  public function updateStatusOfReqPrakash(){
+
+    $this->db = $this->load->database("default",TRUE);
+
+    $remarks = $this->input->post("remarks");
+    $status = $this->input->post("status");
+    $datetime = date("Y-m-d H:i:s");
+    $id = $this->session->userdata("id");
+    foreach($remarks as $row){
+      echo $row['req_id'];
+      echo $row['remark'];
+
+    }
+    die();
+
+    if($status=="Verified"){
+      foreach($remarks as $row){
+        foreach($row as $req_id=>$remarkData){
+          $this->db->where("req_id",$req_id);
+          $this->db->update("form_data",["status"=>"Verified","approve_datetime"=>$datetime,"approve_id"=>$id,"remarks"=>$remarkData]);
+        }
+      }
     }
     if($status=="Rejected"){
       $this->db->where("req_id",$req_id);
