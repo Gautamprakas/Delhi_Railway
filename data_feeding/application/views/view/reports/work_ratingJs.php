@@ -291,88 +291,36 @@ jQuery(document).ready(function(){
         });
 
 
-        // $("body").on("click","button.status_action",function(){
-        //     btn = $(this)
-        //     btndiv = btn.closest('div');
-        //     btndiv.find("button.status_action").prop('disabled', true);
-        //     var req_id = $(this).val();
-        //     var status = $(this).attr("data-status");
-
-        //     swal({
-        //         title: "Are you sure?",
-        //         text: "You want to "+status+ " the data.",
-        //         type: "info",
-        //         showCancelButton: true,
-        //         closeOnConfirm: false,
-        //         showLoaderOnConfirm: true,
-        //     }, function () {
-        //         $.post("<?php echo base_url("view/CreateForm/updateStatusOfReq"); ?>",{
-        //             req_id:req_id,
-        //             status:status
-        //         },function(data){
-        //             if(data=="200"){
-        //                 swal("Data "+status+".");
-        //                 //location.reload();
-        //                 btndiv.html("<span class='font-bold col-teal'>"+status+"</span>");
-        //             }else{
-        //                 swal("Something went wrong.");
-        //             }
-        //             btndiv.find("button.status_action").prop('disabled', false);
-        //         });
-        //     });
-        // });
-        $("body").on("click", "#submitCheckedData", function () {
-            var checkboxes = $("input.checkbox:checked");
-            var req_ids = [];
-            var remarks = [];
-
-            checkboxes.each(function () {
-                req_ids.push($(this).val());
-                var remarksInput = $(this).closest('.icon-button-demo').find('.remarks-input').val();
-                remarks.push({
-                    req_id: $(this).val(),
-                    remark: remarksInput
-                });
-            });
+        $("body").on("click","button.status_action",function(){
+            btn = $(this)
+            btndiv = btn.closest('div');
+            btndiv.find("button.status_action").prop('disabled', true);
+            var req_id = $(this).val();
             var status = $(this).attr("data-status");
-            if (remarks.length === 0) {
-                // No checkboxes are selected
-                swal("Please select at least one item.");
-                return;
-            }
-            console.log(req_ids);
-            console.log(remarks);
-            
-            remarks.forEach((item,index)=>{
-                var reqId=item.req_id;
-                var remark=item.remark;
-                console.log("Req id is"+reqId+"and remarks is "+remark+status);
-            });
-            //return;
+
             swal({
                 title: "Are you sure?",
-                text: "You want to "+status+ " the selected items.",
+                text: "You want to "+status+ " the data.",
                 type: "info",
                 showCancelButton: true,
                 closeOnConfirm: false,
                 showLoaderOnConfirm: true,
             }, function () {
-                $.post("<?php echo base_url("view/CreateForm/updateStatusOfReqPrakash"); ?>", {
-                    status: status, // You can update the status as needed
-                    remarks: remarks
-                }, function (data) {
-                    if (data == "200") {
-                        swal("Data updated successfully.");
-                        location.reload();
-                        // You might want to refresh or update the UI accordingly
-                    } else {
-                        console.log(data);
-                        // swal("Something went wrong.");
+                $.post("<?php echo base_url("view/CreateForm/updateStatusOfReq"); ?>",{
+                    req_id:req_id,
+                    status:status
+                },function(data){
+                    if(data=="200"){
+                        swal("Data "+status+".");
+                        //location.reload();
+                        btndiv.html("<span class='font-bold col-teal'>"+status+"</span>");
+                    }else{
+                        swal("Something went wrong.");
                     }
+                    btndiv.find("button.status_action").prop('disabled', false);
                 });
             });
         });
-
 
         $("body").on("click","button.status_action_rating",function(){
             btn = $(this)

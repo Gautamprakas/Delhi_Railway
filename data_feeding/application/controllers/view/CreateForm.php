@@ -2218,6 +2218,10 @@ class CreateForm extends CI_Controller {
     $intent["headerCss"]   = "view/reports/data_sheetCss";
     $intent["mainContent"] = "view/reports/data_sheet";
     $intent["footerJs"]    = "view/reports/data_sheetJs";
+    if($form_id=="1690450752274"){
+    $intent["mainContent"] = "view/reports/work_rating";
+    $intent["footerJs"]    = "view/reports/work_ratingJs";
+    }
     $this->load->view("view/include/template",$intent);
   }
 
@@ -6119,38 +6123,39 @@ class CreateForm extends CI_Controller {
     $status = $this->input->post("status");
     $datetime = date("Y-m-d H:i:s");
     $id = $this->session->userdata("id");
-    foreach($remarks as $row){
-      echo $row['req_id'];
-      echo $row['remark'];
-
-    }
-    die();
+    // foreach($remarks as $row){
+    //   // echo $row['req_id'];
+    //   // echo $row['remark'];
+    //   echo "<pre>";
+    //   print_r($row);
+    // }
+    // die();
 
     if($status=="Verified"){
       foreach($remarks as $row){
-        foreach($row as $req_id=>$remarkData){
-          $this->db->where("req_id",$req_id);
-          $this->db->update("form_data",["status"=>"Verified","approve_datetime"=>$datetime,"approve_id"=>$id,"remarks"=>$remarkData]);
-        }
+          $this->db->where("req_id",$row['req_id']);
+          $this->db->update("form_data",["status"=>"Verified","approve_datetime"=>$datetime,"approve_id"=>$id,"remarks"=>$row['remark']]);
       }
     }
     if($status=="Rejected"){
-      $this->db->where("req_id",$req_id);
-      $this->db->update("form_data",["status"=>"Rejected","approve_datetime"=>$datetime,"approve_id"=>$id]);
+      foreach($remarks as $row1){
+          $this->db->where("req_id",$row1['req_id']);
+          $this->db->update("form_data",["status"=>"Rejected","approve_datetime"=>$datetime,"approve_id"=>$id,"remarks"=>$row1['remark']]);
 
-      $res = $this->db->get_where("form_data",["req_id"=>$req_id]);
+          $res = $this->db->get_where("form_data",["req_id"=>$row1['req_id']]);
 
-      $arr = [];
-      foreach($res->result_array() as $index => $row){
-        foreach($row as $key => $value){
-          if($key!="record_id"){
-            $arr[$index][$key] = $value; 
+          $arr = [];
+          foreach($res->result_array() as $index => $row){
+            foreach($row as $key => $value){
+              if($key!="record_id"){
+                $arr[$index][$key] = $value; 
+              }
+            }
           }
-        }
-      }
-      $this->db->insert_batch("form_data_rejected",$arr);
+          $this->db->insert_batch("form_data_rejected",$arr);
 
-      $this->db->delete("form_data",["req_id"=>$req_id]);
+          $this->db->delete("form_data",["req_id"=>$row1['req_id']]);
+      }
 
     }
     echo "200";
