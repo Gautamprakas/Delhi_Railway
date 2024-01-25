@@ -13,50 +13,74 @@ class Api2 extends CI_Controller{
 		redirect(base_url("view/login"));
 	}
 	public function isWarranty(){
-		$item_name=$this->input->post("item_name");
-		$family_id=$this->input->post("family_id");
-		$req_id=$this->input->post("req_id");
+		    //         "work_category": "Test 2",
+            // "work": "Repair/Test@120$Test Code 2",//1690365766_5
+            // "work_item": "Snack Table|Per Item Test2",//1690365766B_2
+            // "train_number": "12015",//1690365766_1
+            // "toilet_gallery_berth_no": "Toilet-1",//1690365766_4
+            // "coach_number": "163007|Test Cat",//1690365766_2
+            // "work_status": "No",
+            // "coach_location": "Yard"//1690365766_3
+		// $work_category=$this->input->post("work_category");
+		$work=$this->input->post("work");
+		$work_item=$this->input->post("work_item");
+        $train_number=$this->input->post("train_number");
+        $toilet_gallery_berth_no=$this->input->post("toilet_gallery_berth_no");
+        $coach_number=$this->input->post("coach_number");
+        $item_name='';
+        if(!empty($work_item)){
+        	$item_name=explode("|",$work_item)[0];
+        }
 		if(!empty($item_name)){
 				$this->db->select("warranty_days");
 				$this->db->where("item_name",$item_name);
 			$query=$this->db->get("railway_work");
 			$warrantyDay=$query->row_array();
 		}else{
-			$response['status']=400;
+			$response['status']=200;
 			$response['message']="No Data Found";
 			echo json_encode($response);
 			die();
 		}
-		if($this->db->affected_rows()>0 && !empty($family_id) && !empty($req_id)){
+		$sql = 'SELECT family_id,DATE(create_datetime) as create_datetime FROM form_data WHERE family_id IN (SELECT family_id FROM form_data WHERE family_id IN (SELECT family_id FROM form_data WHERE family_id IN (SELECT family_id FROM form_data WHERE family_id IN (SELECT family_id FROM form_data WHERE field_id="1690365766_5" AND value= ?) AND  field_id="1690365766B_2" AND value= ?) AND field_id="1690365766_1" AND value=?) AND field_id="1690365766_4" AND value= ?) AND field_id="1690365766_2" AND value=?;';
+
+		// $params=['42. Repair and fixing of AC attendant berth.@1000$W_Test101',"Flush Valve|Per Item Test","12015","Seat No.1","111571|Test Type 2"];
+		$params=[$work,$work_item,$train_number,$toilet_gallery_berth_no,$coach_number];
+		$query = $this->db->query($sql,$params);
+		$result = $query->row_array();
+		// echo "<pre>";
+		// print_r($result);
+		// die();
+		if(!is_null($result)){
+			$item_use_date=$result['create_datetime'];
 			$warrantyInDay=(int)$warrantyDay['warranty_days'];
-			$this->db->select("DATE(create_datetime) as create_datetime");
-			$this->db->where("family_id",$family_id);
-			$this->db->where("req_id",$req_id);
-			$query=$this->db->get("form_data");
-			$itemDate=$query->row_array();
-			if($this->db->affected_rows()>0){
-				$itemDate=new DateTime($itemDate['create_datetime']);
-				$currentDate=date('Y-m-d');
-				$currentDate=new DateTime($currentDate);
-				$interval=$currentDate->diff($itemDate);
-				if($interval->days < $warrantyInDay){
-					$warrantyStatus="1";
-					$response['status']=200;
-					$response['message']="success";
-					$response['data']=array("warranty_status"=>$warrantyStatus);
-				}else if($interval->days > $warrantyInDay){
-					$warrantyStatus="0";
-					$response['status']=200;
-					$response['message']="success";
-					$response['data']=array("warranty_status"=>$warrantyStatus);
-				}
-			}else{
-				$response['status']=400;
-				$response['message']="No Data Found";
+			$itemDate=new DateTime($result['create_datetime']);
+			$currentDate=date('Y-m-d');
+			$currentDate=new DateTime($currentDate);
+			$interval=$currentDate->diff($itemDate);
+			if($interval->days < $warrantyInDay){
+				$remaining_days=$warrantyInDay-$interval->days;
+				$warrantyStatus=1;
+				$response['status']=200;
+				$response['message']="success";
+				$response['data']=array(
+					"warranty_status"=>$warrantyStatus,
+					"item_use_date"=>$item_use_date,
+					"warranty_days"=>$warrantyInDay,
+					"remaining_days"=>$remaining_days);
+			}else if($interval->days > $warrantyInDay){
+				$warrantyStatus=0;
+				$response['status']=200;
+				$response['message']="success";
+				$response['data']=array(
+					"warranty_status"=>$warrantyStatus,
+					"item_use_date"=>$item_use_date,
+					"warranty_days"=>$warrantyInDay,
+					"remaining_days"=>0);
 			}
 
 		}else{
-			$response['status']=400;
+			$response['status']=200;
 			$response['message']="No Data Found";
 		}
 		echo json_encode($response);
