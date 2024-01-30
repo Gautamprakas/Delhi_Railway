@@ -81,11 +81,11 @@
                                                <th class="font-12" style="background: #2196f3;">Action</th>
                                                <th class="font-12" style="background: #2196f3;">Work Code</th>
                                                <th class="font-12" style="background: #2196f3;">Warranty In Days</th>
-                                               <?php
-                                               if($form_id=="1690450752274"){?>
                                                 <th class="font-12" style="background: #2196f3;">Work Done Status</th>
                                                 <th class="font-12" style="background: #2196f3;">Rating</th>
-                                               <?php } ?>
+                                                <th class="font-12" style="background: #2196f3;">Bulk Rating</th>
+                                                <th class="font-12" style="background: #2196f3;">Data Feed By</th>
+                                                <th class="font-12" style="background: #2196f3;">Approved By</th>
                                             </tr>
                                     </thead>
                                     <tbody id="myTableBody">
@@ -123,30 +123,12 @@
 <?php }?>
                                         
 </tbody>
-<!-- <tfoot>
-    <tr data-class='<?php echo $row["class"]; ?>' class='<?php echo $row["class"]; ?> all'>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"><button type="button" id="submitCheckedData" class="ont-bold col-teal" data-status="Verified">Verify</button><button type="button" id="submitCheckedData" class="ont-bold col-pink" data-status="Rejected">Reject</button></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-    </tr>
-</tfoot> -->
 </table>
+<div class='icon-button-demo' style='display: inline-flex;'><button type='button'  class='btn bg-red btn-circle waves-effect waves-circle waves-float rating-button' data-status='Verified' data-rating='1' >1<i class='material-icons'>star_rate</i></button><button type='button' class='btn bg-amber btn-circle waves-effect waves-circle waves-float rating-button' data-status='Verified' data-rating='2' >2<i class='material-icons'>star_rate</i></button><button type='button'  class='btn bg-light-green btn-circle waves-effect waves-circle waves-float rating-button' data-status='Verified' data-rating='3'>3<i class='material-icons'>star_rate</i></button></div>"
                         </div>
                     </div>
                 </div>
             </div>
-
 
 
 

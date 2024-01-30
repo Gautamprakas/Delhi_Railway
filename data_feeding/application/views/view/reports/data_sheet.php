@@ -81,11 +81,8 @@
                                                <th class="font-12" style="background: #2196f3;">Action</th>
                                                <th class="font-12" style="background: #2196f3;">Work Code</th>
                                                <th class="font-12" style="background: #2196f3;">Warranty In Days</th>
-                                               <?php
-                                               if($form_id=="1690450752274"){?>
-                                                <th class="font-12" style="background: #2196f3;">Work Done Status</th>
-                                                <th class="font-12" style="background: #2196f3;">Rating</th>
-                                               <?php } ?>
+                                               <th class="font-12" style="background: #2196f3;">Data Feed By</th>
+                                               <th class="font-12" style="background: #2196f3;">Approved By</th>
                                             </tr>
                                     </thead>
                                     <tbody id="myTableBody">
@@ -123,25 +120,16 @@
 <?php }?>
                                         
 </tbody>
-<tfoot>
-    <tr data-class='<?php echo $row["class"]; ?>' class='<?php echo $row["class"]; ?> all'>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"><button type="button" id="submitCheckedData" class="ont-bold col-teal" data-status="Verified">Verify</button><button type="button" id="submitCheckedData" class="ont-bold col-pink" data-status="Rejected">Reject</button></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-        <td class="font-12" style="/*background: #e3f2fd;*/"></td>
-    </tr>
-</tfoot>
 </table>
+<?php if($this->session->userdata("type")=="dept"){ ?>
+<div class="container-fluid">
+    <button type="button" id="submitCheckedData" class="ont-bold" style="background-color: #008080; color: #fff;" data-status="Verified">Verify</button>
+    <button type="button" id="submitCheckedData" class="ont-bold" style="background-color: #ff1493; color: #fff;" data-status="Rejected">Reject</button>
+</div>
+
+<?php } ?>
+
+              
                         </div>
                     </div>
                 </div>

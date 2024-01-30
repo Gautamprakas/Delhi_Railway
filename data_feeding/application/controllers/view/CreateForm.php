@@ -417,11 +417,11 @@ class CreateForm extends CI_Controller {
       
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
-      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL ) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
 
       //echo $wherestr;
 
-      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("$wherestr",null)
                          ->where("location like '$location%'",null)
@@ -430,7 +430,7 @@ class CreateForm extends CI_Controller {
 
     }else{
 
-      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("location like '$location%'",null)
                          ->order_by("update_datetime","DESC")
@@ -454,7 +454,9 @@ class CreateForm extends CI_Controller {
       $key_label2 = [];
       $data2 = [];
     }
-    //print_r($data2);
+    // echo "<pre>";
+    // print_r($data_res->result());
+    // die();
     $itemQuery=$this->db->select("item_name,warranty_days")->get("railway_work");
     $itemWithWarranty=$itemQuery->result_array();
 
@@ -651,6 +653,12 @@ class CreateForm extends CI_Controller {
       $data[$row->req_id]["work_date"]=$work_date;
       $data[$row->req_id]["item_list"]=$item_list_array;
       $data[$row->req_id][$row->field_id] = $row->value;
+      if(is_null($row->child_id)){
+        $data[$row->req_id]["child_id"] ='';
+      }else{
+        $data[$row->req_id]["child_id"] = $row->child_id;
+      }
+      
     }
     foreach($data as $req_id=>$row){
       $work_code='';
@@ -725,7 +733,9 @@ class CreateForm extends CI_Controller {
               "Work_Done_Status"=>$row['Work_Done_Status'],
               "work_code"=>$row['work_code'],
               "warranty_status"=>$warrantyStatus,
-              "uom"=>$uom
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
           )
           );
 
@@ -753,7 +763,9 @@ class CreateForm extends CI_Controller {
               "Work_Done_Status"=>$row['Work_Done_Status'],
               "work_code"=>$row['work_code'],
               "warranty_status"=>$warrantyStatus,
-              "uom"=>$uom
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
           )
           );
 
@@ -766,7 +778,7 @@ class CreateForm extends CI_Controller {
     $keys['item_list']="item_list";
     $key_label["item_list"]="Item List";
      // echo "<pre>";
-    $newKeys=['1690365766_1','updated','1690365766_5',"item_name","item_quantity","uom","work_date","is_six_month","work_code","warranty_status"];
+    $newKeys=['1690365766_1','updated','1690365766_5',"item_name","item_quantity","uom","work_date","is_six_month","work_code","warranty_status","child_id","approve_id"];
     $query_1=$this->db->select("train_number")->get("railway_trains");
     $query_2=$this->db->select("coach_number")->get("railway_coach");
     $query_3=$this->db->select("status")->get("railway_work_status");
@@ -818,7 +830,7 @@ class CreateForm extends CI_Controller {
 
       //echo $wherestr;
 
-      $data_res = $this->db->select("record_id,child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("record_id,child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("send_for_rating IS NULL")
                          ->where("$wherestr",null)
@@ -829,7 +841,7 @@ class CreateForm extends CI_Controller {
 
     }else{
 
-      $data_res = $this->db->select("record_id,child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("record_id,child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("send_for_rating IS NULL")
                          ->where("location like '$location%'",null)
@@ -1052,6 +1064,11 @@ class CreateForm extends CI_Controller {
       $data[$row->req_id]["work_date"]=$work_date;
       $data[$row->req_id]["item_list"]=$item_list_array;
       $data[$row->req_id][$row->field_id] = $row->value;
+      if(is_null($row->child_id)){
+        $data[$row->req_id]["child_id"] ='';
+      }else{
+        $data[$row->req_id]["child_id"] = $row->child_id;
+      }
     }
     foreach($data as $req_id=>$row){
       $work_code='';
@@ -1139,8 +1156,9 @@ class CreateForm extends CI_Controller {
               "warranty_status"=>$warrantyStatus,
               "uom"=>$uom,
               "item_use_date"=>$row['item_use_date'],
-              "coach_type"=>$coach_type
-              // "record_id"=>$row->
+              "coach_type"=>$coach_type,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
           )
           );
 
@@ -1170,7 +1188,9 @@ class CreateForm extends CI_Controller {
               "warranty_status"=>$warrantyStatus,
               "uom"=>$uom,
               "item_use_date"=>$row['item_use_date'],
-              "coach_type"=>$coach_type
+              "coach_type"=>$coach_type,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
           )
           );
 
@@ -1223,7 +1243,7 @@ class CreateForm extends CI_Controller {
     $key_label["item_list"]="Item List";
      // echo "<pre>";
     // $newKeys=['1690365766_1','updated','1690365766_5',"item_name","item_quantity","uom","work_date","is_six_month","work_code","warranty_status"];
-    $newKeys=['1690365766_1','item_use_date','1690365766_2','coach_type','1690365766_4','1690365766_5','Work_Done_Status','item_name','item_quantity','uom','work_code','sendItem'];
+    $newKeys=['1690365766_1','item_use_date','1690365766_2','coach_type','1690365766_4','1690365766_5','Work_Done_Status','item_name','item_quantity','uom','work_code','sendItem','child_id','approve_id'];
     $query_1=$this->db->select("username,train_number")->get("railway_mapping");
     $intent['railway_trains']=$query_1->result_array();
     $intent['form_id']=$form_id;
@@ -1273,7 +1293,7 @@ class CreateForm extends CI_Controller {
 
       //echo $wherestr;
 
-      $data_res = $this->db->select("record_id,child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("record_id,child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("send_for_rating IS NULL")
                          ->where("$wherestr",null)
@@ -1296,7 +1316,7 @@ class CreateForm extends CI_Controller {
 
     }else{
 
-      $data_res = $this->db->select("record_id,child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("record_id,child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("send_for_rating IS NULL")
                          ->where("location like '$location%'",null)
@@ -1523,6 +1543,11 @@ class CreateForm extends CI_Controller {
       $data[$row->req_id]["work_date"]=$work_date;
       $data[$row->req_id]["item_list"]=$item_list_array;
       $data[$row->req_id][$row->field_id] = $row->value;
+      if(is_null($row->child_id)){
+        $data[$row->req_id]["child_id"] ='';
+      }else{
+        $data[$row->req_id]["child_id"] = $row->child_id;
+      }
     }
     foreach($data as $req_id=>$row){
       $work_code='';
@@ -1608,8 +1633,9 @@ class CreateForm extends CI_Controller {
               "warranty_status"=>$warrantyStatus,
               "uom"=>$uom,
               "item_use_date"=>$row['item_use_date'],
-              "coach_type"=>$coach_type
-              // "record_id"=>$row->
+              "coach_type"=>$coach_type,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
           )
           );
 
@@ -1639,7 +1665,9 @@ class CreateForm extends CI_Controller {
               "warranty_status"=>$warrantyStatus,
               "uom"=>$uom,
               "item_use_date"=>$row['item_use_date'],
-              "coach_type"=>$coach_type
+              "coach_type"=>$coach_type,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
           )
           );
 
@@ -1791,7 +1819,9 @@ class CreateForm extends CI_Controller {
       $key_label2 = [];
       $data2 = [];
     }
-    //print_r($data2);
+    // echo "<pre>";
+    // print_r($data2);
+    // die();
     $itemQuery=$this->db->select("item_name,warranty_days")->get("railway_work");
     $itemWithWarranty=$itemQuery->result_array();
 
@@ -1807,13 +1837,24 @@ class CreateForm extends CI_Controller {
         if( $this->session->userdata("type") == "dept" ){
           if($form_id==USER_WORK_DONE_ACTION){
             $status_1 = '';
+            $bulk_rating='';
             if( $row->status == "Pending" ){
               $status_1 .= "<div class='icon-button-demo' style='display: inline-flex;'><button type='button' class='btn bg-red btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='1' data-familyid='$row->family_id'>1<i class='material-icons'>star_rate</i></button><button type='button' class='btn bg-amber btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='2' data-familyid='$row->family_id'>2<i class='material-icons'>star_rate</i></button><button type='button' class='btn bg-light-green btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='3' data-familyid='$row->family_id'>3<i class='material-icons'>star_rate</i></button></div>";
+
+              $bulk_rating="<div class='icon-button-demo' style='display: inline-flex;'>
+                  <div class='checkbox-wrapper'>
+                      <input type='checkbox' class='checkbox bg-teal' data-status='Verified' value='{$row->req_id}' id='checkbox_{$row->req_id}' data-familyid='{$row->family_id}' />
+                      <label for='checkbox_{$row->req_id}' class='checkbox-label'></label>
+                  </div>
+                  <input type='text' class='remarks-input' placeholder='Add remarks...' />
+              </div>";
             }
             if( $row->status == "Verified" ){
               $status_1 .= "<span class='font-bold'>$row->rating<i class='material-icons'>star_rate</i></span>";
+              $bulk_rating="<span class='font-bold'>$row->rating<i class='material-icons'>star_rate</i></span>";
             }
             $data[$row->req_id]["Rating Status"] = $status_1;
+            $data[$row->req_id]["bulk_rating"]=$bulk_rating;
             $key_label["Rating Status"] = "Rating Status";
             $keys["Rating Status"] = "Rating Status";
           }else{
@@ -1836,15 +1877,19 @@ class CreateForm extends CI_Controller {
           }
         }else{
           $status_1 = '';
+          $bulk_rating='';
           if( $row->status == "Pending" ){
             $status_1 .= "<span class='font-bold col-pink'>Pending</span>";
+            $bulk_rating .= "<span class='font-bold col-pink'>Pending</span>";
           }
           if( $row->status == "Verified" ){
             $status_1 .= "<span class='font-bold col-teal'>Verified</span>";
+            $bulk_rating .= "<span class='font-bold col-teal'>Verified</span>";
           }
           $data[$row->req_id]["Status"] = $status_1;
           $key_label["Status"] = "Status";
           $keys["Status"] = "Status";
+          $data[$row->req_id]["bulk_rating"] = $bulk_rating;
         }
 
         foreach($key_res->result() as $col){
@@ -1868,6 +1913,7 @@ class CreateForm extends CI_Controller {
         // $data[$row->req_id]["Tehsil"] = isset($location_arr[1])?$location_arr[1]:"";
         //$data[$row->req_id]["Block"] = isset($location_arr[2])?$location_arr[2]:"";
         //$data[$row->req_id]["Village"] = isset($location_arr[3])?$location_arr[3]:"";
+
         if($form_for == "FAMILY"){
           $data[$row->req_id]["system_family_id"] = $row->family_id;
           if(isset($data2[$row->family_id])){
@@ -1977,6 +2023,7 @@ class CreateForm extends CI_Controller {
       $data[$row->req_id]["item_list"]=$item_list_array;
       $data[$row->req_id]["item_use_date"]=$item_use_date;
       $data[$row->req_id][$row->field_id] = $row->value;
+      $data[$row->req_id]["child_id"]=$row->child_id;
     }
     foreach($data as $req_id=>$row){
       $work_code='';
@@ -2069,7 +2116,10 @@ class CreateForm extends CI_Controller {
                   "Work_Done_Status"=>$row['Work_Done_Status'],
                   "work_code"=>$row['work_code'],
                   "warranty_status"=>$warrantyStatus,
-                  "uom"=>$uom
+                  "uom"=>$uom,
+                  "child_id"=>$row['child_id'],
+                  "approve_id"=>$row['approve_id'],
+                  "bulk_rating"=>$row['bulk_rating']
                 )
               );
 
@@ -2096,7 +2146,10 @@ class CreateForm extends CI_Controller {
                   "Work_Done_Status"=>$row['Work_Done_Status'],
                   "work_code"=>$row['work_code'],
                   "warranty_status"=>$warrantyStatus,
-                  "uom"=>$uom
+                  "uom"=>$uom,
+                  "child_id"=>$row['child_id'],
+                  "approve_id"=>$row['approve_id'],
+                  "bulk_rating"=>$row['bulk_rating']
               )
               );
 
@@ -2157,7 +2210,9 @@ class CreateForm extends CI_Controller {
                   "item_quantity"=>$item_quantity,
                   "work_code"=>$row['work_code'],
                   "warranty_status"=>$warrantyStatus,
-                  "uom"=>$uom
+                  "uom"=>$uom,
+                  "child_id"=>$row['child_id'],
+                  "approve_id"=>$row['approve_id']
                   
               )
               );
@@ -2181,7 +2236,9 @@ class CreateForm extends CI_Controller {
                   "item_quantity"=>$item_quantity,
                   "work_code"=>$row['work_code'],
                   "warranty_status"=>$warrantyStatus,
-                  "uom"=>$uom
+                  "uom"=>$uom,
+                  "child_id"=>$row['child_id'],
+                  "approve_id"=>$row['approve_id']
               )
               );
 
@@ -2192,10 +2249,9 @@ class CreateForm extends CI_Controller {
     $keys['item_list']="item_list";
     $key_label["item_list"]="Item List";
      // echo "<pre>";
-    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom",$typeOfStatus,"work_code","warranty_status"];
+    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom",$typeOfStatus,"work_code","warranty_status","child_id","approve_id"];
     if($form_id=="1690450752274"){
-      $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","warranty_status",
-      "Work_Done_Status",$typeOfStatus];
+      $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","warranty_status","Work_Done_Status",$typeOfStatus,"bulk_rating","child_id","approve_id"];
     }
     // foreach($keys as $key){
     //   echo $key;
@@ -2263,7 +2319,7 @@ class CreateForm extends CI_Controller {
 
     }else{
 
-      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("location like '$location%'",null)
                          ->where("status","Verified")
@@ -2468,6 +2524,12 @@ class CreateForm extends CI_Controller {
       $data[$row->req_id]["item_list"]=$item_list_array;
       $data[$row->req_id]["item_use_date"]=$item_use_date;
       $data[$row->req_id][$row->field_id] = $row->value;
+      if(is_null($row->child_id)){
+        $data[$row->req_id]["child_id"] ='';
+      }else{
+        $data[$row->req_id]["child_id"] = $row->child_id;
+      }
+
     }
     foreach($data as $req_id=>$row){
       $work_code='';
@@ -2555,7 +2617,9 @@ class CreateForm extends CI_Controller {
                     "item_quantity"=>$item_quantity,
                     "work_code"=>$row['work_code'],
                     "warranty_status"=>$warrantyStatus,
-                    "uom"=>$uom
+                    "uom"=>$uom,
+                    "child_id"=>$row['child_id'],
+                    "approve_id"=>$row['approve_id']
                     
                 )
                 );
@@ -2579,7 +2643,9 @@ class CreateForm extends CI_Controller {
                     "item_quantity"=>$item_quantity,
                     "work_code"=>$row['work_code'],
                     "warranty_status"=>$warrantyStatus,
-                    "uom"=>$uom
+                    "uom"=>$uom,
+                    "child_id"=>$row['child_id'],
+                    "approve_id"=>$row['approve_id']
                 )
                 );
 
@@ -2591,10 +2657,9 @@ class CreateForm extends CI_Controller {
     $keys['item_list']="item_list";
     $key_label["item_list"]="Item List";
      // echo "<pre>";
-    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom",$typeOfStatus,"work_code","warranty_status"];
+    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom",$typeOfStatus,"work_code","warranty_status","child_id","approve_id"];
     if($form_id=="1690450752274"){
-      $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","warranty_status",
-      "Work_Done_Status"];
+      $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","warranty_status","Work_Done_Status","child_id","approve_id"];
     }
     // foreach($keys as $key){
     //   echo $key;
@@ -2696,7 +2761,7 @@ class CreateForm extends CI_Controller {
         }
     
 
-        $sql = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime
+        $sql = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime,approve_id
         FROM form_data
         WHERE form_id = ?
           AND $wherestr
@@ -2721,7 +2786,7 @@ class CreateForm extends CI_Controller {
       // die();
       $data_res=$this->db->query($sql,$params);
     }else{
-      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
@@ -2925,6 +2990,11 @@ class CreateForm extends CI_Controller {
       $data[$row->req_id]["item_list"]=$item_list_array;
       $data[$row->req_id]["item_use_date"]=$item_use_date;
       $data[$row->req_id][$row->field_id] = $row->value;
+      if(is_null($row->child_id)){
+        $data[$row->req_id]["child_id"] ='';
+      }else{
+        $data[$row->req_id]["child_id"] = $row->child_id;
+      }
     }
     foreach($data as $req_id=>$row){
       $work_code='';
@@ -3013,7 +3083,9 @@ class CreateForm extends CI_Controller {
                   "Work_Done_Status"=>$row['Work_Done_Status'],
                   "work_code"=>$row['work_code'],
                   "warranty_status"=>$warrantyStatus,
-                  "uom"=>$uom
+                  "uom"=>$uom,
+                  "child_id"=>$row['child_id'],
+                  "approve_id"=>$row['approve_id']
               )
               );
 
@@ -3040,7 +3112,9 @@ class CreateForm extends CI_Controller {
                   "Work_Done_Status"=>$row['Work_Done_Status'],
                   "work_code"=>$row['work_code'],
                   "warranty_status"=>$warrantyStatus,
-                  "uom"=>$uom
+                  "uom"=>$uom,
+                  "child_id"=>$row['child_id'],
+                  "approve_id"=>$row['approve_id']
               )
               );
 
@@ -3101,7 +3175,9 @@ class CreateForm extends CI_Controller {
                   "item_quantity"=>$item_quantity,
                   "work_code"=>$row['work_code'],
                   "warranty_status"=>$warrantyStatus,
-                  "uom"=>$uom
+                  "uom"=>$uom,
+                  "child_id"=>$row['child_id'],
+                  "approve_id"=>$row['approve_id']
                   
               )
               );
@@ -3125,7 +3201,9 @@ class CreateForm extends CI_Controller {
                   "item_quantity"=>$item_quantity,
                   "work_code"=>$row['work_code'],
                   "warranty_status"=>$warrantyStatus,
-                  "uom"=>$uom
+                  "uom"=>$uom,
+                  "child_id"=>$row['child_id'],
+                  "approve_id"=>$row['approve_id']
               )
               );
 
@@ -3238,19 +3316,36 @@ class CreateForm extends CI_Controller {
         if( $this->session->userdata("type") == "dept" ){
           if($form_id==USER_WORK_DONE_ACTION){
             $status_1 = '';
+            $bulk_rating='';
             if( $row->status == "Pending" ){
               $status_1 .= "<div class='icon-button-demo' style='display: inline-flex;'><button type='button' class='btn bg-red btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='1' data-familyid='$row->family_id'>1<i class='material-icons'>star_rate</i></button><button type='button' class='btn bg-amber btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='2' data-familyid='$row->family_id'>2<i class='material-icons'>star_rate</i></button><button type='button' class='btn bg-light-green btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='3' data-familyid='$row->family_id'>3<i class='material-icons'>star_rate</i></button></div>";
+
+              $bulk_rating="<div class='icon-button-demo' style='display: inline-flex;'>
+                  <div class='checkbox-wrapper'>
+                      <input type='checkbox' class='checkbox bg-teal' data-status='Verified' value='{$row->req_id}' id='checkbox_{$row->req_id}' data-familyid='{$row->family_id}' />
+                      <label for='checkbox_{$row->req_id}' class='checkbox-label'></label>
+                  </div>
+                  <input type='text' class='remarks-input' placeholder='Add remarks...' />
+              </div>";
             }
             if( $row->status == "Verified" ){
               $status_1 .= "<span class='font-bold'>$row->rating<i class='material-icons'>star_rate</i></span>";
+              $bulk_rating .= "<span class='font-bold'>$row->rating<i class='material-icons'>star_rate</i></span>";
             }
+            $data[$row->req_id]["bulk_rating"] = $bulk_rating;
             $data[$row->req_id]["Rating Status"] = $status_1;
             $key_label["Rating Status"] = "Rating Status";
             $keys["Rating Status"] = "Rating Status";
           }else{
             $status_1 = '';
             if( $row->status == "Pending" ){
-              $status_1 .= "<div class='icon-button-demo' style='display: inline-flex;'><button type='button' class='btn bg-teal btn-circle waves-effect waves-circle waves-float status_action' data-status='Verified' value='$row->req_id'><i class='material-icons'>verified_user</i></button><button type='button' class='btn bg-pink btn-circle waves-effect waves-circle waves-float status_action' data-status='Rejected' value='$row->req_id'><i class='material-icons'>delete_forever</i></button></div>";
+              $status_1 .= "<div class='icon-button-demo' style='display: inline-flex;'>
+                  <div class='checkbox-wrapper'>
+                      <input type='checkbox' class='checkbox bg-teal' data-status='Verified' value='{$row->req_id}' id='checkbox_{$row->req_id}' />
+                      <label for='checkbox_{$row->req_id}' class='checkbox-label'></label>
+                  </div>
+                  <input type='text' class='remarks-input' placeholder='Add remarks...' />
+              </div>";
             }
             if( $row->status == "Verified" ){
               $status_1 .= "<span class='font-bold col-teal'>Verified</span>";
@@ -3261,13 +3356,17 @@ class CreateForm extends CI_Controller {
           }
         }else{
           $status_1 = '';
+          $bulk_rating='';
           if( $row->status == "Pending" ){
             $status_1 .= "<span class='font-bold col-pink'>Pending</span>";
+            $bulk_rating= "<span class='font-bold col-pink'>Pending</span>";
           }
           if( $row->status == "Verified" ){
             $status_1 .= "<span class='font-bold col-teal'>Verified</span>";
+            $bulk_rating = "<span class='font-bold col-teal'>Verified</span>";
           }
           $data[$row->req_id]["Status"] = $status_1;
+          $data[$row->req_id]["bulk_rating"] = $bulk_rating;
           $key_label["Status"] = "Status";
           $keys["Status"] = "Status";
         }
@@ -3402,6 +3501,17 @@ class CreateForm extends CI_Controller {
       $data[$row->req_id]["item_list"]=$item_list_array;
       $data[$row->req_id]["item_use_date"]=$item_use_date;
       $data[$row->req_id][$row->field_id] = $row->value;
+      if(is_null($row->child_id)){
+        $data[$row->req_id]["child_id"] ='';
+      }else{
+        $data[$row->req_id]["child_id"] = $row->child_id;
+      }
+      // if(is_null($row->approve_id)){
+      //   $data[$row->req_id]["approve_id"] ='';
+      // }else{
+      //   $data[$row->req_id]["approve_id"] = $row->approve_id;
+      // }
+      
     }
     foreach($data as $req_id=>$row){
       $work_code='';
@@ -3490,7 +3600,10 @@ class CreateForm extends CI_Controller {
                   "Work_Done_Status"=>$row['Work_Done_Status'],
                   "work_code"=>$row['work_code'],
                   "warranty_status"=>$warrantyStatus,
-                  "uom"=>$uom
+                  "uom"=>$uom,
+                  "child_id"=>$row['child_id'],
+                  "approve_id"=>$row['approve_id'],
+                  "bulk_rating"=>$row['bulk_rating']
               )
               );
 
@@ -3517,13 +3630,16 @@ class CreateForm extends CI_Controller {
                   "Work_Done_Status"=>$row['Work_Done_Status'],
                   "work_code"=>$row['work_code'],
                   "warranty_status"=>$warrantyStatus,
-                  "uom"=>$uom
+                  "uom"=>$uom,
+                  "child_id"=>$row['child_id'],
+                  "approve_id"=>$row['approve_id'],
+                  "bulk_rating"=>$row['bulk_rating']
               )
               );
 
           }
         }
-      }else{
+    }else{
         foreach($data as $req_id=>$row){
            $item_name='';
            $item_quantity='';
@@ -3578,7 +3694,9 @@ class CreateForm extends CI_Controller {
                   "item_quantity"=>$item_quantity,
                   "work_code"=>$row['work_code'],
                   "warranty_status"=>$warrantyStatus,
-                  "uom"=>$uom
+                  "uom"=>$uom,
+                  "child_id"=>$row['child_id'],
+                  "approve_id"=>$row['approve_id']
                   
               )
               );
@@ -3602,7 +3720,9 @@ class CreateForm extends CI_Controller {
                   "item_quantity"=>$item_quantity,
                   "work_code"=>$row['work_code'],
                   "warranty_status"=>$warrantyStatus,
-                  "uom"=>$uom
+                  "uom"=>$uom,
+                  "child_id"=>$row['child_id'],
+                  "approve_id"=>$row['approve_id']
               )
               );
 
@@ -3638,72 +3758,116 @@ class CreateForm extends CI_Controller {
     // echo $location;
     // die();
     if($this->session->userdata("type")=="dept" || $this->session->userdata("type") == "admin"){
-          $sql1 = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime 
-              FROM `form_data` 
-              WHERE family_id IN (
-                  SELECT family_id
-                  FROM form_data
-                  WHERE 1 ";
+      //     $sql1 = sprintf("SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime ,approve_id
+      //         FROM `form_data` WHERE form_id= '%s'
+      //         AND family_id IN (
+      //             SELECT family_id
+      //             FROM form_data
+      //             WHERE approve_id IS NULL OR approve_id ='%s'","1690450752274",$this->session->userdata("id"));
+      // $sql2="SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime ,approve_id
+      //         FROM `form_data` WHERE form_id= '1690450752274'
+      //         AND family_id IN (";
+      // $params = array();
+      // if (!empty($trainNo)) {
+      //     $sql1 .= " AND (field_id = '1690365766_1' AND value = ?)";
+      //     $sql2.="SELECT family_id FROM form_data WHERE field_id = '1690365766_1' AND value = ?";
+      //     $params[] = $trainNo;
+      // }
+      // // if(!empty($dateFilter)){
+      // //   $sql1.=" AND DATE(update_datetime) = ? ";
+      // //   $params[]=$dateFilter;
+      // // }
 
-      $params = array();
-
-      if (!empty($trainNo)) {
-          $sql1 .= " AND (field_id = '1690365766_1' AND value = ?)";
-          $params[] = $trainNo;
-      }
-      // if(!empty($dateFilter)){
-      //   $sql1.=" AND DATE(update_datetime) = ? ";
-      //   $params[]=$dateFilter;
+      // if (!empty($berth) && count($params)>0) {
+      //     $sql1 .= " OR (field_id = '1690365766_4' AND value = ?)";
+      //     $params[] = $berth;
+      // }
+      // if (!empty($berth) && count($params)==0) {
+      //     $sql1 .= " AND (field_id = '1690365766_4' AND value = ?)";
+      //     $params[] = $berth;
       // }
 
-      if (!empty($berth) && count($params)>0) {
-          $sql1 .= " OR (field_id = '1690365766_4' AND value = ?)";
-          $params[] = $berth;
-      }
-      if (!empty($berth) && count($params)==0) {
-          $sql1 .= " AND (field_id = '1690365766_4' AND value = ?)";
-          $params[] = $berth;
-      }
+      // if (!empty($work_status) && count($params)>0) {
+      //     $sql1 .= " OR (field_id = '1690365766_6' AND value = ?)";
+      //     $params[] = $work_status;
+      // }
+      // if (!empty($work_status) && count($params)==0) {
+      //     $sql1 .= " AND (field_id = '1690365766_6' AND value = ?)";
+      //     $params[] = $work_status;
+      // }
 
-      if (!empty($work_status) && count($params)>0) {
-          $sql1 .= " OR (field_id = '1690365766_6' AND value = ?)";
-          $params[] = $work_status;
-      }
-      if (!empty($work_status) && count($params)==0) {
-          $sql1 .= " AND (field_id = '1690365766_6' AND value = ?)";
-          $params[] = $work_status;
-      }
+      // if (!empty($coach_no) && count($params)>0) {
+      //     $sql1 .= " OR (field_id = '1690365766_2' AND value = ?)";
+      //     $params[] = $coach_no;
+      // }
+      // if (!empty($coach_no) && count($params)==0) {
+      //     $sql1 .= " AND (field_id = '1690365766_2' AND value = ?)";
+      //     $params[] = $coach_no;
+      // }
 
-      if (!empty($coach_no) && count($params)>0) {
-          $sql1 .= " OR (field_id = '1690365766_2' AND value = ?)";
+      // $sql1 .= " GROUP BY family_id";
+
+      // if (count($params) > 0) {
+      //     $sql1 .= " HAVING COUNT(DISTINCT field_id) = " . count($params);
+      // }
+
+      // //$sql1 .= ") AND form_id = ? ;";
+      // if(empty($dateFilter)){
+      //   $sql1 .= ")  ;";
+      //   // $params[] = $form_id;
+      // }else{
+      //   $sql1 .= ") AND DATE(update_datetime) =? ;";
+      //   $params[]=$dateFilter;
+      // }
+      $train_numbers = $this->session->userdata('train_numbers');
+      $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
+      if(isset($trainNo) && !empty($trainNo)){
+        $train_numbers=$trainNo;
+      }
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($this->session->userdata("type") == "admin"){
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$train_numbers);
+       }
+
+      if($train_numbers=="0"){
+          $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
+        }
+
+        $sql = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime
+        FROM form_data
+        WHERE form_id = ?
+          AND $wherestr
+          AND location LIKE ?";
+      $params[]=$form_id;
+      $params[]=$location."%";
+
+      if (!empty($coach_no)) {
+          $sql .= " AND family_id IN (SELECT family_id FROM form_data where field_id = '1690365766_2' AND value = ?)";
           $params[] = $coach_no;
       }
-      if (!empty($coach_no) && count($params)==0) {
-          $sql1 .= " AND (field_id = '1690365766_2' AND value = ?)";
-          $params[] = $coach_no;
+
+      if (!empty($work_status)) {
+          $sql .= " AND family_id IN (SELECT family_id FROM form_data where field_id = '1690365766_6' AND value = ?)";
+          $params[] = $work_status;
       }
-
-      $sql1 .= " GROUP BY family_id";
-
-      if (count($params) > 0) {
-          $sql1 .= " HAVING COUNT(DISTINCT field_id) = " . count($params);
+      if (!empty($berth)) {
+        $sql .= " AND family_id IN (SELECT family_id FROM form_data where field_id = '1690365766_4' AND value = ?)";
+          $params[] = $berth;
       }
+      if(!empty($dateFilter)){
 
-      //$sql1 .= ") AND form_id = ? ;";
-      if(empty($dateFilter)){
-        $sql1 .= ") AND form_id = ? ;";
-        $params[] = $form_id;
-      }else{
-        $sql1 .= ") AND form_id = ? AND DATE(update_datetime) =? ;";
-        $params[] = $form_id;
+        $sql.=" AND DATE(update_datetime) = ? ";
         $params[]=$dateFilter;
       }
+
       
-      // echo $sql1;
+      
+      // echo $sql;
+      // print_r($params);
       // die();
-      $data_res = $this->db->query($sql1, $params);
+      $data_res = $this->db->query($sql, $params);
     }else{
-      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
@@ -3928,6 +4092,12 @@ class CreateForm extends CI_Controller {
       $data[$row->req_id]["work_date"]=$work_date;
       $data[$row->req_id]["item_list"]=$item_list_array;
       $data[$row->req_id][$row->field_id] = $row->value;
+      if(is_null($row->child_id)){
+        $data[$row->req_id]["child_id"] ='';
+      }else{
+        $data[$row->req_id]["child_id"] = $row->child_id;
+      }
+      
     }
     foreach($data as $req_id=>$row){
       $work_code='';
@@ -4016,7 +4186,9 @@ class CreateForm extends CI_Controller {
               "work_code"=>$row['work_code'],
               "warranty_status"=>$warrantyStatus,
               "uom"=>$uom,
-              "work_category"=>$work_category
+              "work_category"=>$work_category,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
           )
           );
 
@@ -4045,7 +4217,9 @@ class CreateForm extends CI_Controller {
               "work_code"=>$row['work_code'],
               "warranty_status"=>$warrantyStatus,
               "uom"=>$uom,
-              "work_category"=>$work_category
+              "work_category"=>$work_category,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
           )
           );
 
@@ -4094,7 +4268,7 @@ class CreateForm extends CI_Controller {
 
       //echo $wherestr;
 
-      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("$wherestr",null)
                          ->where("location like '$location%'",null)
@@ -4104,7 +4278,7 @@ class CreateForm extends CI_Controller {
 
     }else{
 
-      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
@@ -4304,6 +4478,11 @@ class CreateForm extends CI_Controller {
       $data[$row->req_id]["rating"]=$row->rating;
       $data[$row->req_id]["item_use_date"]=$item_use_date;
       $data[$row->req_id][$row->field_id] = $row->value;
+      if(is_null($row->child_id)){
+        $data[$row->req_id]["child_id"] ='';
+      }else{
+        $data[$row->req_id]["child_id"] = $row->child_id;
+      }
         
     }
 
@@ -4434,7 +4613,9 @@ class CreateForm extends CI_Controller {
               "Work_Done_Status"=>$row['Work_Done_Status'],
               "work_code"=>$row['work_code'],
               "warranty_status"=>$warrantyStatus,
-              "uom"=>$uom
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
           )
           );
 
@@ -4463,7 +4644,9 @@ class CreateForm extends CI_Controller {
               "Work_Done_Status"=>$row['Work_Done_Status'],
               "work_code"=>$row['work_code'],
               "warranty_status"=>$warrantyStatus,
-              "uom"=>$uom
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
           )
           );
 
@@ -4476,7 +4659,7 @@ class CreateForm extends CI_Controller {
    
     $keys['item_list']="item_list";
     $key_label["item_list"]="Item List";
-    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","Work_Done_Status","amount","Rating Status","final_amt","work_code","warranty_status"];
+    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","Work_Done_Status","amount","Rating Status","final_amt","work_code","warranty_status","child_id","approve_id"];
     // echo "<pre>";
     // print_r($new_data);
  
@@ -4563,7 +4746,7 @@ class CreateForm extends CI_Controller {
       // echo $wherestr;
       // die();
 
-        $sql = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime
+        $sql = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime,approve_id
         FROM form_data
         WHERE form_id = ?
           AND $wherestr
@@ -4589,7 +4772,7 @@ class CreateForm extends CI_Controller {
 
     }else{
 
-      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("location like '$location%'",null)
                          ->where("DATE(update_datetime)",$date)
@@ -4772,6 +4955,11 @@ class CreateForm extends CI_Controller {
       $data[$row->req_id]["rating"]=$row->rating;
 
       $data[$row->req_id][$row->field_id] = $row->value;
+      if(is_null($row->child_id)){
+        $data[$row->req_id]["child_id"] ='';
+      }else{
+        $data[$row->req_id]["child_id"] = $row->child_id;
+      }
     }
     $countRatingAvg=1;
     $ratingTotal=0;
@@ -4904,7 +5092,9 @@ class CreateForm extends CI_Controller {
               "ratingAverage"=>number_format($ratingAverage,2),
               "totalRatingAmount"=>number_format($totalRatingAmount,2),
               "totalAmount"=>number_format($totalAmount,2),
-              "uom"=>$uom
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
           )
           );
 
@@ -4937,7 +5127,9 @@ class CreateForm extends CI_Controller {
               "ratingAverage"=>number_format($ratingAverage,2),
               "totalRatingAmount"=>number_format($totalRatingAmount,2),
               "totalAmount"=>number_format($totalAmount,2),
-              "uom"=>$uom
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
           )
           );
 
@@ -6115,7 +6307,7 @@ class CreateForm extends CI_Controller {
     }
     echo "200";
   }
-  public function updateStatusOfReqPrakash(){
+  public function updateStatusOfReqBulk(){
 
     $this->db = $this->load->database("default",TRUE);
 
@@ -6252,6 +6444,39 @@ class CreateForm extends CI_Controller {
     }
   }
 
+  public function updateStatusOfReqRatingBulk(){
+
+    $this->db = $this->load->database("default",TRUE);
+    try{
+        $this->db->trans_begin();
+        $ratingData = $this->input->post("ratingData");
+        $datetime = date("Y-m-d H:i:s");
+        $id = $this->session->userdata("id");
+        foreach($ratingData as $row){
+          if($row['status']=="Verified"){
+              $this->db->where("req_id",$row['req_id']);
+              $this->db->update("form_data",["status"=>"Verified","remarks"=>$row['remark'],"approve_datetime"=>$datetime]);
+              if ($this->db->affected_rows() == 0) {
+                    throw new Exception('Update failed for req_id: ' . $row['req_id']);
+                }
+
+              $this->db->where("family_id",$row['family_id']);
+              $this->db->update("form_data",["rating"=>$row['rating'],"rating_datetime"=>$datetime]);
+              if ($this->db->affected_rows() == 0) {
+                    throw new Exception('Update failed for family_id: ' . $row['family_id']);
+              }
+              
+          }
+        }
+      $this->db->trans_commit();
+      echo "200";
+    }catch(Exception $e){
+      $this->db->trans_rollback();
+      log_message('error', 'Transaction failed: ' . $e->getMessage());
+      echo "500";
+    }
+    
+  }
 
   public function updateStatusOfReqRejected(){
 

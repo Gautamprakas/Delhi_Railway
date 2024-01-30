@@ -103,7 +103,7 @@ jQuery(document).ready(function(){
                 var lengthOfData = Object.keys(data).length;
                 var tableBody = document.getElementById('myTableBody');
                 tableBody.innerHTML = '';
-                var tableCol=13;
+                var tableCol=15;
                 var j=1;
                 if(lengthOfData>0){
                 data.forEach((data)=>{
@@ -177,6 +177,10 @@ jQuery(document).ready(function(){
                                     $("#tableID"+j+"_13").html(data[family_id][value]);
                                 }else if(value=="uom"){
                                     $("#tableID"+j+"_11").text(data[family_id][value]);
+                                }else if(value=="child_id"){
+                                    $("#tableID"+j+"_14").text(data[family_id][value]);
+                                }else if(value=="approve_id"){
+                                    $("#tableID"+j+"_15").text(data[family_id][value]);
                                 }
                             
                                 

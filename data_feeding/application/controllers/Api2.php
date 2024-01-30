@@ -13,15 +13,6 @@ class Api2 extends CI_Controller{
 		redirect(base_url("view/login"));
 	}
 	public function isWarranty(){
-		    //         "work_category": "Test 2",
-            // "work": "Repair/Test@120$Test Code 2",//1690365766_5
-            // "work_item": "Snack Table|Per Item Test2",//1690365766B_2
-            // "train_number": "12015",//1690365766_1
-            // "toilet_gallery_berth_no": "Toilet-1",//1690365766_4
-            // "coach_number": "163007|Test Cat",//1690365766_2
-            // "work_status": "No",
-            // "coach_location": "Yard"//1690365766_3
-		// $work_category=$this->input->post("work_category");
 		$work=$this->input->post("work");
 		$work_item=$this->input->post("work_item");
         $train_number=$this->input->post("train_number");

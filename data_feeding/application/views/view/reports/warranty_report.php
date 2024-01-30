@@ -81,12 +81,8 @@
                                                <!-- <th class="font-12" style="background: #2196f3;">Action</th> -->
                                                <th class="font-12" style="background: #2196f3;">Work Code</th>
                                                <th class="font-12" style="background: #2196f3;">Resend For Rating</th>
-                                               <!-- <th class="font-12" style="background: #2196f3;">Warranty In Days</th> -->
-                                             <!--   <?php
-                                               if($form_id=="1690450752274"){?>
-                                                <th class="font-12" style="background: #2196f3;">Work Done Status</th>
-                                                <th class="font-12" style="background: #2196f3;">Rating</th>
-                                               <?php } ?> -->
+                                               <th class="font-12" style="background: #2196f3;">Data Feed By</th>
+                                                <th class="font-12" style="background: #2196f3;">Approved By</th>
                                             </tr>
                                     </thead>
                                     <tbody id="myTableBody">

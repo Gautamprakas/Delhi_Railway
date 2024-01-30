@@ -101,9 +101,9 @@ jQuery(document).ready(function(){
                 var lengthOfData = Object.keys(data).length;
                 var tableBody = document.getElementById('myTableBody');
                 tableBody.innerHTML = '';
-                var tableCol=14;
+                var tableCol=16;
                 if(form_id=="1690450752274"){
-                    tableCol=15;
+                    tableCol=17;
                 }
                 //return;
                 var j=1;
@@ -186,6 +186,10 @@ jQuery(document).ready(function(){
                                     $("#tableID"+j+"_14").html(data[family_id][value]);
                                 }else if(value=="uom"){
                                     $("#tableID"+j+"_11").text(data[family_id][value]);
+                                }else if(value=="child_id"){
+                                    $("#tableID"+j+"_15").html(data[family_id][value]);
+                                }else if(value=="approve_id"){
+                                    $("#tableID"+j+"_16").text(data[family_id][value]);
                                 }
                             
                                 

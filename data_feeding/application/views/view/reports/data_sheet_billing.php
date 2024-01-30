@@ -85,6 +85,8 @@
                                                 <th class="font-12" style="background: #2196f3;">Rating Amount</th>
                                                 <th class="font-12" style="background: #2196f3;">Work Code</th>
                                                 <th class="font-12" style="background: #2196f3;">Warranty In Days</th>
+                                                <th class="font-12" style="background: #2196f3;">Data Feed By</th>
+                                                <th class="font-12" style="background: #2196f3;">Approved By</th>
                                                 
                                             </tr>
                                     </thead>

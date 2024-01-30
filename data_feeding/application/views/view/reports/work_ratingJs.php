@@ -99,11 +99,12 @@ jQuery(document).ready(function(){
                 // alert(response);
                 var data = JSON.parse(response); // Assuming 'response' is your JSON data
                 var lengthOfData = Object.keys(data).length;
+                console.log(data);
                 var tableBody = document.getElementById('myTableBody');
                 tableBody.innerHTML = '';
-                var tableCol=14;
+                var tableCol=17;
                 if(form_id=="1690450752274"){
-                    tableCol=16;
+                    tableCol=19;
                 }
                 //return;
                 var j=1;
@@ -186,7 +187,14 @@ jQuery(document).ready(function(){
                                     $("#tableID"+j+"_14").html(data[family_id][value]);
                                 }else if(value=="uom"){
                                     $("#tableID"+j+"_11").text(data[family_id][value]);
+                                }else if(value=="bulk_rating"){
+                                    $("#tableID"+j+"_17").html(data[family_id][value]);
+                                }else if(value=="child_id"){
+                                    $("#tableID"+j+"_18").html(data[family_id][value]);
+                                }else if(value=="approve_id"){
+                                    $("#tableID"+j+"_19").text(data[family_id][value]);
                                 }
+                            
                             
                                 
                                 
@@ -353,6 +361,50 @@ jQuery(document).ready(function(){
                         swal("Something went wrong.");
                     }
                     btndiv.find("button.status_action_rating").prop('disabled', false);
+                });
+            });
+        });
+
+
+        $("body").on("click", ".rating-button", function () {
+            var checkboxes = $("input.checkbox:checked");
+            var ratingData = [];
+            var rating = $(this).data('rating');
+            checkboxes.each(function () {
+                var req_id = $(this).val();
+                var status = $(this).attr("data-status");
+                // var rating = $(this).attr("data-rating");
+                var familyid = $(this).attr("data-familyid");
+                var remarksInput = $(this).closest('.icon-button-demo').find('.remarks-input').val();
+                ratingData.push({
+                    req_id: $(this).val(),
+                    remark: remarksInput,
+                    status:status,
+                    family_id:familyid,
+                    rating:rating
+                });
+            });
+            console.log(ratingData);
+            swal({
+                title: "Are you sure?",
+                text: "You want to give "+rating+ " star rating to the selected work.",
+                type: "info",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true,
+            }, function () {
+                $.post("<?php echo base_url("view/CreateForm/updateStatusOfReqRatingBulk"); ?>",{
+                    ratingData:ratingData
+                },function(data){
+                    console.log(data);
+                    if(data=="200"){
+                        swal("Data "+status+".");
+                        location.reload();
+                        // btndiv.html("<span class='font-bold'>"+rating+"<i class='material-icons'>star_rate</i></span>");
+                    }else{
+                        swal("Something went wrong.");
+                    }
+                    // btndiv.find("button.status_action_rating").prop('disabled', false);
                 });
             });
         });

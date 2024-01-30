@@ -185,6 +185,12 @@ function getFormData( $form_id = '', $form_for = '', $req_form_id='' ){
 		}
 		$key_label["Work_Approved_Datetime"] = "Work Approved Datetime";
 		$data[$index]["Work_Approved_Datetime"] = $row->approve_datetime;
+		if(is_null($row->approve_id)){
+			$data[$index]["approve_id"] ='';
+		}else{
+			$data[$index]["approve_id"] = $row->approve_id;
+		}
+		
 	}
     return [$key_label,$data];
 }

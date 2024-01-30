@@ -99,7 +99,7 @@ jQuery(document).ready(function(){
                 var data = JSON.parse(response); // Assuming 'response' is your JSON data
                 //console.log(Object.keys(data).length);
                 var lengthOfData = Object.keys(data).length;
-                var tableCol=18;
+                var tableCol=20;
                 //console.log(lengthOfData); // This will give you the length of the object 'data'
                 var tableBody = document.getElementById('myTableBody');
                 tableBody.innerHTML = '';
@@ -197,6 +197,10 @@ jQuery(document).ready(function(){
                                     $("#avgRatingAmount").text(data[family_id][value]);
                                 }else if(value=="totalAmount"){
                                     $("#totalAmount").text(data[family_id][value]);
+                                }else if(value=="child_id"){
+                                    $("#tableID"+j+"_19").text(data[family_id][value]);
+                                }else if(value=="approve_id"){
+                                    $("#tableID"+j+"_20").text(data[family_id][value]);
                                 }
                             
                                 
