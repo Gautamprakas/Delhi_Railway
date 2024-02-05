@@ -5702,7 +5702,16 @@ class CreateForm extends CI_Controller {
 
       }
     }
-    // echo json_encode($new_data);
+    $username='';
+    if(!empty($trainNo)){
+      $this->db->select("username");
+      $this->db->where("train_number",$trainNo);
+      $query=$this->db->get("railway_mapping");
+      $result_username=$query->row_array();
+      foreach($result_username as $row){
+        $username=$row;
+      }
+    }
     $intent['train_number'] = $trainNo;
     $intent['date']=$date;
     $intent['time1']=$time1;
@@ -5714,17 +5723,11 @@ class CreateForm extends CI_Controller {
     $intent['totalAmount']=$totalAmount;
     $intent['toal_penalty_amt']=$totalPenaltyAmt;
     $intent['toalRatingAMount']=$toalRatingAMount;
+    $intent['username']=$username;
     $newKeys=['1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent","tender_amt","penalty_amt","final_amt"];
     $intent['newKeys']=$newKeys;
     $this->load->view('view/reports/final_billing_report_sample', $intent);
-    // Start output buffering to capture the view content
-    // ob_start();
-    // $this->load->view('view/reports/final_billing_report_sample', $intent);
-    // $view_content = ob_get_clean();
 
-    // // Return the view content as a JSON response
-    // $this->output->set_content_type('application/json');
-    // $this->output->set_output(json_encode(['view_content' => $view_content]));
 
 
 

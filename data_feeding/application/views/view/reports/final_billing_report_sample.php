@@ -62,7 +62,7 @@
       </tr>
       <tr>
         <th colspan="5" style="text-align: left;">Train Number-<?php echo $train_number ;?></th>
-        <th colspan="6" style="text-align: right;">Maintenance JEE/SSE - Vijay Kumar</th>
+        <th colspan="6" style="text-align: right;">Maintenance JEE/SSE - <?php echo $username ;?></th>
       </tr>
       <tr>
         <th colspan="5" style="text-align: left;">Date <?php echo $date ; ?></th>
