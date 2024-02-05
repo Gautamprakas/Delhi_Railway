@@ -56,6 +56,66 @@ class CreateForm extends CI_Controller {
 		// $this->load->view("view/include/template",$intent);
     redirect(base_url("view/CreateForm/reportBilling/1690450752274"));
 	}
+  public function addWarranty(){
+    $this->db = $this->load->database("default",TRUE);
+    $intent["menuActive"] = "warranty";
+    $intent["subMenuActive"]  = "add_warranty";
+    $intent["headerCss"]   = "view/update_form/update_formCss";
+    $intent["mainContent"] = "view/master/add_warranty";
+    $intent["footerJs"]    = "view/master/add_warrantyJs";
+    $this->load->view("view/include/template",$intent);
+  }
+  public function saveaddWarranty(){
+    // $this->db = $this->load->database("default",TRUE);
+    $data['days'] = $this->input->post("days");
+    $this->db->insert('railway_warranty_days', $data); // Correct way to insert data into the table
+
+    if ($this->db->affected_rows() > 0) {
+        echo "Data Inserted";
+    } else {
+        echo $this->db->error();
+    }
+ }
+
+  public function editWarranty(){
+    $this->db->select("days");
+    $this->db->from("railway_warranty_days");
+    $query=$this->db->get();
+    $intent['data']=$query->result_array();
+    $intent["menuActive"] = "warranty";
+    $intent["subMenuActive"]  = "edit_warranty";
+    $intent["headerCss"]   = "view/update_form/update_formCss";
+    $intent["mainContent"] = "view/master/edit_warranty";
+    $intent["footerJs"]    = "view/master/edit_warrantyJs";
+    $this->load->view("view/include/template",$intent);
+    // print_r($intent);
+  }
+
+  public function saveUpdateWarranty(){
+
+    $days=$this->input->post("days");
+    $status=$this->input->post("status");
+    $inputValue=$this->input->post("inputValue");
+    $data['days']=$inputValue;
+    if($status=="Delete"){
+      $this->db->where("days",$days);
+      $this->db->delete("railway_warranty_days");
+    }else if($days!=$inputValue){
+    $this->db->where("days",$days);
+    $this->db->update("railway_warranty_days",$data);
+   }else if($days==$inputValue){
+    echo "Status Updated";
+    die();
+   }
+    if($this->db->affected_rows()>0){
+      echo "Status Updated";
+    }
+    else{
+      echo $this->db->error();
+    }
+
+  }
+  //
   public function addTrain(){
     $this->db = $this->load->database("default",TRUE);
     $intent["menuActive"] = "update_form1";
@@ -279,6 +339,10 @@ class CreateForm extends CI_Controller {
     $this->db->from("railway_work_categories");
     $query3=$this->db->get();
     $intent['result_categories']=$query3->result_array();
+    $this->db->select("days");
+    $this->db->from("railway_warranty_days");
+    $query_5=$this->db->get();
+    $intent['warranty_days']=$query_5->result_array();
     $intent['item_name']=$query2->result_array();
     $intent["menuActive"] = "update_form6";
     $intent["subMenuActive"]  = "add_work";
@@ -4680,6 +4744,1929 @@ class CreateForm extends CI_Controller {
     $intent["subMenuActive"]  = "data_sheet_billing";
     $intent["headerCss"]   = "view/reports/data_sheetCss";
     $intent["mainContent"] = "view/reports/data_sheet_billing";
+    $intent["footerJs"]    = "view/reports/data_sheet_billingJs";
+    $this->load->view("view/include/template",$intent);
+  }
+  public function finalBillingReport( $form_id ){
+
+    ini_set('memory_limit', '-1');
+    //$this->output->cache(5);
+    //$this->output->enable_profiler(TRUE);
+
+    $this->db = $this->load->database("default",TRUE);  
+  //  $this->db->cache_on();
+    $form_res = $this->db->get_where("form_created",["form_id"=>$form_id]);
+    $form_title = $form_res->row()->form_title;
+    $form_for = $form_res->row()->form_for;
+  //   $this->db->cache_off();
+   //  $this->db->cache_on();
+    $key_res = $this->db->select("field,field_id")->group_by("field_id")->order_by("field_id")->get_where("form_data",["form_id"=>$form_id]);
+ //   $this->db->cache_off();
+    $location = $this->session->userdata('location');
+
+    if( $this->session->userdata("type") == "dept" ){
+      
+      $train_numbers = $this->session->userdata('train_numbers');
+      $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+
+      //echo $wherestr;
+
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
+                         ->where("form_id",$form_id)
+                         ->where("$wherestr",null)
+                         ->where("location like '$location%'",null)
+                         ->where("rating IS NOT NULL")
+                         ->order_by("update_datetime","DESC")
+                         ->get('form_data');
+
+    }else{
+
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
+                         ->where("form_id",$form_id)
+                         ->where("location like '$location%'",null)
+                         ->where("rating IS NOT NULL")
+                         ->order_by("update_datetime","DESC")
+                         ->get('form_data');
+    }
+
+    // echo "<pre>";
+    // print_r($data_res->result());
+    // die();
+    $data = [];
+    $key_label = array();
+    $summary = [];
+    $last_date = date("Y-m-d");
+    $keys = [];
+
+    $this->load->helper("my");
+    if( $form_for == 'FAMILY' ){
+      list($key_label2,$data2) = getFormData(FMAILY_FROM_ID,$form_for,$form_id);
+    }else
+    if( $form_for == 'MEMBER' ){
+      list($key_label2,$data2) = getFormData(MEMBER_FROM_ID,$form_for,$form_id);
+    }else{
+      $key_label2 = [];
+      $data2 = [];
+    }
+    // echo "<pre>";
+    // print_r($data_res->result());
+    // die();
+    //print_r($data2);
+    $itemQuery=$this->db->select("item_name,warranty_days")->get("railway_work");
+    $itemWithWarranty=$itemQuery->result_array();
+
+    foreach($data_res->result() as $row){
+
+      if(!isset($data[$row->req_id])){
+        // $this->db->cache_on();
+        // $res = $this->db->get_where('users',["username"=>str_replace('Web_','',$row->child_id)]);
+        // $this->db->cache_off();
+        //$location_arr = explode("|", $res->row()->location);
+        $location_arr = explode("|", $row->location);
+
+        if( $this->session->userdata("type") == "dept" ){
+          if($form_id==USER_WORK_DONE_ACTION){
+            $status_1 = '';
+            if( $row->status == "Verified" ){
+              $status_1 .= "<span class='font-bold'>$row->rating<i class='material-icons'>star_rate</i></span>";
+            }
+            $data[$row->req_id]["Rating Status"] = $status_1;
+            $key_label["Rating Status"] = "Rating Status";
+            $keys["Rating Status"] = "Rating Status";
+          }else{
+            $status_1 = '';
+            if( $row->status == "Pending" ){
+              $status_1 .= "<div class='icon-button-demo' style='display: inline-flex;'><button type='button' class='btn bg-teal btn-circle waves-effect waves-circle waves-float status_action' data-status='Verified' value='$row->req_id'><i class='material-icons'>verified_user</i></button><button type='button' class='btn bg-pink btn-circle waves-effect waves-circle waves-float status_action' data-status='Rejected' value='$row->req_id'><i class='material-icons'>delete_forever</i></button></div>";
+            }
+            if( $row->status == "Verified" ){
+              $status_1 .= "<span class='font-bold col-teal'>Verified</span>";
+            }
+            $data[$row->req_id]["Status"] = $status_1;
+            $key_label["Status"] = "Status";
+            $keys["Status"] = "Status";
+          }
+        }else{
+          $status_1 = '';
+          if( $row->status == "Pending" ){
+            $status_1 .= "<span class='font-bold col-pink'>Pending</span>";
+          }
+          if( $row->status == "Verified" ){
+            $status_1 .= "<span class='font-bold col-teal'>Verified</span>";
+          }
+          $data[$row->req_id]["Status"] = $status_1;
+          $key_label["Status"] = "Status";
+          $keys["Status"] = "Status";
+        }
+
+        foreach($key_res->result() as $col){
+          $data[$row->req_id][$col->field_id] = "";
+          $key_label[$col->field_id] = $col->field;
+          $keys[$col->field_id] = $col->field_id;
+        }
+
+        if(strtotime($row->create_datetime) > strtotime($last_date)){
+          $last_date = date("Y-m-d",strtotime($row->create_datetime));
+        }
+        if(strtotime($row->update_datetime) > strtotime($last_date)){
+          $last_date = date("Y-m-d",strtotime($row->update_datetime));
+        }
+        
+
+        //$data[$row->req_id]["inserted"] = $row->create_datetime!="0000-00-00 00:00:00"?$row->create_datetime:"";
+        $data[$row->req_id]["updated"] = $row->update_datetime!="0000-00-00 00:00:00"?$row->update_datetime:"";
+        // $data[$row->req_id]["geo_loc"] = $row->geo_loc;
+        // $data[$row->req_id]["child_id"] = $res->row()->name." [".$res->row()->username."]";
+        // $data[$row->req_id]["Tehsil"] = isset($location_arr[1])?$location_arr[1]:"";
+        //$data[$row->req_id]["Block"] = isset($location_arr[2])?$location_arr[2]:"";
+        //$data[$row->req_id]["Village"] = isset($location_arr[3])?$location_arr[3]:"";
+        if($form_for == "FAMILY"){
+          $data[$row->req_id]["system_family_id"] = $row->family_id;
+          if(isset($data2[$row->family_id])){
+            foreach($data2[$row->family_id] as $field_id2 => $value2){
+              $data[$row->req_id][$field_id2] = $value2;
+            }
+          }
+        }
+        if($form_for == "MEMBER"){
+          $data[$row->req_id]["system_member_id"] = $row->member_id;
+          if(isset($data2[$row->member_id])){
+            foreach($data2[$row->member_id] as $field_id2 => $value2){
+              $data[$row->req_id][$field_id2] = $value2;
+            }
+          }
+        }
+
+        if($form_id==SELECT_ITEMS_FOR_WORK){
+          $data[$row->req_id]["Released_Quantity_datetime"] = $row->approve_datetime;
+          $key_label["Released_Quantity_datetime"] = "Released Quantity Datetime";
+          $keys["Released_Quantity_datetime"] = "Released_Quantity_datetime";
+        }
+        if($form_id==USER_WORK_DONE_ACTION){
+          $data[$row->req_id]["Rating_Datetime"] = $row->rating_datetime;
+          $key_label["Rating_Datetime"] = "Rating Datetime";
+          $keys["Rating_Datetime"] = "Rating_Datetime";
+        }
+        //$key_label["inserted"] = "Inserted";
+        if($form_id == FMAILY_FROM_ID){
+          $key_label["updated"] = "Work Entry Datetime";
+        }else if($form_id == SELECT_ITEMS_FOR_WORK){
+          $key_label["updated"] = "Item Request Datetime";
+        }else  if($form_id == USER_WORK_DONE_ACTION){
+          $key_label["updated"] = "Work Done Datetime";
+        }else{
+          $key_label["updated"] = "Updated";
+        }
+        
+        $keys["updated"] = "updated";
+        if($form_for == "FAMILY"){
+          $key_label["system_family_id"] = "System Work ID";
+          $keys["system_family_id"] = "system_family_id";
+          foreach($key_label2 as $field_id2 => $field2){
+            $key_label[$field_id2] = $field2;
+            $keys[$field_id2] = $field_id2;
+          }
+        }
+        if($form_for == "MEMBER"){
+          $key_label["system_member_id"] = "System Member ID";
+          $keys["system_member_id"] = "system_member_id";
+          foreach($key_label2 as $field_id2 => $field2){
+            $key_label[$field_id2] = $field2;
+            $keys[$field_id2] = $field_id2;
+          }
+        }
+      }
+      $this->db->select('field, value,DATE(create_datetime) as create_datetime');
+      $this->db->where('family_id', $row->family_id);
+      $this->db->where_in('field', array('Item List*', 'Item Quantity*'));
+      $query = $this->db->get('form_data_update');
+      $result = $query->result_array();
+      if(count($result)==0){
+              $this->db->select('field, value,DATE(create_datetime) as create_datetime');
+              $this->db->where('family_id', $row->family_id);
+              $this->db->where_in('field', array('Item List*', 'Item Quantity*'));
+              $query = $this->db->get('form_data');
+              $result = $query->result_array();
+      }
+      $i=1;
+      $result_str='';
+      $item_name='';
+      $item_quantity='';
+      $item_list_array=array();
+      $item_use_date='';
+
+      foreach ($result as $item) {
+
+        if ($item['field'] == 'Item List*') {
+        $result_str .= $i.'. '.$item['value'] . ' ';
+        $item_name=$item['value'];
+
+        }elseif ($item['field'] == 'Item Quantity*') {
+              $result_str .= "(".$item['value'] .")"."<br>";  // Use PHP_EOL for a new line
+              $i+=1;
+              $item_quantity=$item['value'];
+
+          }
+        if(!empty($item_name) && !empty($item_quantity)){
+          $item_list_array[]=array(
+            "item_name"=>$item_name,
+            "item_quantity"=>$item_quantity
+          );
+        }
+        if(isset($item['create_datetime']) && !empty($item['create_datetime'])){
+          $item_use_date=$item['create_datetime'];
+        }
+          
+      }
+      $data[$row->req_id]["item_list"]=$item_list_array;
+      $data[$row->req_id]["rating"]=$row->rating;
+      $data[$row->req_id]["item_use_date"]=$item_use_date;
+      $data[$row->req_id][$row->field_id] = $row->value;
+      if(is_null($row->child_id)){
+        $data[$row->req_id]["child_id"] ='';
+      }else{
+        $data[$row->req_id]["child_id"] = $row->child_id;
+      }
+        
+    }
+
+    $countRatingAvg=1;
+    $ratingTotal=0;
+    $ratingAverage=0;
+    $toalRatingAMount=0;
+    $totalAmount=0;
+    $totalRatingGet=0;
+    $totalRatingPercent=0;
+    $maxRatingWithWork=0;
+    $totalPenaltyAmt=0;
+    foreach($data as $req_id=>$row){
+      $work_code='';
+      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"])){
+
+        $workCodeParts=explode("$",$row['1690365766_5']);
+        if(count($workCodeParts)>1){
+          $work_code=$workCodeParts[1];
+        }
+      }
+      $data[$req_id]["work_code"]=$work_code;
+      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"]) && isset($row["rating"]) && !empty($row['rating'])){
+        $ratingTotal+=(int)$row['rating'];
+        $ratingAverage=$ratingTotal/$countRatingAvg;
+        // echo "Total Rating is ".$ratingTotal." and average rating now is ".$ratingAverage."<br>";
+        $countRatingAvg+=1;
+        $workList=$row['1690365766_5'];
+        $amt='';
+        $workWithCode=explode("$",$workList);
+        $workListParts=explode("@",$workWithCode[0]);
+        if(count($workListParts)>1){
+          $currentRating=(int)$row['rating'];
+          $totalRatingGet+=$currentRating;
+          $ratingPercent=($currentRating/3)*100;
+          $amt=(int)$workListParts[1];
+          $totalAmount+=$amt;
+          $rating=(int)$row['rating'];
+          $percentage=($rating/3)*100;
+          if($percentage>85){
+            $final_amt=$amt;
+          }else if(($percentage<=85) && ($percentage>75)){
+            $final_amt=$amt-($amt*5)/100;
+          }else if(($percentage<=75) && ($percentage>65)){
+            $final_amt=$amt-($amt*10)/100;
+          }else if(($percentage<=65) && ($percentage>=55)){
+            $final_amt=$amt-($amt*20)/100;
+          }else if($percentage<55){
+            $final_amt=$amt-($amt*40)/100;
+          }
+          $penaltyAmt=$amt-$final_amt;
+          $totalPenaltyAmt+=$penaltyAmt;
+          $data[$req_id]["final_amt"]=$final_amt;
+          $data[$req_id]["tender_amt"]=$amt;
+          $data[$req_id]["rating_percent"]=number_format($ratingPercent,2);
+          $data[$req_id]["penalty_amt"]=number_format($penaltyAmt,2);
+          $toalRatingAMount+=$final_amt;
+          $maxRatingWithWork+=3;
+        }else{
+          $data[$req_id]["final_amt"]="N/A";
+          $data[$req_id]["tender_amt"]="N/A";
+          $data[$req_id]["rating_percent"]='';
+          $data[$req_id]["penalty_amt"]='';
+        }
+      }else{
+        $data[$req_id]["final_amt"]="N/A";
+        $data[$req_id]["tender_amt"]="N/A";
+        $data[$req_id]["rating_percent"]='';
+        $data[$req_id]["penalty_amt"]='';
+      }
+      if(isset($row["1690450752274_2"])){
+        if($row['1690450752274_2']=="Done"){
+          $data[$req_id]["Work_Done_Status"]="Done";
+        }else{
+          $data[$req_id]["Work_Done_Status"]="Not Done";
+        }
+      }
+    }
+    if($this->session->userdata("type")=="dept"){
+      $typeOfStatus="Rating Status";
+    }else{
+      $typeOfStatus="Status";
+    }
+    // echo "<pre>";
+    // print_r($data);
+    
+    // die();
+    $new_data=array();
+    $uom='';
+    foreach($data as $req_id=>$row){
+       $warrantyStatus='';
+       $item_name='';
+       $item_quantity='';
+       $coach_type='';
+       $coach_no='';
+       $uom='';
+       if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
+           $coachParts=explode("|",$row['1690365766_2']);
+           if(count($coachParts)>1){
+            $coach_type=$coachParts[1];
+            $coach_no=$coachParts[0];
+           }else{
+            $coach_no=$coachParts[0];
+           }
+       }
+       if(count($row['item_list'])>0){
+        foreach($row['item_list'] as $row2){
+          $uom='';
+          $warrantyStatus='';
+          $itemWithUom=explode("|",$row2['item_name']);
+          $item_name=$itemWithUom[0];
+          $uom=$itemWithUom[count($itemWithUom)-1];
+          $item_quantity=$row2['item_quantity'];
+          foreach($itemWithWarranty as $itemWarranty){
+              if($itemWarranty['item_name']==$item_name){
+                $warrantyDay=(int)$itemWarranty['warranty_days'];
+                $currDate=new DateTime();
+                $itemUseDate=new DateTime($row['item_use_date']);
+                $interval=$currDate->diff($itemUseDate);
+                if($interval->days>$warrantyDay){
+                  $warrantyStatus="<span class='font-bold col-pink'>Not In Warranty</span>";
+                }else{
+                  $warrantyStatus="<span class='font-bold col-teal'>In Warranty</span>";
+                }
+              }
+          }
+          $new_data[]=array(
+            $req_id=>array(
+              $typeOfStatus=>$row[$typeOfStatus],
+              "1690450752274_2"=>$row['1690450752274_2'],
+              "updated"=>$row['updated'],
+              "system_family_id"=>$row['system_family_id'],
+              "1690365766_1"=>$row['1690365766_1'],
+              "Railway_Status"=>$row['Railway_Status'],
+              "Work_Approved_Datetime"=>$row['Work_Approved_Datetime'],
+              "1690365766_2"=>$coach_no,
+              "coach_type"=>$coach_type,
+              "1690365766_3"=>$row['1690365766_3'],
+              "1690365766_4"=>$row['1690365766_4'],
+              "1690365766_5"=>$row['1690365766_5'],
+              "1690365766_6"=>$row['1690365766_6'],
+              "Rating_Datetime"=>$row['Rating_Datetime'],
+              "item_name"=>$item_name,
+              "item_quantity"=>$item_quantity,
+              "rating"=>$row['rating'],
+              "final_amt"=>$row['final_amt'],
+              "Work_Done_Status"=>$row['Work_Done_Status'],
+              "work_code"=>$row['work_code'],
+              "warranty_status"=>$warrantyStatus,
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id'],
+              "max_rating"=>"3",
+              "tender_amt"=>$row['tender_amt'],
+              "rating_percent"=>$row['rating_percent'],
+              "penalty_amt"=>$row['penalty_amt']
+          )
+          );
+
+        }
+      }else{
+        $new_data[]=array(
+            $req_id=>array(
+              $typeOfStatus=>$row[$typeOfStatus],
+              "1690450752274_2"=>$row['1690450752274_2'],
+              "updated"=>$row['updated'],
+              "system_family_id"=>$row['system_family_id'],
+              "1690365766_1"=>$row['1690365766_1'],
+              "Railway_Status"=>$row['Railway_Status'],
+              "Work_Approved_Datetime"=>$row['Work_Approved_Datetime'],
+              "1690365766_2"=>$coach_no,
+              "coach_type"=>$coach_type,
+              "1690365766_3"=>$row['1690365766_3'],
+              "1690365766_4"=>$row['1690365766_4'],
+              "1690365766_5"=>$row['1690365766_5'],
+              "1690365766_6"=>$row['1690365766_6'],
+              "Rating_Datetime"=>$row['Rating_Datetime'],
+              "item_name"=>$item_name,
+              "item_quantity"=>$item_quantity,
+              "rating"=>$row['rating'],
+              "final_amt"=>$row['final_amt'],
+              "Work_Done_Status"=>$row['Work_Done_Status'],
+              "work_code"=>$row['work_code'],
+              "warranty_status"=>$warrantyStatus,
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id'],
+              "max_rating"=>"3",
+              "tender_amt"=>$row['tender_amt'],
+              "rating_percent"=>$row['rating_percent'],
+              "penalty_amt"=>$row['penalty_amt']
+          )
+          );
+
+      }
+    }
+    // echo "<pre>";
+    // print_r($ratingAverage);
+   
+    // die();
+    $totalRatingPercent=($totalRatingGet/$maxRatingWithWork)*100;
+   
+    $keys['item_list']="item_list";
+    $key_label["item_list"]="Item List";
+    $newKeys=['1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent","tender_amt","penalty_amt","final_amt"];
+    // echo "<pre>";
+    // print_r($new_data);
+ 
+    // die();
+    $query_1=$this->db->select("username,train_number")->get("railway_mapping");
+    $intent['railway_trains']=$query_1->result_array();
+    $intent['form_id']=$form_id;
+    $intent["form_title"] = "Billing Report";
+    $intent["key_label"] = $key_label;
+    $intent["keys"] = $keys;
+    $intent["newdata"] = $new_data;
+    $intent['newKeys']=$newKeys;
+    $intent["ratingAverage"] = $ratingAverage;
+    $intent["toalRatingAMount"] = $toalRatingAMount;
+    $intent["totalAmount"] = $totalAmount; 
+    $intent["totalRatingGot"] = $totalRatingGet;  
+    $intent["total_max_rating"] = $maxRatingWithWork;  
+    $intent["toal_penalty_amt"] = $totalPenaltyAmt;  
+    $intent["totalRatingPercent"] = number_format($totalRatingPercent,2);  
+    $intent["last_date"] = $last_date;
+    $intent["menuActive"] = "data_sheet";
+    $intent["subMenuActive"]  = "final_billing_report";
+    $intent["headerCss"]   = "view/reports/data_sheetCss";
+    $intent["mainContent"] = "view/reports/final_billing_report";
+    $intent["footerJs"]    = "view/reports/final_billing_reportJs";
+    $this->load->view("view/include/template",$intent);
+  }
+
+  public function printFilterFinalBillingReport( $form_id ){
+    $trainNo=$this->input->post("trainNo");
+    $date=$this->input->post("date");
+    $time1=$this->input->post("time1");
+    $time2=$this->input->post("time2");
+
+    ini_set('memory_limit', '-1');
+    $this->db = $this->load->database("default",TRUE);  
+    $form_res = $this->db->get_where("form_created",["form_id"=>$form_id]);
+    $form_title = $form_res->row()->form_title;
+    $form_for = $form_res->row()->form_for;
+    $key_res = $this->db->select("field,field_id")->group_by("field_id")->order_by("field_id")->get_where("form_data",["form_id"=>$form_id]);
+    $location = $this->session->userdata('location');
+
+    if( $this->session->userdata("type") == "dept" || $this->session->userdata("type") == "admin" ){
+      
+      $train_numbers = $this->session->userdata('train_numbers');
+      $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
+      $params=[];
+      if(isset($trainNo) && !empty($trainNo)){
+        $train_numbers=$trainNo;
+      }
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      //family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))
+       if($train_numbers=="0"){
+        $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
+      }
+      // echo $wherestr;
+      // die();
+
+        $sql = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime,approve_id
+        FROM form_data
+        WHERE form_id = ?
+          AND $wherestr
+          AND rating IS NOT NULL 
+          AND location LIKE ?";
+      $params[]=$form_id;
+      $params[]=$location."%";
+      if(isset($date) && !empty($date)){
+        $sql.=" AND DATE(update_datetime) = ? ";
+        $params[]=$date;
+        
+      }
+      if(isset($time1) && !empty($time1) && isset($time2) && !empty($time2)){
+        $sql.=" AND TIME(update_datetime)>= ? AND TIME(update_datetime)<= ? ";
+        $params[]=$time1;
+        $params[]=$time2;
+        
+      }
+      $sql.=" ;";
+      $data_res=$this->db->query($sql,$params);
+      // echo $sql;
+      // die();
+
+    }else{
+
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
+                         ->where("form_id",$form_id)
+                         ->where("location like '$location%'",null)
+                         ->where("DATE(update_datetime)",$date)
+                         ->order_by("update_datetime","DESC")
+                         ->get('form_data');
+    }
+    // echo "<pre>";
+    // print_r($data_res->result());
+    // die();
+    $data = [];
+    $key_label = array();
+    $summary = [];
+    $last_date = date("Y-m-d");
+    $keys = [];
+
+    $this->load->helper("my");
+    if( $form_for == 'FAMILY' ){
+      list($key_label2,$data2) = getFormData(FMAILY_FROM_ID,$form_for,$form_id);
+    }else
+    if( $form_for == 'MEMBER' ){
+      list($key_label2,$data2) = getFormData(MEMBER_FROM_ID,$form_for,$form_id);
+    }else{
+      $key_label2 = [];
+      $data2 = [];
+    }
+    // echo "<pre>";
+    // print_r($data_res->result());
+    // die();
+    //print_r($data2);
+    $itemQuery=$this->db->select("item_name,warranty_days")->get("railway_work");
+    $itemWithWarranty=$itemQuery->result_array();
+
+    foreach($data_res->result() as $row){
+
+      if(!isset($data[$row->req_id])){
+        // $this->db->cache_on();
+        // $res = $this->db->get_where('users',["username"=>str_replace('Web_','',$row->child_id)]);
+        // $this->db->cache_off();
+        //$location_arr = explode("|", $res->row()->location);
+        $location_arr = explode("|", $row->location);
+
+        if( $this->session->userdata("type") == "dept" ){
+          if($form_id==USER_WORK_DONE_ACTION){
+            $status_1 = '';
+            if( $row->status == "Verified" ){
+              $status_1 .= "<span class='font-bold'>$row->rating<i class='material-icons'>star_rate</i></span>";
+            }
+            $data[$row->req_id]["Rating Status"] = $status_1;
+            $key_label["Rating Status"] = "Rating Status";
+            $keys["Rating Status"] = "Rating Status";
+          }else{
+            $status_1 = '';
+            if( $row->status == "Pending" ){
+              $status_1 .= "<div class='icon-button-demo' style='display: inline-flex;'><button type='button' class='btn bg-teal btn-circle waves-effect waves-circle waves-float status_action' data-status='Verified' value='$row->req_id'><i class='material-icons'>verified_user</i></button><button type='button' class='btn bg-pink btn-circle waves-effect waves-circle waves-float status_action' data-status='Rejected' value='$row->req_id'><i class='material-icons'>delete_forever</i></button></div>";
+            }
+            if( $row->status == "Verified" ){
+              $status_1 .= "<span class='font-bold col-teal'>Verified</span>";
+            }
+            $data[$row->req_id]["Status"] = $status_1;
+            $key_label["Status"] = "Status";
+            $keys["Status"] = "Status";
+          }
+        }else{
+          $status_1 = '';
+          if( $row->status == "Pending" ){
+            $status_1 .= "<span class='font-bold col-pink'>Pending</span>";
+          }
+          if( $row->status == "Verified" ){
+            $status_1 .= "<span class='font-bold col-teal'>Verified</span>";
+          }
+          $data[$row->req_id]["Status"] = $status_1;
+          $key_label["Status"] = "Status";
+          $keys["Status"] = "Status";
+        }
+
+        foreach($key_res->result() as $col){
+          $data[$row->req_id][$col->field_id] = "";
+          $key_label[$col->field_id] = $col->field;
+          $keys[$col->field_id] = $col->field_id;
+        }
+
+        if(strtotime($row->create_datetime) > strtotime($last_date)){
+          $last_date = date("Y-m-d",strtotime($row->create_datetime));
+        }
+        if(strtotime($row->update_datetime) > strtotime($last_date)){
+          $last_date = date("Y-m-d",strtotime($row->update_datetime));
+        }
+        
+
+        //$data[$row->req_id]["inserted"] = $row->create_datetime!="0000-00-00 00:00:00"?$row->create_datetime:"";
+        $data[$row->req_id]["updated"] = $row->update_datetime!="0000-00-00 00:00:00"?$row->update_datetime:"";
+        // $data[$row->req_id]["geo_loc"] = $row->geo_loc;
+        // $data[$row->req_id]["child_id"] = $res->row()->name." [".$res->row()->username."]";
+        // $data[$row->req_id]["Tehsil"] = isset($location_arr[1])?$location_arr[1]:"";
+        //$data[$row->req_id]["Block"] = isset($location_arr[2])?$location_arr[2]:"";
+        //$data[$row->req_id]["Village"] = isset($location_arr[3])?$location_arr[3]:"";
+        if($form_for == "FAMILY"){
+          $data[$row->req_id]["system_family_id"] = $row->family_id;
+          if(isset($data2[$row->family_id])){
+            foreach($data2[$row->family_id] as $field_id2 => $value2){
+              $data[$row->req_id][$field_id2] = $value2;
+            }
+          }
+        }
+        if($form_for == "MEMBER"){
+          $data[$row->req_id]["system_member_id"] = $row->member_id;
+          if(isset($data2[$row->member_id])){
+            foreach($data2[$row->member_id] as $field_id2 => $value2){
+              $data[$row->req_id][$field_id2] = $value2;
+            }
+          }
+        }
+
+        if($form_id==SELECT_ITEMS_FOR_WORK){
+          $data[$row->req_id]["Released_Quantity_datetime"] = $row->approve_datetime;
+          $key_label["Released_Quantity_datetime"] = "Released Quantity Datetime";
+          $keys["Released_Quantity_datetime"] = "Released_Quantity_datetime";
+        }
+        if($form_id==USER_WORK_DONE_ACTION){
+          $data[$row->req_id]["Rating_Datetime"] = $row->rating_datetime;
+          $key_label["Rating_Datetime"] = "Rating Datetime";
+          $keys["Rating_Datetime"] = "Rating_Datetime";
+        }
+        //$key_label["inserted"] = "Inserted";
+        if($form_id == FMAILY_FROM_ID){
+          $key_label["updated"] = "Work Entry Datetime";
+        }else if($form_id == SELECT_ITEMS_FOR_WORK){
+          $key_label["updated"] = "Item Request Datetime";
+        }else  if($form_id == USER_WORK_DONE_ACTION){
+          $key_label["updated"] = "Work Done Datetime";
+        }else{
+          $key_label["updated"] = "Updated";
+        }
+        
+        $keys["updated"] = "updated";
+        if($form_for == "FAMILY"){
+          $key_label["system_family_id"] = "System Work ID";
+          $keys["system_family_id"] = "system_family_id";
+          foreach($key_label2 as $field_id2 => $field2){
+            $key_label[$field_id2] = $field2;
+            $keys[$field_id2] = $field_id2;
+          }
+        }
+        if($form_for == "MEMBER"){
+          $key_label["system_member_id"] = "System Member ID";
+          $keys["system_member_id"] = "system_member_id";
+          foreach($key_label2 as $field_id2 => $field2){
+            $key_label[$field_id2] = $field2;
+            $keys[$field_id2] = $field_id2;
+          }
+        }
+      }
+      $this->db->select('field, value,DATE(create_datetime) as create_datetime');
+      $this->db->where('family_id', $row->family_id);
+      $this->db->where_in('field', array('Item List*', 'Item Quantity*'));
+      $query = $this->db->get('form_data_update');
+      $result = $query->result_array();
+      if(count($result)==0){
+              $this->db->select('field, value,DATE(create_datetime) as create_datetime');
+              $this->db->where('family_id', $row->family_id);
+              $this->db->where_in('field', array('Item List*', 'Item Quantity*'));
+              $query = $this->db->get('form_data');
+              $result = $query->result_array();
+      }
+      $i=1;
+      $result_str='';
+      $item_name='';
+      $item_quantity='';
+      $item_list_array=array();
+      $item_use_date='';
+
+      foreach ($result as $item) {
+
+        if ($item['field'] == 'Item List*') {
+        $result_str .= $i.'. '.$item['value'] . ' ';
+        $item_name=$item['value'];
+
+        }elseif ($item['field'] == 'Item Quantity*') {
+              $result_str .= "(".$item['value'] .")"."<br>";  // Use PHP_EOL for a new line
+              $i+=1;
+              $item_quantity=$item['value'];
+
+          }
+        if(!empty($item_name) && !empty($item_quantity)){
+          $item_list_array[]=array(
+            "item_name"=>$item_name,
+            "item_quantity"=>$item_quantity
+          );
+        }
+        if(isset($item['create_datetime']) && !empty($item['create_datetime'])){
+          $item_use_date=$item['create_datetime'];
+        }
+          
+      }
+      $data[$row->req_id]["item_list"]=$item_list_array;
+      $data[$row->req_id]["rating"]=$row->rating;
+      $data[$row->req_id]["item_use_date"]=$item_use_date;
+      $data[$row->req_id][$row->field_id] = $row->value;
+      if(is_null($row->child_id)){
+        $data[$row->req_id]["child_id"] ='';
+      }else{
+        $data[$row->req_id]["child_id"] = $row->child_id;
+      }
+        
+    }
+    if(count($data)==0){
+      echo "404";
+      die();
+    }
+    $countRatingAvg=1;
+    $ratingTotal=0;
+    $ratingAverage=0;
+    $toalRatingAMount=0;
+    $totalAmount=0;
+    $totalRatingGet=0;
+    $totalRatingPercent=0;
+    $maxRatingWithWork=0;
+    $totalPenaltyAmt=0;
+    foreach($data as $req_id=>$row){
+      $work_code='';
+      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"])){
+
+        $workCodeParts=explode("$",$row['1690365766_5']);
+        if(count($workCodeParts)>1){
+          $work_code=$workCodeParts[1];
+        }
+      }
+      $data[$req_id]["work_code"]=$work_code;
+      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"]) && isset($row["rating"]) && !empty($row['rating'])){
+        $ratingTotal+=(int)$row['rating'];
+        $ratingAverage=$ratingTotal/$countRatingAvg;
+        // echo "Total Rating is ".$ratingTotal." and average rating now is ".$ratingAverage."<br>";
+        $countRatingAvg+=1;
+        $workList=$row['1690365766_5'];
+        $amt='';
+        $workWithCode=explode("$",$workList);
+        $workListParts=explode("@",$workWithCode[0]);
+        if(count($workListParts)>1){
+          $currentRating=(int)$row['rating'];
+          $totalRatingGet+=$currentRating;
+          $ratingPercent=($currentRating/3)*100;
+          $amt=(int)$workListParts[1];
+          $totalAmount+=$amt;
+          $rating=(int)$row['rating'];
+          $percentage=($rating/3)*100;
+          if($percentage>85){
+            $final_amt=$amt;
+          }else if(($percentage<=85) && ($percentage>75)){
+            $final_amt=$amt-($amt*5)/100;
+          }else if(($percentage<=75) && ($percentage>65)){
+            $final_amt=$amt-($amt*10)/100;
+          }else if(($percentage<=65) && ($percentage>=55)){
+            $final_amt=$amt-($amt*20)/100;
+          }else if($percentage<55){
+            $final_amt=$amt-($amt*40)/100;
+          }
+          $penaltyAmt=$amt-$final_amt;
+          $totalPenaltyAmt+=$penaltyAmt;
+          $data[$req_id]["final_amt"]=$final_amt;
+          $data[$req_id]["tender_amt"]=$amt;
+          $data[$req_id]["rating_percent"]=number_format($ratingPercent,2);
+          $data[$req_id]["penalty_amt"]=number_format($penaltyAmt,2);
+          $toalRatingAMount+=$final_amt;
+          $maxRatingWithWork+=3;
+        }else{
+          $data[$req_id]["final_amt"]="N/A";
+          $data[$req_id]["tender_amt"]="N/A";
+          $data[$req_id]["rating_percent"]='';
+          $data[$req_id]["penalty_amt"]='';
+        }
+      }else{
+        $data[$req_id]["final_amt"]="N/A";
+        $data[$req_id]["tender_amt"]="N/A";
+        $data[$req_id]["rating_percent"]='';
+        $data[$req_id]["penalty_amt"]='';
+      }
+      if(isset($row["1690450752274_2"])){
+        if($row['1690450752274_2']=="Done"){
+          $data[$req_id]["Work_Done_Status"]="Done";
+        }else{
+          $data[$req_id]["Work_Done_Status"]="Not Done";
+        }
+      }
+    }
+    if($this->session->userdata("type")=="dept"){
+      $typeOfStatus="Rating Status";
+    }else{
+      $typeOfStatus="Status";
+    }
+    if(isset($totalRatingGet) && isset($maxRatingWithWork) && $maxRatingWithWork
+      !=0){
+      $totalRatingPercent=($totalRatingGet/$maxRatingWithWork)*100;
+    }else{
+      $totalRatingPercent=0;
+    }
+    // echo "<pre>";
+    // print_r($data);
+    
+    // die();
+    $new_data=array();
+    $uom='';
+    foreach($data as $req_id=>$row){
+       $warrantyStatus='';
+       $item_name='';
+       $item_quantity='';
+       $coach_type='';
+       $coach_no='';
+       $uom='';
+       if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
+           $coachParts=explode("|",$row['1690365766_2']);
+           if(count($coachParts)>1){
+            $coach_type=$coachParts[1];
+            $coach_no=$coachParts[0];
+           }else{
+            $coach_no=$coachParts[0];
+           }
+       }
+       if(count($row['item_list'])>0){
+        foreach($row['item_list'] as $row2){
+          $uom='';
+          $warrantyStatus='';
+          $itemWithUom=explode("|",$row2['item_name']);
+          $item_name=$itemWithUom[0];
+          $uom=$itemWithUom[count($itemWithUom)-1];
+          $item_quantity=$row2['item_quantity'];
+          foreach($itemWithWarranty as $itemWarranty){
+              if($itemWarranty['item_name']==$item_name){
+                $warrantyDay=(int)$itemWarranty['warranty_days'];
+                $currDate=new DateTime();
+                $itemUseDate=new DateTime($row['item_use_date']);
+                $interval=$currDate->diff($itemUseDate);
+                if($interval->days>$warrantyDay){
+                  $warrantyStatus="<span class='font-bold col-pink'>Not In Warranty</span>";
+                }else{
+                  $warrantyStatus="<span class='font-bold col-teal'>In Warranty</span>";
+                }
+              }
+          }
+          $new_data[]=array(
+            $req_id=>array(
+              $typeOfStatus=>$row[$typeOfStatus],
+              "1690450752274_2"=>$row['1690450752274_2'],
+              "updated"=>$row['updated'],
+              "system_family_id"=>$row['system_family_id'],
+              "1690365766_1"=>$row['1690365766_1'],
+              "Railway_Status"=>$row['Railway_Status'],
+              "Work_Approved_Datetime"=>$row['Work_Approved_Datetime'],
+              "1690365766_2"=>$coach_no,
+              "coach_type"=>$coach_type,
+              "1690365766_3"=>$row['1690365766_3'],
+              "1690365766_4"=>$row['1690365766_4'],
+              "1690365766_5"=>$row['1690365766_5'],
+              "1690365766_6"=>$row['1690365766_6'],
+              "Rating_Datetime"=>$row['Rating_Datetime'],
+              "item_name"=>$item_name,
+              "item_quantity"=>$item_quantity,
+              "rating"=>$row['rating'],
+              "final_amt"=>$row['final_amt'],
+              "Work_Done_Status"=>$row['Work_Done_Status'],
+              "work_code"=>$row['work_code'],
+              "warranty_status"=>$warrantyStatus,
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id'],
+              "max_rating"=>"3",
+              "tender_amt"=>$row['tender_amt'],
+              "rating_percent"=>$row['rating_percent'],
+              "penalty_amt"=>$row['penalty_amt'],
+              "total_rating_percent"=>$totalRatingPercent,
+              "ratingAverage"=>$ratingAverage,
+              "toalRatingAMount"=>$toalRatingAMount,
+              "totalAmount"=>$totalAmount,
+              "totalRatingGot"=>$totalRatingGet,
+              "total_max_rating"=>$maxRatingWithWork,
+              "toal_penalty_amt"=>$totalPenaltyAmt,
+              "totalRatingPercent"=>number_format($totalRatingPercent,2)
+          )
+          );
+
+        }
+      }else{
+        $new_data[]=array(
+            $req_id=>array(
+              $typeOfStatus=>$row[$typeOfStatus],
+              "1690450752274_2"=>$row['1690450752274_2'],
+              "updated"=>$row['updated'],
+              "system_family_id"=>$row['system_family_id'],
+              "1690365766_1"=>$row['1690365766_1'],
+              "Railway_Status"=>$row['Railway_Status'],
+              "Work_Approved_Datetime"=>$row['Work_Approved_Datetime'],
+              "1690365766_2"=>$coach_no,
+              "coach_type"=>$coach_type,
+              "1690365766_3"=>$row['1690365766_3'],
+              "1690365766_4"=>$row['1690365766_4'],
+              "1690365766_5"=>$row['1690365766_5'],
+              "1690365766_6"=>$row['1690365766_6'],
+              "Rating_Datetime"=>$row['Rating_Datetime'],
+              "item_name"=>$item_name,
+              "item_quantity"=>$item_quantity,
+              "rating"=>$row['rating'],
+              "final_amt"=>$row['final_amt'],
+              "Work_Done_Status"=>$row['Work_Done_Status'],
+              "work_code"=>$row['work_code'],
+              "warranty_status"=>$warrantyStatus,
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id'],
+              "max_rating"=>"3",
+              "tender_amt"=>$row['tender_amt'],
+              "rating_percent"=>$row['rating_percent'],
+              "penalty_amt"=>$row['penalty_amt'],
+              "total_rating_percent"=>$totalRatingPercent,
+              "ratingAverage"=>$ratingAverage,
+              "toalRatingAMount"=>$toalRatingAMount,
+              "totalAmount"=>$totalAmount,
+              "totalRatingGot"=>$totalRatingGet,
+              "total_max_rating"=>$maxRatingWithWork,
+              "toal_penalty_amt"=>$totalPenaltyAmt,
+              "totalRatingPercent"=>number_format($totalRatingPercent,2)
+
+          )
+          );
+
+      }
+    }
+    // echo json_encode($new_data);
+    $intent['train_number'] = $trainNo;
+    $intent['date']=$date;
+    $intent['time1']=$time1;
+    $intent['time2']=$time2;
+    $intent['newdata']=$new_data;
+    $intent['total_max_rating']=$maxRatingWithWork;
+    $intent['totalRatingGot']=$totalRatingGet;
+    $intent['totalRatingPercent']=number_format($totalRatingPercent,2);
+    $intent['totalAmount']=$totalAmount;
+    $intent['toal_penalty_amt']=$totalPenaltyAmt;
+    $intent['toalRatingAMount']=$toalRatingAMount;
+    $newKeys=['1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent","tender_amt","penalty_amt","final_amt"];
+    $intent['newKeys']=$newKeys;
+    $this->load->view('view/reports/final_billing_report_sample', $intent);
+    // Start output buffering to capture the view content
+    // ob_start();
+    // $this->load->view('view/reports/final_billing_report_sample', $intent);
+    // $view_content = ob_get_clean();
+
+    // // Return the view content as a JSON response
+    // $this->output->set_content_type('application/json');
+    // $this->output->set_output(json_encode(['view_content' => $view_content]));
+
+
+
+  }
+
+  public function filterFinalBillingReport( $form_id ){
+    $trainNo=$this->input->post("trainNo");
+    $date=$this->input->post("date");
+    $time1=$this->input->post("time1");
+    $time2=$this->input->post("time2");
+
+    ini_set('memory_limit', '-1');
+    $this->db = $this->load->database("default",TRUE);  
+    $form_res = $this->db->get_where("form_created",["form_id"=>$form_id]);
+    $form_title = $form_res->row()->form_title;
+    $form_for = $form_res->row()->form_for;
+    $key_res = $this->db->select("field,field_id")->group_by("field_id")->order_by("field_id")->get_where("form_data",["form_id"=>$form_id]);
+    $location = $this->session->userdata('location');
+
+    if( $this->session->userdata("type") == "dept" || $this->session->userdata("type") == "admin" ){
+      
+      $train_numbers = $this->session->userdata('train_numbers');
+      $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
+      $params=[];
+      if(isset($trainNo) && !empty($trainNo)){
+        $train_numbers=$trainNo;
+      }
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      //family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))
+       if($train_numbers=="0"){
+        $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
+      }
+      // echo $wherestr;
+      // die();
+
+        $sql = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime,approve_id
+        FROM form_data
+        WHERE form_id = ?
+          AND $wherestr
+          AND rating IS NOT NULL 
+          AND location LIKE ?";
+      $params[]=$form_id;
+      $params[]=$location."%";
+      if(isset($date) && !empty($date)){
+        $sql.=" AND DATE(update_datetime) = ? ";
+        $params[]=$date;
+        
+      }
+      if(isset($time1) && !empty($time1) && isset($time2) && !empty($time2)){
+        $sql.=" AND TIME(update_datetime)>= ? AND TIME(update_datetime)<= ? ";
+        $params[]=$time1;
+        $params[]=$time2;
+        
+      }
+      $sql.=" ;";
+      $data_res=$this->db->query($sql,$params);
+      // echo $sql;
+      // die();
+
+    }else{
+
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
+                         ->where("form_id",$form_id)
+                         ->where("location like '$location%'",null)
+                         ->where("DATE(update_datetime)",$date)
+                         ->order_by("update_datetime","DESC")
+                         ->get('form_data');
+    }
+    // echo "<pre>";
+    // print_r($data_res->result());
+    // die();
+    $data = [];
+    $key_label = array();
+    $summary = [];
+    $last_date = date("Y-m-d");
+    $keys = [];
+
+    $this->load->helper("my");
+    if( $form_for == 'FAMILY' ){
+      list($key_label2,$data2) = getFormData(FMAILY_FROM_ID,$form_for,$form_id);
+    }else
+    if( $form_for == 'MEMBER' ){
+      list($key_label2,$data2) = getFormData(MEMBER_FROM_ID,$form_for,$form_id);
+    }else{
+      $key_label2 = [];
+      $data2 = [];
+    }
+    // echo "<pre>";
+    // print_r($data_res->result());
+    // die();
+    //print_r($data2);
+    $itemQuery=$this->db->select("item_name,warranty_days")->get("railway_work");
+    $itemWithWarranty=$itemQuery->result_array();
+    // if(is_null($data_res->result()){
+    //    print_r(json_encode($data_res->result()));
+    //   die();
+    // }
+    foreach($data_res->result() as $row){
+
+      if(!isset($data[$row->req_id])){
+        // $this->db->cache_on();
+        // $res = $this->db->get_where('users',["username"=>str_replace('Web_','',$row->child_id)]);
+        // $this->db->cache_off();
+        //$location_arr = explode("|", $res->row()->location);
+        $location_arr = explode("|", $row->location);
+
+        if( $this->session->userdata("type") == "dept" ){
+          if($form_id==USER_WORK_DONE_ACTION){
+            $status_1 = '';
+            if( $row->status == "Verified" ){
+              $status_1 .= "<span class='font-bold'>$row->rating<i class='material-icons'>star_rate</i></span>";
+            }
+            $data[$row->req_id]["Rating Status"] = $status_1;
+            $key_label["Rating Status"] = "Rating Status";
+            $keys["Rating Status"] = "Rating Status";
+          }else{
+            $status_1 = '';
+            if( $row->status == "Pending" ){
+              $status_1 .= "<div class='icon-button-demo' style='display: inline-flex;'><button type='button' class='btn bg-teal btn-circle waves-effect waves-circle waves-float status_action' data-status='Verified' value='$row->req_id'><i class='material-icons'>verified_user</i></button><button type='button' class='btn bg-pink btn-circle waves-effect waves-circle waves-float status_action' data-status='Rejected' value='$row->req_id'><i class='material-icons'>delete_forever</i></button></div>";
+            }
+            if( $row->status == "Verified" ){
+              $status_1 .= "<span class='font-bold col-teal'>Verified</span>";
+            }
+            $data[$row->req_id]["Status"] = $status_1;
+            $key_label["Status"] = "Status";
+            $keys["Status"] = "Status";
+          }
+        }else{
+          $status_1 = '';
+          if( $row->status == "Pending" ){
+            $status_1 .= "<span class='font-bold col-pink'>Pending</span>";
+          }
+          if( $row->status == "Verified" ){
+            $status_1 .= "<span class='font-bold col-teal'>Verified</span>";
+          }
+          $data[$row->req_id]["Status"] = $status_1;
+          $key_label["Status"] = "Status";
+          $keys["Status"] = "Status";
+        }
+
+        foreach($key_res->result() as $col){
+          $data[$row->req_id][$col->field_id] = "";
+          $key_label[$col->field_id] = $col->field;
+          $keys[$col->field_id] = $col->field_id;
+        }
+
+        if(strtotime($row->create_datetime) > strtotime($last_date)){
+          $last_date = date("Y-m-d",strtotime($row->create_datetime));
+        }
+        if(strtotime($row->update_datetime) > strtotime($last_date)){
+          $last_date = date("Y-m-d",strtotime($row->update_datetime));
+        }
+        
+
+        //$data[$row->req_id]["inserted"] = $row->create_datetime!="0000-00-00 00:00:00"?$row->create_datetime:"";
+        $data[$row->req_id]["updated"] = $row->update_datetime!="0000-00-00 00:00:00"?$row->update_datetime:"";
+        // $data[$row->req_id]["geo_loc"] = $row->geo_loc;
+        // $data[$row->req_id]["child_id"] = $res->row()->name." [".$res->row()->username."]";
+        // $data[$row->req_id]["Tehsil"] = isset($location_arr[1])?$location_arr[1]:"";
+        //$data[$row->req_id]["Block"] = isset($location_arr[2])?$location_arr[2]:"";
+        //$data[$row->req_id]["Village"] = isset($location_arr[3])?$location_arr[3]:"";
+        if($form_for == "FAMILY"){
+          $data[$row->req_id]["system_family_id"] = $row->family_id;
+          if(isset($data2[$row->family_id])){
+            foreach($data2[$row->family_id] as $field_id2 => $value2){
+              $data[$row->req_id][$field_id2] = $value2;
+            }
+          }
+        }
+        if($form_for == "MEMBER"){
+          $data[$row->req_id]["system_member_id"] = $row->member_id;
+          if(isset($data2[$row->member_id])){
+            foreach($data2[$row->member_id] as $field_id2 => $value2){
+              $data[$row->req_id][$field_id2] = $value2;
+            }
+          }
+        }
+
+        if($form_id==SELECT_ITEMS_FOR_WORK){
+          $data[$row->req_id]["Released_Quantity_datetime"] = $row->approve_datetime;
+          $key_label["Released_Quantity_datetime"] = "Released Quantity Datetime";
+          $keys["Released_Quantity_datetime"] = "Released_Quantity_datetime";
+        }
+        if($form_id==USER_WORK_DONE_ACTION){
+          $data[$row->req_id]["Rating_Datetime"] = $row->rating_datetime;
+          $key_label["Rating_Datetime"] = "Rating Datetime";
+          $keys["Rating_Datetime"] = "Rating_Datetime";
+        }
+        //$key_label["inserted"] = "Inserted";
+        if($form_id == FMAILY_FROM_ID){
+          $key_label["updated"] = "Work Entry Datetime";
+        }else if($form_id == SELECT_ITEMS_FOR_WORK){
+          $key_label["updated"] = "Item Request Datetime";
+        }else  if($form_id == USER_WORK_DONE_ACTION){
+          $key_label["updated"] = "Work Done Datetime";
+        }else{
+          $key_label["updated"] = "Updated";
+        }
+        
+        $keys["updated"] = "updated";
+        if($form_for == "FAMILY"){
+          $key_label["system_family_id"] = "System Work ID";
+          $keys["system_family_id"] = "system_family_id";
+          foreach($key_label2 as $field_id2 => $field2){
+            $key_label[$field_id2] = $field2;
+            $keys[$field_id2] = $field_id2;
+          }
+        }
+        if($form_for == "MEMBER"){
+          $key_label["system_member_id"] = "System Member ID";
+          $keys["system_member_id"] = "system_member_id";
+          foreach($key_label2 as $field_id2 => $field2){
+            $key_label[$field_id2] = $field2;
+            $keys[$field_id2] = $field_id2;
+          }
+        }
+      }
+      $this->db->select('field, value,DATE(create_datetime) as create_datetime');
+      $this->db->where('family_id', $row->family_id);
+      $this->db->where_in('field', array('Item List*', 'Item Quantity*'));
+      $query = $this->db->get('form_data_update');
+      $result = $query->result_array();
+      if(count($result)==0){
+              $this->db->select('field, value,DATE(create_datetime) as create_datetime');
+              $this->db->where('family_id', $row->family_id);
+              $this->db->where_in('field', array('Item List*', 'Item Quantity*'));
+              $query = $this->db->get('form_data');
+              $result = $query->result_array();
+      }
+      $i=1;
+      $result_str='';
+      $item_name='';
+      $item_quantity='';
+      $item_list_array=array();
+      $item_use_date='';
+
+      foreach ($result as $item) {
+
+        if ($item['field'] == 'Item List*') {
+        $result_str .= $i.'. '.$item['value'] . ' ';
+        $item_name=$item['value'];
+
+        }elseif ($item['field'] == 'Item Quantity*') {
+              $result_str .= "(".$item['value'] .")"."<br>";  // Use PHP_EOL for a new line
+              $i+=1;
+              $item_quantity=$item['value'];
+
+          }
+        if(!empty($item_name) && !empty($item_quantity)){
+          $item_list_array[]=array(
+            "item_name"=>$item_name,
+            "item_quantity"=>$item_quantity
+          );
+        }
+        if(isset($item['create_datetime']) && !empty($item['create_datetime'])){
+          $item_use_date=$item['create_datetime'];
+        }
+          
+      }
+      $data[$row->req_id]["item_list"]=$item_list_array;
+      $data[$row->req_id]["rating"]=$row->rating;
+      $data[$row->req_id]["item_use_date"]=$item_use_date;
+      $data[$row->req_id][$row->field_id] = $row->value;
+      if(is_null($row->child_id)){
+        $data[$row->req_id]["child_id"] ='';
+      }else{
+        $data[$row->req_id]["child_id"] = $row->child_id;
+      }
+        
+    }
+    // echo "<pre>";
+    // print_r($data);
+    // die();
+    // echo is_null($data);
+    if(count($data)==0){
+      echo json_encode([]);
+      die();
+    }
+    // die();
+    $countRatingAvg=1;
+    $ratingTotal=0;
+    $ratingAverage=0;
+    $toalRatingAMount=0;
+    $totalAmount=0;
+    $totalRatingGet=0;
+    $totalRatingPercent=0;
+    $maxRatingWithWork=0;
+    $totalPenaltyAmt=0;
+    foreach($data as $req_id=>$row){
+      $work_code='';
+      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"])){
+
+        $workCodeParts=explode("$",$row['1690365766_5']);
+        if(count($workCodeParts)>1){
+          $work_code=$workCodeParts[1];
+        }
+      }
+      $data[$req_id]["work_code"]=$work_code;
+      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"]) && isset($row["rating"]) && !empty($row['rating'])){
+        $ratingTotal+=(int)$row['rating'];
+        $ratingAverage=$ratingTotal/$countRatingAvg;
+        // echo "Total Rating is ".$ratingTotal." and average rating now is ".$ratingAverage."<br>";
+        $countRatingAvg+=1;
+        $workList=$row['1690365766_5'];
+        $amt='';
+        $workWithCode=explode("$",$workList);
+        $workListParts=explode("@",$workWithCode[0]);
+        if(count($workListParts)>1){
+          $currentRating=(int)$row['rating'];
+          $totalRatingGet+=$currentRating;
+          $ratingPercent=($currentRating/3)*100;
+          $amt=(int)$workListParts[1];
+          $totalAmount+=$amt;
+          $rating=(int)$row['rating'];
+          $percentage=($rating/3)*100;
+          if($percentage>85){
+            $final_amt=$amt;
+          }else if(($percentage<=85) && ($percentage>75)){
+            $final_amt=$amt-($amt*5)/100;
+          }else if(($percentage<=75) && ($percentage>65)){
+            $final_amt=$amt-($amt*10)/100;
+          }else if(($percentage<=65) && ($percentage>=55)){
+            $final_amt=$amt-($amt*20)/100;
+          }else if($percentage<55){
+            $final_amt=$amt-($amt*40)/100;
+          }
+          $penaltyAmt=$amt-$final_amt;
+          $totalPenaltyAmt+=$penaltyAmt;
+          $data[$req_id]["final_amt"]=$final_amt;
+          $data[$req_id]["tender_amt"]=$amt;
+          $data[$req_id]["rating_percent"]=number_format($ratingPercent,2);
+          $data[$req_id]["penalty_amt"]=number_format($penaltyAmt,2);
+          $toalRatingAMount+=$final_amt;
+          $maxRatingWithWork+=3;
+        }else{
+          $data[$req_id]["final_amt"]="N/A";
+          $data[$req_id]["tender_amt"]="N/A";
+          $data[$req_id]["rating_percent"]='';
+          $data[$req_id]["penalty_amt"]='';
+        }
+      }else{
+        $data[$req_id]["final_amt"]="N/A";
+        $data[$req_id]["tender_amt"]="N/A";
+        $data[$req_id]["rating_percent"]='';
+        $data[$req_id]["penalty_amt"]='';
+      }
+      if(isset($row["1690450752274_2"])){
+        if($row['1690450752274_2']=="Done"){
+          $data[$req_id]["Work_Done_Status"]="Done";
+        }else{
+          $data[$req_id]["Work_Done_Status"]="Not Done";
+        }
+      }
+    }
+    // echo "<pre> yes";
+    // print_r($data);
+    // echo is_null($data);
+    // die();
+    
+    if($this->session->userdata("type")=="dept"){
+      $typeOfStatus="Rating Status";
+    }else{
+      $typeOfStatus="Status";
+    }
+    // echo "<pre>";
+    // print_r($data);
+    // die();
+    if(isset($totalRatingGet) && isset($maxRatingWithWork) && $maxRatingWithWork
+      !=0){
+      $totalRatingPercent=($totalRatingGet/$maxRatingWithWork)*100;
+    }else{
+      $totalRatingPercent=0;
+    }
+    
+    $new_data=array();
+    $uom='';
+    foreach($data as $req_id=>$row){
+       $warrantyStatus='';
+       $item_name='';
+       $item_quantity='';
+       $coach_type='';
+       $coach_no='';
+       $uom='';
+       if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
+           $coachParts=explode("|",$row['1690365766_2']);
+           if(count($coachParts)>1){
+            $coach_type=$coachParts[1];
+            $coach_no=$coachParts[0];
+           }else{
+            $coach_no=$coachParts[0];
+           }
+       }
+       if(count($row['item_list'])>0){
+        foreach($row['item_list'] as $row2){
+          $uom='';
+          $warrantyStatus='';
+          $itemWithUom=explode("|",$row2['item_name']);
+          $item_name=$itemWithUom[0];
+          $uom=$itemWithUom[count($itemWithUom)-1];
+          $item_quantity=$row2['item_quantity'];
+          foreach($itemWithWarranty as $itemWarranty){
+              if($itemWarranty['item_name']==$item_name){
+                $warrantyDay=(int)$itemWarranty['warranty_days'];
+                $currDate=new DateTime();
+                $itemUseDate=new DateTime($row['item_use_date']);
+                $interval=$currDate->diff($itemUseDate);
+                if($interval->days>$warrantyDay){
+                  $warrantyStatus="<span class='font-bold col-pink'>Not In Warranty</span>";
+                }else{
+                  $warrantyStatus="<span class='font-bold col-teal'>In Warranty</span>";
+                }
+              }
+          }
+          $new_data[]=array(
+            $req_id=>array(
+              $typeOfStatus=>$row[$typeOfStatus],
+              "1690450752274_2"=>$row['1690450752274_2'],
+              "updated"=>$row['updated'],
+              "system_family_id"=>$row['system_family_id'],
+              "1690365766_1"=>$row['1690365766_1'],
+              "Railway_Status"=>$row['Railway_Status'],
+              "Work_Approved_Datetime"=>$row['Work_Approved_Datetime'],
+              "1690365766_2"=>$coach_no,
+              "coach_type"=>$coach_type,
+              "1690365766_3"=>$row['1690365766_3'],
+              "1690365766_4"=>$row['1690365766_4'],
+              "1690365766_5"=>$row['1690365766_5'],
+              "1690365766_6"=>$row['1690365766_6'],
+              "Rating_Datetime"=>$row['Rating_Datetime'],
+              "item_name"=>$item_name,
+              "item_quantity"=>$item_quantity,
+              "rating"=>$row['rating'],
+              "final_amt"=>$row['final_amt'],
+              "Work_Done_Status"=>$row['Work_Done_Status'],
+              "work_code"=>$row['work_code'],
+              "warranty_status"=>$warrantyStatus,
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id'],
+              "max_rating"=>"3",
+              "tender_amt"=>$row['tender_amt'],
+              "rating_percent"=>$row['rating_percent'],
+              "penalty_amt"=>$row['penalty_amt'],
+              "total_rating_percent"=>$totalRatingPercent,
+              "ratingAverage"=>$ratingAverage,
+              "toalRatingAMount"=>$toalRatingAMount,
+              "totalAmount"=>$totalAmount,
+              "totalRatingGot"=>$totalRatingGet,
+              "total_max_rating"=>$maxRatingWithWork,
+              "toal_penalty_amt"=>$totalPenaltyAmt,
+              "totalRatingPercent"=>number_format($totalRatingPercent,2)
+          )
+          );
+
+        }
+      }else{
+        $new_data[]=array(
+            $req_id=>array(
+              $typeOfStatus=>$row[$typeOfStatus],
+              "1690450752274_2"=>$row['1690450752274_2'],
+              "updated"=>$row['updated'],
+              "system_family_id"=>$row['system_family_id'],
+              "1690365766_1"=>$row['1690365766_1'],
+              "Railway_Status"=>$row['Railway_Status'],
+              "Work_Approved_Datetime"=>$row['Work_Approved_Datetime'],
+              "1690365766_2"=>$coach_no,
+              "coach_type"=>$coach_type,
+              "1690365766_3"=>$row['1690365766_3'],
+              "1690365766_4"=>$row['1690365766_4'],
+              "1690365766_5"=>$row['1690365766_5'],
+              "1690365766_6"=>$row['1690365766_6'],
+              "Rating_Datetime"=>$row['Rating_Datetime'],
+              "item_name"=>$item_name,
+              "item_quantity"=>$item_quantity,
+              "rating"=>$row['rating'],
+              "final_amt"=>$row['final_amt'],
+              "Work_Done_Status"=>$row['Work_Done_Status'],
+              "work_code"=>$row['work_code'],
+              "warranty_status"=>$warrantyStatus,
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id'],
+              "max_rating"=>"3",
+              "tender_amt"=>$row['tender_amt'],
+              "rating_percent"=>$row['rating_percent'],
+              "penalty_amt"=>$row['penalty_amt'],
+              "total_rating_percent"=>$totalRatingPercent,
+              "ratingAverage"=>$ratingAverage,
+              "toalRatingAMount"=>$toalRatingAMount,
+              "totalAmount"=>$totalAmount,
+              "totalRatingGot"=>$totalRatingGet,
+              "total_max_rating"=>$maxRatingWithWork,
+              "toal_penalty_amt"=>$totalPenaltyAmt,
+              "totalRatingPercent"=>number_format($totalRatingPercent,2)
+
+          )
+          );
+
+      }
+    }
+    echo json_encode($new_data);
+
+
+  }
+
+  public function finalBilling( $form_id ){
+
+    ini_set('memory_limit', '-1');
+    //$this->output->cache(5);
+    //$this->output->enable_profiler(TRUE);
+
+    $this->db = $this->load->database("default",TRUE);  
+  //  $this->db->cache_on();
+    $form_res = $this->db->get_where("form_created",["form_id"=>$form_id]);
+    $form_title = $form_res->row()->form_title;
+    $form_for = $form_res->row()->form_for;
+  //   $this->db->cache_off();
+   //  $this->db->cache_on();
+    $key_res = $this->db->select("field,field_id")->group_by("field_id")->order_by("field_id")->get_where("form_data",["form_id"=>$form_id]);
+ //   $this->db->cache_off();
+    $location = $this->session->userdata('location');
+
+    if( $this->session->userdata("type") == "dept" ){
+      
+      $train_numbers = $this->session->userdata('train_numbers');
+      $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+
+      //echo $wherestr;
+
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
+                         ->where("form_id",$form_id)
+                         ->where("$wherestr",null)
+                         ->where("location like '$location%'",null)
+                         ->where("rating IS NOT NULL")
+                         ->order_by("update_datetime","DESC")
+                         ->get('form_data');
+
+    }else{
+
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
+                         ->where("form_id",$form_id)
+                         ->where("location like '$location%'",null)
+                         ->where("rating IS NOT NULL")
+                         ->order_by("update_datetime","DESC")
+                         ->get('form_data');
+    }
+
+    // echo "<pre>";
+    // print_r($data_res->result());
+    // die();
+    $data = [];
+    $key_label = array();
+    $summary = [];
+    $last_date = date("Y-m-d");
+    $keys = [];
+
+    $this->load->helper("my");
+    if( $form_for == 'FAMILY' ){
+      list($key_label2,$data2) = getFormData(FMAILY_FROM_ID,$form_for,$form_id);
+    }else
+    if( $form_for == 'MEMBER' ){
+      list($key_label2,$data2) = getFormData(MEMBER_FROM_ID,$form_for,$form_id);
+    }else{
+      $key_label2 = [];
+      $data2 = [];
+    }
+    // echo "<pre>";
+    // print_r($data_res->result());
+    // die();
+    //print_r($data2);
+    $itemQuery=$this->db->select("item_name,warranty_days")->get("railway_work");
+    $itemWithWarranty=$itemQuery->result_array();
+
+    foreach($data_res->result() as $row){
+
+      if(!isset($data[$row->req_id])){
+        // $this->db->cache_on();
+        // $res = $this->db->get_where('users',["username"=>str_replace('Web_','',$row->child_id)]);
+        // $this->db->cache_off();
+        //$location_arr = explode("|", $res->row()->location);
+        $location_arr = explode("|", $row->location);
+
+        if( $this->session->userdata("type") == "dept" ){
+          if($form_id==USER_WORK_DONE_ACTION){
+            $status_1 = '';
+            if( $row->status == "Verified" ){
+              $status_1 .= "<span class='font-bold'>$row->rating<i class='material-icons'>star_rate</i></span>";
+            }
+            $data[$row->req_id]["Rating Status"] = $status_1;
+            $key_label["Rating Status"] = "Rating Status";
+            $keys["Rating Status"] = "Rating Status";
+          }else{
+            $status_1 = '';
+            if( $row->status == "Pending" ){
+              $status_1 .= "<div class='icon-button-demo' style='display: inline-flex;'><button type='button' class='btn bg-teal btn-circle waves-effect waves-circle waves-float status_action' data-status='Verified' value='$row->req_id'><i class='material-icons'>verified_user</i></button><button type='button' class='btn bg-pink btn-circle waves-effect waves-circle waves-float status_action' data-status='Rejected' value='$row->req_id'><i class='material-icons'>delete_forever</i></button></div>";
+            }
+            if( $row->status == "Verified" ){
+              $status_1 .= "<span class='font-bold col-teal'>Verified</span>";
+            }
+            $data[$row->req_id]["Status"] = $status_1;
+            $key_label["Status"] = "Status";
+            $keys["Status"] = "Status";
+          }
+        }else{
+          $status_1 = '';
+          if( $row->status == "Pending" ){
+            $status_1 .= "<span class='font-bold col-pink'>Pending</span>";
+          }
+          if( $row->status == "Verified" ){
+            $status_1 .= "<span class='font-bold col-teal'>Verified</span>";
+          }
+          $data[$row->req_id]["Status"] = $status_1;
+          $key_label["Status"] = "Status";
+          $keys["Status"] = "Status";
+        }
+
+        foreach($key_res->result() as $col){
+          $data[$row->req_id][$col->field_id] = "";
+          $key_label[$col->field_id] = $col->field;
+          $keys[$col->field_id] = $col->field_id;
+        }
+
+        if(strtotime($row->create_datetime) > strtotime($last_date)){
+          $last_date = date("Y-m-d",strtotime($row->create_datetime));
+        }
+        if(strtotime($row->update_datetime) > strtotime($last_date)){
+          $last_date = date("Y-m-d",strtotime($row->update_datetime));
+        }
+        
+
+        //$data[$row->req_id]["inserted"] = $row->create_datetime!="0000-00-00 00:00:00"?$row->create_datetime:"";
+        $data[$row->req_id]["updated"] = $row->update_datetime!="0000-00-00 00:00:00"?$row->update_datetime:"";
+        // $data[$row->req_id]["geo_loc"] = $row->geo_loc;
+        // $data[$row->req_id]["child_id"] = $res->row()->name." [".$res->row()->username."]";
+        // $data[$row->req_id]["Tehsil"] = isset($location_arr[1])?$location_arr[1]:"";
+        //$data[$row->req_id]["Block"] = isset($location_arr[2])?$location_arr[2]:"";
+        //$data[$row->req_id]["Village"] = isset($location_arr[3])?$location_arr[3]:"";
+        if($form_for == "FAMILY"){
+          $data[$row->req_id]["system_family_id"] = $row->family_id;
+          if(isset($data2[$row->family_id])){
+            foreach($data2[$row->family_id] as $field_id2 => $value2){
+              $data[$row->req_id][$field_id2] = $value2;
+            }
+          }
+        }
+        if($form_for == "MEMBER"){
+          $data[$row->req_id]["system_member_id"] = $row->member_id;
+          if(isset($data2[$row->member_id])){
+            foreach($data2[$row->member_id] as $field_id2 => $value2){
+              $data[$row->req_id][$field_id2] = $value2;
+            }
+          }
+        }
+
+        if($form_id==SELECT_ITEMS_FOR_WORK){
+          $data[$row->req_id]["Released_Quantity_datetime"] = $row->approve_datetime;
+          $key_label["Released_Quantity_datetime"] = "Released Quantity Datetime";
+          $keys["Released_Quantity_datetime"] = "Released_Quantity_datetime";
+        }
+        if($form_id==USER_WORK_DONE_ACTION){
+          $data[$row->req_id]["Rating_Datetime"] = $row->rating_datetime;
+          $key_label["Rating_Datetime"] = "Rating Datetime";
+          $keys["Rating_Datetime"] = "Rating_Datetime";
+        }
+        //$key_label["inserted"] = "Inserted";
+        if($form_id == FMAILY_FROM_ID){
+          $key_label["updated"] = "Work Entry Datetime";
+        }else if($form_id == SELECT_ITEMS_FOR_WORK){
+          $key_label["updated"] = "Item Request Datetime";
+        }else  if($form_id == USER_WORK_DONE_ACTION){
+          $key_label["updated"] = "Work Done Datetime";
+        }else{
+          $key_label["updated"] = "Updated";
+        }
+        
+        $keys["updated"] = "updated";
+        if($form_for == "FAMILY"){
+          $key_label["system_family_id"] = "System Work ID";
+          $keys["system_family_id"] = "system_family_id";
+          foreach($key_label2 as $field_id2 => $field2){
+            $key_label[$field_id2] = $field2;
+            $keys[$field_id2] = $field_id2;
+          }
+        }
+        if($form_for == "MEMBER"){
+          $key_label["system_member_id"] = "System Member ID";
+          $keys["system_member_id"] = "system_member_id";
+          foreach($key_label2 as $field_id2 => $field2){
+            $key_label[$field_id2] = $field2;
+            $keys[$field_id2] = $field_id2;
+          }
+        }
+      }
+      $this->db->select('field, value,DATE(create_datetime) as create_datetime');
+      $this->db->where('family_id', $row->family_id);
+      $this->db->where_in('field', array('Item List*', 'Item Quantity*'));
+      $query = $this->db->get('form_data_update');
+      $result = $query->result_array();
+      if(count($result)==0){
+              $this->db->select('field, value,DATE(create_datetime) as create_datetime');
+              $this->db->where('family_id', $row->family_id);
+              $this->db->where_in('field', array('Item List*', 'Item Quantity*'));
+              $query = $this->db->get('form_data');
+              $result = $query->result_array();
+      }
+      $i=1;
+      $result_str='';
+      $item_name='';
+      $item_quantity='';
+      $item_list_array=array();
+      $item_use_date='';
+
+      foreach ($result as $item) {
+
+        if ($item['field'] == 'Item List*') {
+        $result_str .= $i.'. '.$item['value'] . ' ';
+        $item_name=$item['value'];
+
+        }elseif ($item['field'] == 'Item Quantity*') {
+              $result_str .= "(".$item['value'] .")"."<br>";  // Use PHP_EOL for a new line
+              $i+=1;
+              $item_quantity=$item['value'];
+
+          }
+        if(!empty($item_name) && !empty($item_quantity)){
+          $item_list_array[]=array(
+            "item_name"=>$item_name,
+            "item_quantity"=>$item_quantity
+          );
+        }
+        if(isset($item['create_datetime']) && !empty($item['create_datetime'])){
+          $item_use_date=$item['create_datetime'];
+        }
+          
+      }
+      $data[$row->req_id]["item_list"]=$item_list_array;
+      $data[$row->req_id]["rating"]=$row->rating;
+      $data[$row->req_id]["item_use_date"]=$item_use_date;
+      $data[$row->req_id][$row->field_id] = $row->value;
+      if(is_null($row->child_id)){
+        $data[$row->req_id]["child_id"] ='';
+      }else{
+        $data[$row->req_id]["child_id"] = $row->child_id;
+      }
+        
+    }
+
+    $countRatingAvg=1;
+    $ratingTotal=0;
+    $ratingAverage=0;
+    $toalRatingAMount=0;
+    $totalAmount=0;
+    foreach($data as $req_id=>$row){
+      $work_code='';
+      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"])){
+
+        $workCodeParts=explode("$",$row['1690365766_5']);
+        if(count($workCodeParts)>1){
+          $work_code=$workCodeParts[1];
+        }
+      }
+      $data[$req_id]["work_code"]=$work_code;
+      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"]) && isset($row["rating"]) && !empty($row['rating'])){
+        $ratingTotal+=(int)$row['rating'];
+        $ratingAverage=$ratingTotal/$countRatingAvg;
+        // echo "Total Rating is ".$ratingTotal." and average rating now is ".$ratingAverage."<br>";
+        $countRatingAvg+=1;
+        $workList=$row['1690365766_5'];
+        $amt='';
+        $workWithCode=explode("$",$workList);
+        $workListParts=explode("@",$workWithCode[0]);
+        if(count($workListParts)>1){
+          $amt=(int)$workListParts[1];
+          $totalAmount+=$amt;
+          $rating=(int)$row['rating'];
+          $percentage=($rating/3)*100;
+          if($percentage>85){
+            $final_amt=$amt;
+          }else if(($percentage<=85) && ($percentage>75)){
+            $final_amt=$amt-($amt*5)/100;
+          }else if(($percentage<=75) && ($percentage>65)){
+            $final_amt=$amt-($amt*10)/100;
+          }else if(($percentage<=65) && ($percentage>=55)){
+            $final_amt=$amt-($amt*20)/100;
+          }else if($percentage<55){
+            $final_amt=$amt-($amt*40)/100;
+          }
+          $data[$req_id]["final_amt"]=$final_amt;
+          $toalRatingAMount+=$final_amt;
+        }else{
+          $data[$req_id]["final_amt"]="N/A";
+        }
+      }else{
+        $data[$req_id]["final_amt"]="N/A";
+      }
+      if(isset($row["1690450752274_2"])){
+        if($row['1690450752274_2']=="Done"){
+          $data[$req_id]["Work_Done_Status"]="Done";
+        }else{
+          $data[$req_id]["Work_Done_Status"]="Not Done";
+        }
+      }
+    }
+    if($this->session->userdata("type")=="dept"){
+      $typeOfStatus="Rating Status";
+    }else{
+      $typeOfStatus="Status";
+    }
+    // echo "<pre>";
+    // print_r($data);
+    
+    // die();
+    $new_data=array();
+    $uom='';
+    foreach($data as $req_id=>$row){
+       $warrantyStatus='';
+       $item_name='';
+       $item_quantity='';
+       $coach_type='';
+       $coach_no='';
+       $uom='';
+       if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
+           $coachParts=explode("|",$row['1690365766_2']);
+           if(count($coachParts)>1){
+            $coach_type=$coachParts[1];
+            $coach_no=$coachParts[0];
+           }else{
+            $coach_no=$coachParts[0];
+           }
+       }
+       if(count($row['item_list'])>0){
+        foreach($row['item_list'] as $row2){
+          $uom='';
+          $warrantyStatus='';
+          $itemWithUom=explode("|",$row2['item_name']);
+          $item_name=$itemWithUom[0];
+          $uom=$itemWithUom[count($itemWithUom)-1];
+          $item_quantity=$row2['item_quantity'];
+          foreach($itemWithWarranty as $itemWarranty){
+              if($itemWarranty['item_name']==$item_name){
+                $warrantyDay=(int)$itemWarranty['warranty_days'];
+                $currDate=new DateTime();
+                $itemUseDate=new DateTime($row['item_use_date']);
+                $interval=$currDate->diff($itemUseDate);
+                if($interval->days>$warrantyDay){
+                  $warrantyStatus="<span class='font-bold col-pink'>Not In Warranty</span>";
+                }else{
+                  $warrantyStatus="<span class='font-bold col-teal'>In Warranty</span>";
+                }
+              }
+          }
+          $new_data[]=array(
+            $req_id=>array(
+              $typeOfStatus=>$row[$typeOfStatus],
+              "1690450752274_2"=>$row['1690450752274_2'],
+              "updated"=>$row['updated'],
+              "system_family_id"=>$row['system_family_id'],
+              "1690365766_1"=>$row['1690365766_1'],
+              "Railway_Status"=>$row['Railway_Status'],
+              "Work_Approved_Datetime"=>$row['Work_Approved_Datetime'],
+              "1690365766_2"=>$coach_no,
+              "coach_type"=>$coach_type,
+              "1690365766_3"=>$row['1690365766_3'],
+              "1690365766_4"=>$row['1690365766_4'],
+              "1690365766_5"=>$row['1690365766_5'],
+              "1690365766_6"=>$row['1690365766_6'],
+              "Rating_Datetime"=>$row['Rating_Datetime'],
+              "item_name"=>$item_name,
+              "item_quantity"=>$item_quantity,
+              "rating"=>$row['rating'],
+              "final_amt"=>$row['final_amt'],
+              "Work_Done_Status"=>$row['Work_Done_Status'],
+              "work_code"=>$row['work_code'],
+              "warranty_status"=>$warrantyStatus,
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
+          )
+          );
+
+        }
+      }else{
+        $new_data[]=array(
+            $req_id=>array(
+              $typeOfStatus=>$row[$typeOfStatus],
+              "1690450752274_2"=>$row['1690450752274_2'],
+              "updated"=>$row['updated'],
+              "system_family_id"=>$row['system_family_id'],
+              "1690365766_1"=>$row['1690365766_1'],
+              "Railway_Status"=>$row['Railway_Status'],
+              "Work_Approved_Datetime"=>$row['Work_Approved_Datetime'],
+              "1690365766_2"=>$coach_no,
+              "coach_type"=>$coach_type,
+              "1690365766_3"=>$row['1690365766_3'],
+              "1690365766_4"=>$row['1690365766_4'],
+              "1690365766_5"=>$row['1690365766_5'],
+              "1690365766_6"=>$row['1690365766_6'],
+              "Rating_Datetime"=>$row['Rating_Datetime'],
+              "item_name"=>$item_name,
+              "item_quantity"=>$item_quantity,
+              "rating"=>$row['rating'],
+              "final_amt"=>$row['final_amt'],
+              "Work_Done_Status"=>$row['Work_Done_Status'],
+              "work_code"=>$row['work_code'],
+              "warranty_status"=>$warrantyStatus,
+              "uom"=>$uom,
+              "child_id"=>$row['child_id'],
+              "approve_id"=>$row['approve_id']
+          )
+          );
+
+      }
+    }
+    // echo "<pre>";
+    // print_r($ratingAverage);
+   
+    // die();
+   
+    $keys['item_list']="item_list";
+    $key_label["item_list"]="Item List";
+    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","Work_Done_Status","amount","Rating Status","final_amt","work_code","warranty_status","child_id","approve_id"];
+    // echo "<pre>";
+    // print_r($new_data);
+ 
+    // die();
+    $query_1=$this->db->select("username,train_number")->get("railway_mapping");
+    $intent['railway_trains']=$query_1->result_array();
+    $intent['form_id']=$form_id;
+    $intent["form_title"] = "Billing Report";
+    $intent["key_label"] = $key_label;
+    $intent["keys"] = $keys;
+    $intent["newdata"] = $new_data;
+    $intent['newKeys']=$newKeys;
+    $intent["ratingAverage"] = $ratingAverage;
+    $intent["toalRatingAMount"] = $toalRatingAMount;
+    $intent["totalAmount"] = $totalAmount;    
+    $intent["last_date"] = $last_date;;
+    $intent["menuActive"] = "data_sheet";
+    $intent["subMenuActive"]  = "final_billing";
+    $intent["headerCss"]   = "view/reports/final_billingCss";
+    $intent["mainContent"] = "view/reports/final_billing";
     $intent["footerJs"]    = "view/reports/data_sheet_billingJs";
     $this->load->view("view/include/template",$intent);
   }

@@ -27,9 +27,30 @@ class Api2 extends CI_Controller{
 				$this->db->where("item_name",$item_name);
 			$query=$this->db->get("railway_work");
 			$warrantyDay=$query->row_array();
+			if(!is_null($warrantyDay)){
+				$warrantyInDay=(int)$warrantyDay['warranty_days'];
+			}else{
+				$response['status']=200;
+				$response['message']="No Data Found";
+				$response['data']=array(
+						"warranty_status"=>"-1",
+						"item_use_date"=>null,
+						"warranty_days"=>null,
+						"remaining_days"=>0
+					);
+				echo json_encode($response);
+				die();
+			}
+			
 		}else{
 			$response['status']=200;
 			$response['message']="No Data Found";
+			$response['data']=array(
+					"warranty_status"=>"-1",
+					"item_use_date"=>null,
+					"warranty_days"=>null,
+					"remaining_days"=>0
+				);
 			echo json_encode($response);
 			die();
 		}
@@ -75,6 +96,12 @@ class Api2 extends CI_Controller{
 		}else{
 			$response['status']=200;
 			$response['message']="No Data Found";
+			$response['data']=array(
+					"warranty_status"=>"-1",
+					"item_use_date"=>null,
+					"warranty_days"=>$warrantyInDay,
+					"remaining_days"=>0
+				);
 		}
 		echo json_encode($response);
 	}

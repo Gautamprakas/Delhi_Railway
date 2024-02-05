@@ -79,9 +79,14 @@
                                         <div class='col-sm-6'>
                                             <div class='form-group form-float'>
                                                 <div class='form-line'>
-                                                    <input type='text' id="warrantyDays" class='form-control' name='form_title' required minlength='1' maxlength='500' value="" >
-                                                    <label class='form-label'>Warranty In Days</label>
-                                                    <div class='help-info'> </div>
+                                                    <select id="warrantyDays" class="form-control input_type show-tick" name="" data-size="5" required >
+                                                            <option value="">--Warranty In Days--</option>
+                                                            <?php 
+                                                            foreach($warranty_days as $row){ ?>
+                                                                <option value="<?php echo $row['days'] ; ?>"><?php echo $row['days'] ; ?></option>
+
+                                                            <?php } ?>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div> 

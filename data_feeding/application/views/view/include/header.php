@@ -45,6 +45,10 @@
     body{
 /*         background: url("<?php //echo base_url("assets/background.jpg"); ?>");*/
     }
+    th, td {
+      padding: 8px;
+/*      text-align: left;*/
+    }
    </style>
 </head>
 

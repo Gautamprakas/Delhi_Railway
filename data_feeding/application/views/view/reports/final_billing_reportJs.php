@@ -81,7 +81,7 @@ jQuery(document).ready(function(){
             location.reload();
         }
         else{
-        var url="<?php echo base_url().'/view/CreateForm/viewFormDataCheck/'; ?>"+form_id;
+        var url="<?php echo base_url().'/view/CreateForm/filterFinalBillingReport/1690450752274'; ?>";
 
         // console.log(trainNo+date+time1+time2+url);
         $.ajax({
@@ -96,19 +96,16 @@ jQuery(document).ready(function(){
             },
             success:function(response){
                 $("#example2").DataTable().destroy();
-                // alert(response);
                 var data = JSON.parse(response); // Assuming 'response' is your JSON data
-                var lengthOfData = Object.keys(data).length;
+                //console.log(Object.keys(data).length);
                 console.log(data);
+                var lengthOfData = Object.keys(data).length;
+                var tableCol=11;
+                //console.log(lengthOfData); // This will give you the length of the object 'data'
                 var tableBody = document.getElementById('myTableBody');
                 tableBody.innerHTML = '';
-                var tableCol=17;
-                if(form_id=="1690450752274"){
-                    tableCol=19;
-                }
-                //return;
-                var j=1;
                 if(lengthOfData>0){
+                var j=1;
                 data.forEach((data)=>{
                 for(var family_id in data){
                   var baseId="tableID"+j;
@@ -133,68 +130,38 @@ jQuery(document).ready(function(){
                             // if(data[family_id].hasOwnProperty(value)){
                                 if(value=="1690365766_2"){
                                     // console.log("#tableID"+j+"_2"+data[family_id][value]);
-                                    $("#tableID"+j+"_4").text(data[family_id][value]);
-                                }else if(value=="1690365766_1"){
                                     $("#tableID"+j+"_2").text(data[family_id][value]);
-                                }else if(value=="updated"){
-                                    $("#tableID"+j+"_3").text(data[family_id][value]);
-                                }else if(value=="coach_type"){
-                                    $("#tableID"+j+"_5").text(data[family_id][value]);
-                                }
-                                else if(value=="1690365766_4"){
-                                    $("#tableID"+j+"_6").text(data[family_id][value]);
-                                }
-                                else if(value=="1690365766_5"){
-                                    var workList=data[family_id][value].split("|");
-                                    if(workList.length>1){
-                                        var work=workList[0].split("-");
-                                        if(work.length>1){
-                                            $("#tableID"+j+"_7").text(work[1]);
-                                        }else{
-                                            $("#tableID"+j+"_7").text(workList[0]);
-                                        }
-                                    }else{
-                                        $("#tableID"+j+"_7").text("");
-                                    }
-                                }
-                                else if(value=="1690365766_6"){
-                                    $("#tableID"+j+"_8").text(data[family_id][value]);
-                                }
-                                else if(value=="1690365766B_3"){
-                                    $("#tableID"+j+"_10").text(data[family_id][value]);
-                                }
-                                // if(!(data[family_id].hasOwnProperty("1690365766B_2"))){
-                                else if (value=="item_name") {
-                                    $("#tableID"+j+"_9").html(data[family_id][value]);
-                                }else if (value=="item_quantity") {
-                                    $("#tableID"+j+"_10").html(data[family_id][value]);
-                                }
-
-                                // }
-                                else if(value=="Status"){
-                                    $("#tableID"+j+"_12").html(data[family_id][value]);
-                                }
-                                else if(value=="Rating Status"){
-                                    $("#tableID"+j+"_16").html(data[family_id][value]);
-                                }
-                                else if(value=="1690450752274_2"){
-                                    $("#tableID"+j+"_12").text(data[family_id][value]);
-                                }else if(value=="Work_Done_Status"){
-                                    $("#tableID"+j+"_15").text(data[family_id][value]);
                                 }else if(value=="work_code"){
-                                    $("#tableID"+j+"_13").text(data[family_id][value]);
-                                }else if(value=="warranty_status"){
-                                    $("#tableID"+j+"_14").html(data[family_id][value]);
-                                }else if(value=="uom"){
+                                    $("#tableID"+j+"_3").text(data[family_id][value]);
+                                }else if(value=="1690365766_4"){
+                                    $("#tableID"+j+"_4").text(data[family_id][value]);
+                                }else if(value=="item_quantity"){
+                                    $("#tableID"+j+"_5").text(data[family_id][value]);
+                                }else if(value=="max_rating"){
+                                    $("#tableID"+j+"_6").text(data[family_id][value]);
+                                }else if(value=="rating"){
+                                    $("#tableID"+j+"_7").text(data[family_id][value]);
+                                }else if(value=="rating_percent"){
+                                    $("#tableID"+j+"_8").text(data[family_id][value]);
+                                }else if(value=="tender_amt"){
+                                    $("#tableID"+j+"_9").text(data[family_id][value]);
+                                }else if(value=="penalty_amt"){
+                                    $("#tableID"+j+"_10").text(data[family_id][value]);
+                                }else if(value=="final_amt"){
                                     $("#tableID"+j+"_11").text(data[family_id][value]);
-                                }else if(value=="bulk_rating"){
-                                    $("#tableID"+j+"_17").html(data[family_id][value]);
-                                }else if(value=="child_id"){
-                                    $("#tableID"+j+"_18").html(data[family_id][value]);
-                                }else if(value=="approve_id"){
-                                    $("#tableID"+j+"_19").text(data[family_id][value]);
+                                }else if(value=="total_max_rating"){
+                                    $("#totalMaxRating").text(data[family_id][value]);
+                                }else if(value=="totalRatingGot"){
+                                    $("#totalRatingGot").text(data[family_id][value]);
+                                }else if(value=="totalRatingPercent"){
+                                    $("#totalRatingPercent").text(data[family_id][value]+"%");
+                                }else if(value=="totalAmount"){
+                                    $("#totalAmount").text(data[family_id][value]);
+                                }else if(value=="toal_penalty_amt"){
+                                    $("#totalPenaltyAmt").text(data[family_id][value]);
+                                }else if(value=="toalRatingAMount"){
+                                    $("#totalRatingAmt").text(data[family_id][value]);
                                 }
-                            
                             
                                 
                                 
@@ -230,6 +197,66 @@ jQuery(document).ready(function(){
 
 </script>
 
+<script>
+$("#printButton").click(function(){
+         var trainNo=$("#selectTrain").val();
+         var date=$("#date").val();
+         var form_id=$("#date").data("info");
+         // console.log(form_id);
+
+         var time1=$("#time1").val();
+         var time2=$("#time2").val();
+        if(time1!='' && time2==''){
+            alert("Enter correct Time");
+            location.reload();
+        }
+        else if(time2!='' && time1==''){
+            alert("Enter correct Time");
+            location.reload();
+        }
+        else{
+            var url="<?php echo base_url().'/view/CreateForm/printFilterFinalBillingReport/1690450752274'; ?>";
+
+            // console.log(trainNo+date+time1+time2+url);
+            $.ajax({
+
+                "url":url,
+                "method":"POST",
+                "data":{
+                    "trainNo":trainNo,
+                    "date":date,
+                    "time1":time1,
+                    "time2":time2,
+                },
+                success:function(response){
+                    //console.log(response);
+                    if(response=="404"){
+                        alert("No record Found");
+                        return;
+                    }
+                    // window.open().location.href=url;
+                    // var newWindow = window.open();
+                    // newWindow.document.write(response.view_content);
+                    // alert("he");
+                    var newWindow=window.open("","Billing");
+                    console.log(newWindow);
+
+                    // var newWindow = window.open();
+                    // newWindow.document.write(response);
+                    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                        alert("Pop-up blocked. Please allow pop-ups for this site.");
+                    } else {
+                        // Write the response into the new window
+                        newWindow.document.write(response);
+                    }
+                },
+                error:function(error) {
+                    console.log(error);
+                }
+            });
+        }
+});
+</script>
 
 <script type="text/javascript">
     jQuery(document).ready(function(){
@@ -361,55 +388,6 @@ jQuery(document).ready(function(){
                         swal("Something went wrong.");
                     }
                     btndiv.find("button.status_action_rating").prop('disabled', false);
-                });
-            });
-        });
-
-
-        $("body").on("click", ".rating-button", function () {
-            var checkboxes = $("input.checkbox:checked");
-            var ratingData = [];
-            var rating = $(this).data('rating');
-            checkboxes.each(function () {
-                var req_id = $(this).val();
-                var status = $(this).attr("data-status");
-                // var rating = $(this).attr("data-rating");
-                var familyid = $(this).attr("data-familyid");
-                var remarksInput = $(this).closest('.icon-button-demo').find('.remarks-input').val();
-                ratingData.push({
-                    req_id: $(this).val(),
-                    remark: remarksInput,
-                    status:status,
-                    family_id:familyid,
-                    rating:rating
-                });
-            });
-            if (ratingData.length === 0) {
-                // No checkboxes are selected
-                swal("Please select at least one Work.");
-                return;
-            }
-            // console.log(ratingData);
-            swal({
-                title: "Are you sure?",
-                text: "You want to give "+rating+ " star rating to the selected work.",
-                type: "info",
-                showCancelButton: true,
-                closeOnConfirm: false,
-                showLoaderOnConfirm: true,
-            }, function () {
-                $.post("<?php echo base_url("view/CreateForm/updateStatusOfReqRatingBulk"); ?>",{
-                    ratingData:ratingData
-                },function(data){
-                    console.log(data);
-                    if(data=="200"){
-                        swal("Data "+status+".");
-                        location.reload();
-                        // btndiv.html("<span class='font-bold'>"+rating+"<i class='material-icons'>star_rate</i></span>");
-                    }else{
-                        swal("Something went wrong.");
-                    }
-                    // btndiv.find("button.status_action_rating").prop('disabled', false);
                 });
             });
         });

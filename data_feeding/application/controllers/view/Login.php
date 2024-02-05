@@ -36,7 +36,7 @@ class Login extends CI_Controller {
 	    	if( $sessionData['type'] == "admin" ){
 	    		redirect('view/CreateForm/index');
 	    	}else if( $sessionData['type'] == "dept" ){
-	    		redirect('view/CreateForm/viewFormData/1690365766');
+	    		redirect('view/CreateForm/reportsRailway/1690450752274');
 	    	}else if( $sessionData['type'] == "siteincharge" ){
 	    		redirect('view/CreateForm/viewRejectedFormData/1690365766');
 	    	}else if( $sessionData['type'] == "block" ){

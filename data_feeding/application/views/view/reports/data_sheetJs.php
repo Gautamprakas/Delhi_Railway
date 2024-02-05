@@ -344,13 +344,13 @@ jQuery(document).ready(function(){
                 swal("Please select at least one item.");
                 return;
             }
-            console.log(req_ids);
-            console.log(remarks);
+            // console.log(req_ids);
+            // console.log(remarks);
             
             remarks.forEach((item,index)=>{
                 var reqId=item.req_id;
                 var remark=item.remark;
-                console.log("Req id is"+reqId+"and remarks is "+remark+status);
+                // console.log("Req id is"+reqId+"and remarks is "+remark+status);
             });
             //return;
             swal({

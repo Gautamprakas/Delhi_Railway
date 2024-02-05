@@ -11,7 +11,7 @@
                     <div class="card">
                         <div class="header <?php echo BG_BLUE_GREY; ?>">
                             <h2>
-                                <?php echo "Edit Train"." <span></span>"; ?>
+                                <?php echo "Edit Warranty"." <span></span>"; ?>
                             </h2>
                         </div>
                         <div class="body" style="overflow-x: scroll;">
@@ -22,7 +22,7 @@
                                             <tr>
                                                 <th class="font-12" style="background: #2196f3;">Sno</th>
                                                 
-                                                <th class="font-12" style="background: #2196f3;">Train Number</th>
+                                                <th class="font-12" style="background: #2196f3;">Warranty In Days</th>
                                                 <th class="font-12" style="background: #2196f3;">Action</th>
                                                 <th class="font-12" style="background: #2196f3;">Status</th>
                                                
@@ -36,18 +36,17 @@
                                                 <tr data-class='<?php echo $row["class"]; ?>' class='<?php echo $row["class"]; ?> all'>
                                                     <td class="font-12" style="/*background: #e3f2fd;*/"><?php echo ++$i; ?></td>
                                                    
-                                                    <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;"><input type="text" name="" value="<?php echo $row['train_number'] ; ?>"></td>
+                                                    <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;"><input type="text" name="" id="inputWarranty_<?php echo $i; ?>" value="<?php echo $row['days'];?>"></td>
                                                     <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;">
-                                                    <select id="trainStatus<?php echo $i; ?>" class="form-control input_type show-tick" name="" data-size="5" data-properties="<?php echo $row['train_number'] ; ?>" required >
+                                                    <select id="warrantyStatus_<?php echo $i; ?>" class="form-control input_type show-tick" name="" data-size="5" data-properties="<?php echo $row['days'] ; ?>" required >
                                                             <option value="">--Select Input Type--</option>
-                                                            <option value="0">Block Train</option>
-                                                            <option value="1">Active Train</option>
-                                                            <option value="Delete Train">Delete Train</option>
+                                                            <option value="Edit">Edit</option>
+                                                            <option value="Delete">Delete</option>
                                                     </select>
                                                     
                                                     </td>
                                                     <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;">
-                                                        <button type="submit" id="updateStatus" onclick="submitData()" class="btn btn-success" name="submit">
+                                                        <button type="submit" id="updateStatus_<?php echo $i; ?>" onclick="submitData(this)" class="btn btn-success" name="submit">
                                                             Update
                                                             </button>
                                                     </td>

@@ -34,59 +34,38 @@
 
     <!-- Demo Js -->
     <script src="<?php echo base_url("assets/layout/js/demo.js"); ?>"></script>
-
-
-
-
-<!--Logic JS-->
-
-<script type="text/javascript">
-    jQuery(document).ready(function(){
-        
-        $("#submitWork").click(function(event){
-
-            event.preventDefault();
-            // var itemName=$("#itemName").val();
-            var workName=$("#workName").val();
-            var workCat=$("#categoryValue").val();
-            var workCode=$("#workCode").val();
-            var workRate=$("#workRate").val();
-            var warrantyDays=$("#warrantyDays").val();
-            var itemValue=$("#itemValue").val();
-            var uomValue=$("#uomValue").val();
-            // console.log(itemValue+uomValue+workCode+workName+workCat+workRate);
-            // console.log(warrantyDays);
-            // return;
-            $.ajax({
-
-                url:'<?php echo base_url("view/CreateForm/saveWork"); ?>',
-                method:'POST',
-                data:{
-                    item_name:itemValue,
-                    uom_value:uomValue,
-                    workCode:workCode,
-                    workName:workName,
-                    workRate:workRate,
-                    workCat:workCat,
-                    warrantyDays:warrantyDays
-
-                },
-                success:function(response){
-                    alert(response);
-                    window.location.href='<?php echo base_url("view/CreateForm/addWork"); ?>';
-                    // alert("Data inserted success");
-
-                },
-                error: function(xhr, status, error) {
+    <script type="text/javascript">
+        function submitData(button){
+                var button=button.id;
+                var slectId="warrantyStatus_"+button.split("_")[1];
+                var inputId="inputWarranty_"+button.split("_")[1];
+                var inputValue=$("#"+inputId).val();
+                var selectTag=$("#"+slectId);
+                var selectValue=selectTag.val();
+                var days=selectTag.data('properties');
+                console.log(slectId+days+selectValue+inputValue);
+                // return;
+                $.ajax({
+                    url:'<?php echo base_url("view/CreateForm/saveUpdateWarranty"); ?>',
+                    method:'POST',
+                    data:{
+                        days:days,
+                        status:selectValue,
+                        inputValue:inputValue
+                    },
+                    success:function(response){
+                        alert(response);
+                        window.location.href='<?php echo base_url("view/CreateForm/editWarranty"); ?>';
+                    },
+                    error: function(xhr, status, error) {
                     console.error("Error:", error);
-                    
-                }
-
-            });
-            
-
-        });
+                    }
+                  
+                });
+        }
         
-        
-    });
-</script>
+    </script>
+
+
+
+
