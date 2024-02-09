@@ -36,7 +36,7 @@
                                                 <tr data-class='<?php echo $row["class"]; ?>' class='<?php echo $row["class"]; ?> all'>
                                                     <td class="font-12" style="/*background: #e3f2fd;*/"><?php echo ++$i; ?></td>
                                                    
-                                                    <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;"><input type="text" name="" value="<?php echo $row['train_number'] ; ?>"></td>
+                                                    <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;"><?php echo $row['train_number'] ; ?></td>
                                                     <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;">
                                                     <select id="trainStatus<?php echo $i; ?>" class="form-control input_type show-tick" name="" data-size="5" data-properties="<?php echo $row['train_number'] ; ?>" required >
                                                             <option value="">--Select Input Type--</option>

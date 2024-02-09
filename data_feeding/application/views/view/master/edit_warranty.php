@@ -36,11 +36,10 @@
                                                 <tr data-class='<?php echo $row["class"]; ?>' class='<?php echo $row["class"]; ?> all'>
                                                     <td class="font-12" style="/*background: #e3f2fd;*/"><?php echo ++$i; ?></td>
                                                    
-                                                    <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;"><input type="text" name="" id="inputWarranty_<?php echo $i; ?>" value="<?php echo $row['days'];?>"></td>
+                                                    <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;"><?php echo $row['days'];?></td>
                                                     <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;">
                                                     <select id="warrantyStatus_<?php echo $i; ?>" class="form-control input_type show-tick" name="" data-size="5" data-properties="<?php echo $row['days'] ; ?>" required >
                                                             <option value="">--Select Input Type--</option>
-                                                            <option value="Edit">Edit</option>
                                                             <option value="Delete">Delete</option>
                                                     </select>
                                                     

@@ -23,6 +23,8 @@
                                                 <th class="font-12" style="background: #2196f3;">Sno</th>
                                                 
                                                 <th class="font-12" style="background: #2196f3;">Unit Of Measurement</th>
+                                                <th class="font-12" style="background: #2196f3;">Action</th>
+                                                <th class="font-12" style="background: #2196f3;">Status</th>
                                                
                                             </tr>
                                         
@@ -34,6 +36,20 @@
                                                 <tr data-class='<?php echo $row["class"]; ?>' class='<?php echo $row["class"]; ?> all'>
                                                     <td class="font-12" style="/*background: #e3f2fd;*/"><?php echo ++$i; ?></td>
                                                     <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;"><?php echo $row['uom'] ; ?></td>
+                                                    <td>
+                                                    <select id="trainStatus<?php echo $i; ?>" class="form-control input_type show-tick" name="" data-size="5" data-properties="<?php echo $row['uom'] ; ?>" required >
+                                                            <option value="">--Select Input Type--</option>
+                                                            <option value="0">Block UOM</option>
+                                                            <option value="1">Active UOM</option>
+                                                            <option value="Delete UOM">Delete UOM</option>
+                                                    </select>
+                                                    
+                                                    </td>
+                                                    <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;">
+                                                        <button type="submit" id="updateStatus" onclick="submitData()" class="btn btn-success" name="submit">
+                                                            Update
+                                                            </button>
+                                                    </td>
                                                 </tr>
                                             <?php } ?>
                                         <?php }?>

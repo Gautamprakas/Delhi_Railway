@@ -23,6 +23,8 @@
                                                 <th class="font-12" style="background: #2196f3;">Sno</th>
                                                 
                                                 <th class="font-12" style="background: #2196f3;">Work Status</th>
+                                                <th class="font-12" style="background: #2196f3;">Action</th>
+                                                <th class="font-12" style="background: #2196f3;">Status</th>
                                         
                                     </thead>
                                     <tbody>
@@ -33,6 +35,20 @@
                                                     <td class="font-12" style="/*background: #e3f2fd;*/"><?php echo ++$i; ?></td>
                                                    
                                                     <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;"><?php echo $row['status'] ; ?></td>
+                                                    <td>
+                                                    <select id="trainStatus<?php echo $i; ?>" class="form-control input_type show-tick" name="" data-size="5" data-properties="<?php echo $row['status'] ; ?>" required >
+                                                            <option value="">--Select Input Type--</option>
+                                                            <option value="0">Block Status</option>
+                                                            <option value="1">Active Status</option>
+                                                            <option value="Delete Status">Delete Status</option>
+                                                    </select>
+                                                    
+                                                    </td>
+                                                    <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;">
+                                                        <button type="submit" id="updateStatus" onclick="submitData()" class="btn btn-success" name="submit">
+                                                            Update
+                                                            </button>
+                                                    </td>
                                                 </tr>
                                             <?php } ?>
                                         <?php }?>

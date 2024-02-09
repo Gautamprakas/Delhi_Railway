@@ -24,6 +24,8 @@
                                                 
                                                 <th class="font-12" style="background: #2196f3;">Item Name</th>
                                                 <th class="font-12" style="background: #2196f3;">Unit Of Measurement</th>
+                                                <th class="font-12" style="background: #2196f3;">Action</th>
+                                                <th class="font-12" style="background: #2196f3;">Status</th>
                                                
                                             </tr>
                                         
@@ -36,6 +38,20 @@
                                                     <td class="font-12" style="/*background: #e3f2fd;*/"><?php echo ++$i; ?></td>
                                                     <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;"><?php echo $row['item_name'] ; ?></td>
                                                     <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;"><?php echo $row['uom_value'] ; ?></td>
+                                                    <td>
+                                                    <select id="trainStatus<?php echo $i; ?>" class="form-control input_type show-tick" name="" data-size="5" data-properties="<?php echo $row['item_name'] ; ?>" required >
+                                                            <option value="">--Select Input Type--</option>
+                                                            <option value="0">Block Item</option>
+                                                            <option value="1">Active Item</option>
+                                                            <option value="Delete Item">Delete Item</option>
+                                                    </select>
+                                                    
+                                                    </td>
+                                                    <td class="font-12" style="background: #e3f2fd;text-transform: capitalize;">
+                                                        <button type="submit" id="updateStatus" onclick="submitData()" class="btn btn-success" name="submit">
+                                                            Update
+                                                            </button>
+                                                    </td>
                                                 </tr>
                                             <?php } ?>
                                         <?php }?>

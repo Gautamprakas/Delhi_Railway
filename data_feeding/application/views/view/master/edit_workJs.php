@@ -34,8 +34,42 @@
 
     <!-- Demo Js -->
     <script src="<?php echo base_url("assets/layout/js/demo.js"); ?>"></script>
-
-
+    <script type="text/javascript">
+        function submitData(){
+                var len='<?php echo count($data) ; ?>';
+                var trainNo;
+                var status;
+                len =parseInt(len);
+                for (var i = 1; i <= len; i++) {
+                    var id ="#trainStatus"+i.toString();
+                    var selectValueTag=$(id);
+                    var selectValue=selectValueTag.val();
+                    if (selectValue){
+                        work_code=selectValueTag.data('properties');
+                        status=selectValue;
+                        console.log(trainNo);
+                        console.log(status);
+                    }
+                }
+                $.ajax({
+                    url:'<?php echo base_url("view/CreateForm/saveUpdateWork"); ?>',
+                    method:'POST',
+                    data:{
+                        work_code:work_code,
+                        status:status,
+                    },
+                    success:function(response){
+                        alert(response);
+                        window.location.href='<?php echo base_url("view/CreateForm/editWork"); ?>';
+                    },
+                    error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    }
+                  
+                });
+        }
+        
+    </script>
 
 
 

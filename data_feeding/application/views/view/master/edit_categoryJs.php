@@ -34,8 +34,41 @@
 
     <!-- Demo Js -->
     <script src="<?php echo base_url("assets/layout/js/demo.js"); ?>"></script>
-
-
-
-
+        <script type="text/javascript">
+        function submitData(){
+                var len='<?php echo count($data) ; ?>';
+                var coachNo;
+                var coachCat;
+                var status;
+                len =parseInt(len);
+                for (var i = 1; i <= len; i++) {
+                    var id ="#trainStatus"+i.toString();
+                    var selectValueTag=$(id);
+                    var selectValue=selectValueTag.val();
+                    if (selectValue){
+                        work_category=selectValueTag.data('properties');
+                        status=selectValue;
+                        console.log(work_category);
+                        console.log(status);
+                    }
+                }
+                $.ajax({
+                    url:'<?php echo base_url("view/CreateForm/saveUpdateCategory"); ?>',
+                    method:'POST',
+                    data:{
+                        work_category:work_category,
+                        status:status,
+                    },
+                    success:function(response){
+                        alert(response);
+                        window.location.href='<?php echo base_url("view/CreateForm/editCategory"); ?>';
+                    },
+                    error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    }
+                  
+                });
+        }
+        
+    </script>
 

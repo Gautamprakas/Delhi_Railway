@@ -34,7 +34,44 @@
 
     <!-- Demo Js -->
     <script src="<?php echo base_url("assets/layout/js/demo.js"); ?>"></script>
-
+    <script src="<?php echo base_url("assets/layout/js/demo.js"); ?>"></script>
+        <script type="text/javascript">
+        function submitData(){
+                var len='<?php echo count($data) ; ?>';
+                var coachNo;
+                var coachCat;
+                var status;
+                len =parseInt(len);
+                for (var i = 1; i <= len; i++) {
+                    var id ="#trainStatus"+i.toString();
+                    var selectValueTag=$(id);
+                    var selectValue=selectValueTag.val();
+                    if (selectValue){
+                        work_status=selectValueTag.data('properties');
+                        status=selectValue;
+                        console.log(work_status);
+                        console.log(status);
+                    }
+                }
+                $.ajax({
+                    url:'<?php echo base_url("view/CreateForm/saveUpdateStatus"); ?>',
+                    method:'POST',
+                    data:{
+                        work_status:work_status,
+                        status:status,
+                    },
+                    success:function(response){
+                        alert(response);
+                        window.location.href='<?php echo base_url("view/CreateForm/editStatus"); ?>';
+                    },
+                    error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    }
+                  
+                });
+        }
+        
+    </script>
 
 
 

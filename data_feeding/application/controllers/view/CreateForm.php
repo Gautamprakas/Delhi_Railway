@@ -171,6 +171,131 @@ class CreateForm extends CI_Controller {
     }
 
   }
+  public function saveUpdateBerth(){
+
+    $berth=$this->input->post("berth");
+    $status=$this->input->post("status");
+    $data['status']=$status;
+    if($status=="Delete Berth"){
+      $this->db->where("berth",$berth);
+      $this->db->delete("railway_berth");
+    }else{
+    $this->db->where("berth",$berth);
+    $this->db->update("railway_berth",$data);
+   }
+    if($this->db->affected_rows()>0){
+      echo "Status Updated";
+    }
+    else{
+      echo $this->db->error();
+    }
+
+  }
+  public function saveUpdateItem(){
+
+    $item=$this->input->post("item");
+    $status=$this->input->post("status");
+    $data['status']=$status;
+    if($status=="Delete Item"){
+      $this->db->where("item_name",$item);
+      $this->db->delete("railway_item");
+    }else{
+    $this->db->where("item_name",$item);
+    $this->db->update("railway_item",$data);
+   }
+   if($this->db->affected_rows()>0){
+      echo "Status Updated";
+    }
+    else{
+      echo $this->db->error();
+    }
+
+  }
+  public function saveUpdateUom(){
+
+    $uom=$this->input->post("uom");
+    $status=$this->input->post("status");
+    $data['status']=$status;
+    if($status=="Delete UOM"){
+      $this->db->where("uom",$uom);
+      $this->db->delete("railway_uom");
+    }else{
+    $this->db->where("uom",$uom);
+    $this->db->update("railway_uom",$data);
+   }
+   if($this->db->affected_rows()>0){
+      echo "Status Updated";
+    }
+    else{
+      echo $this->db->error();
+    }
+
+  }
+
+  public function saveUpdateWork(){
+
+    $work_code=$this->input->post("work_code");
+    $status=$this->input->post("status");
+    $data['status']=$status;
+    if($status=="Delete Work"){
+      $this->db->where("work_code",$uom);
+      $this->db->delete("railway_work");
+    }else{
+    $this->db->where("work_code",$work_code);
+    $this->db->update("railway_work",$data);
+   }
+   if($this->db->affected_rows()>0){
+      echo "Status Updated";
+    }
+    else{
+      echo $this->db->error();
+    }
+
+  }
+
+  public function saveUpdateCategory(){
+
+    $work_category=$this->input->post("work_category");
+    $status=$this->input->post("status");
+    $data['status']=$status;
+    if($status=="Delete Category"){
+      $this->db->where("category",$work_category);
+      $this->db->delete("railway_work_categories");
+    }else{
+    $this->db->where("category",$work_category);
+    $this->db->update("railway_work_categories",$data);
+   }
+   if($this->db->affected_rows()>0){
+      echo "Status Updated";
+    }
+    else{
+      echo $this->db->error();
+    }
+
+  }
+
+  public function saveUpdateStatus(){
+
+    $work_status=$this->input->post("work_status");
+    $status=$this->input->post("status");
+    $data['work_status']=$status;
+    if($status=="Delete Status"){
+      $this->db->where("status",$work_status);
+      $this->db->delete("railway_work_status");
+    }else{
+    $this->db->where("status",$work_status);
+    $this->db->update("railway_work_status",$data);
+   }
+   if($this->db->affected_rows()>0){
+      echo "Status Updated";
+    }
+    else{
+      echo $this->db->error();
+    }
+
+  }
+
+
   public function addCoach(){
     $this->db = $this->load->database("default",TRUE);
     $intent["menuActive"] = "update_form2";
@@ -1935,7 +2060,7 @@ class CreateForm extends CI_Controller {
             if( $row->status == "Verified" ){
               $status_1 .= "<span class='font-bold col-teal'>Verified</span>";
             }
-            $data[$row->req_id]["Status"] = $status_1;
+            $data[$row->req_id]["Status"] = $status_1;   
             $key_label["Status"] = "Status";
             $keys["Status"] = "Status";
           }
