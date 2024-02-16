@@ -345,7 +345,7 @@ jQuery(document).ready(function(){
                 return;
             }
             // console.log(req_ids);
-            // console.log(remarks);
+            console.log(remarks);
             
             remarks.forEach((item,index)=>{
                 var reqId=item.req_id;
@@ -365,6 +365,7 @@ jQuery(document).ready(function(){
                     status: status, // You can update the status as needed
                     remarks: remarks
                 }, function (data) {
+                    console.log(data);
                     if (data == "200") {
                         swal("Data updated successfully.");
                         location.reload();

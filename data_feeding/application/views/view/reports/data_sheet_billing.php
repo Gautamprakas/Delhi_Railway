@@ -15,7 +15,7 @@
                           <select  id="selectTrain" required>
                             <option value="">--Select Train Number--</option>
                         <?php
-                            foreach ($railway_trains as $row) { ?>
+                            foreach ($train_numbers_dropdown as $row) { ?>
                              
                                 <option value="<?php echo $row['train_number']; ?>" data-info="<?php echo $row['username'];?>" required>
                                     <?php echo $row['train_number']; ?>
@@ -138,7 +138,7 @@
 <?php }?>
                                         
                                     </tbody>
-<tfoot>
+<tfoot style="font-weight:bold;">
     <tr data-class='<?php echo $row["class"]; ?>' class='<?php echo $row["class"]; ?> all'>
         <td class="font-12" style="/*background: #e3f2fd;*/"><?php echo "Average Rating"; ?></td>
         <td class="font-12" style="/*background: #e3f2fd;*/"></td>

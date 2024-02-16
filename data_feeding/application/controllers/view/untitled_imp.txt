@@ -1,0 +1,49 @@
+if(count($data)>0){
+      foreach($data as $req_id=>$row){
+        if(isset($row['system_family_id'])){
+            $dataForUpdate=array("billing_status"=>"1");
+            $this->db->where("family_id",$row['system_family_id']);
+            $this->db->update("form_data",$dataForUpdate);
+        }
+      }
+      $res = $this->db->get_where("railway_mapping",["train_number"=>$trainNo]);
+      if(count($res->result_array())>0){
+        $batch_data=$res->result_array();
+        $this->db->trans_begin();
+        $this->db->insert_batch("railway_mapping_history",$batch_data);
+        if($this->db->affected_rows()>0){
+          $this->db->where("train_number",$trainNo);
+          $this->db->delete("railway_mapping");
+          if($this->db->affected_rows()>0){
+            $this->db->trans_commit();
+          }else{
+            $this->db->trans_rollback();
+          }
+        }else{
+          $this->db->trans_rollback();
+        }
+      }
+      // echo "<pre>";
+      // print_r($res->result_array());
+      // die();
+    }
+
+
+    SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime, approve_id
+              FROM form_data
+              WHERE family_id IN (
+                  SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_2'
+                  AND value= "81700|LWACCN"
+                  AND family_id IN (
+                      SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_4'
+                      AND value="Seat No.6"
+                      AND family_id IN (
+                          SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766B_2'
+                          AND value="M/bag & b/holder"
+                          AND family_id IN (
+                              SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_1'
+                              AND value= "12015"
+                          )
+                      )
+                  )
+              );

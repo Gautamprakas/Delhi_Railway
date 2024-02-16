@@ -183,9 +183,9 @@ jQuery(document).ready(function(){
                                     $("#tableID"+j+"_12").text(data[family_id][value]);
                                 }else if(value=="Work_Done_Status"){
                                     $("#tableID"+j+"_13").text(data[family_id][value]);
-                                }else if(value=="amount"){
+                                }else if(value=="amtBeforeRatingIntoQuant"){
                                     $("#tableID"+j+"_14").text(data[family_id][value]);
-                                }else if(value=="final_amt"){
+                                }else if(value=="finalAmtIntoQuantity"){
                                     $("#tableID"+j+"_16").text(data[family_id][value]);
                                 }else if(value=="work_code"){
                                     $("#tableID"+j+"_17").text(data[family_id][value]);
@@ -193,9 +193,9 @@ jQuery(document).ready(function(){
                                     $("#tableID"+j+"_18").html(data[family_id][value]);
                                 }else if(value=="ratingAverage"){
                                     $("#avgRating").text(data[family_id][value]);
-                                }else if(value=="totalRatingAmount"){
+                                }else if(value=="TotalamtAfterRatingIntoQuant"){
                                     $("#avgRatingAmount").text(data[family_id][value]);
-                                }else if(value=="totalAmount"){
+                                }else if(value=="TotalamtBeforeRatingIntoQuant"){
                                     $("#totalAmount").text(data[family_id][value]);
                                 }else if(value=="child_id"){
                                     $("#tableID"+j+"_19").text(data[family_id][value]);

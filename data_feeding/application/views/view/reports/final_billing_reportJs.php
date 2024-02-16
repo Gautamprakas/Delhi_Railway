@@ -70,41 +70,48 @@ jQuery(document).ready(function(){
          var form_id=$("#date").data("info");
          // console.log(form_id);
 
-         time1=$("#time1").val();
-         time2=$("#time2").val();
-        if(time1!='' && time2==''){
-            alert("Enter correct Time");
+         // time1=$("#time1").val();
+         // time2=$("#time2").val();
+        // if(time1!='' && time2==''){
+        //     alert("Enter correct Time");
+        //     location.reload();
+        // }
+        // else if(time2!='' && time1==''){
+        //     alert("Enter correct Time");
+        //     location.reload();
+        // }
+        if(trainNo=='' || date==''){
+            alert("Please select all field");
             location.reload();
-        }
-        else if(time2!='' && time1==''){
-            alert("Enter correct Time");
-            location.reload();
-        }
+        } 
         else{
         var url="<?php echo base_url().'/view/CreateForm/filterFinalBillingReport/1690450752274'; ?>";
 
-        // console.log(trainNo+date+time1+time2+url);
+        console.log(trainNo+date+time1+time2+url);
+        // return;
         $.ajax({
 
             "url":url,
             "method":"POST",
             "data":{
                 "trainNo":trainNo,
-                "date":date,
-                "time1":time1,
-                "time2":time2,
+                "date":date
+                // "time1":time1,
+                // "time2":time2,
             },
             success:function(response){
+                // console.log(response);
                 $("#example2").DataTable().destroy();
                 var data = JSON.parse(response); // Assuming 'response' is your JSON data
                 //console.log(Object.keys(data).length);
                 console.log(data);
                 var lengthOfData = Object.keys(data).length;
-                var tableCol=11;
+                var tableCol=13;
                 //console.log(lengthOfData); // This will give you the length of the object 'data'
                 var tableBody = document.getElementById('myTableBody');
                 tableBody.innerHTML = '';
                 if(lengthOfData>0){
+                $("#printButton").show();
                 var j=1;
                 data.forEach((data)=>{
                 for(var family_id in data){
@@ -130,36 +137,40 @@ jQuery(document).ready(function(){
                             // if(data[family_id].hasOwnProperty(value)){
                                 if(value=="1690365766_2"){
                                     // console.log("#tableID"+j+"_2"+data[family_id][value]);
-                                    $("#tableID"+j+"_2").text(data[family_id][value]);
-                                }else if(value=="work_code"){
-                                    $("#tableID"+j+"_3").text(data[family_id][value]);
-                                }else if(value=="1690365766_4"){
                                     $("#tableID"+j+"_4").text(data[family_id][value]);
-                                }else if(value=="item_quantity"){
+                                }else if(value=="1690365766_1"){
+                                    $("#tableID"+j+"_2").text(data[family_id][value]);
+                                }else if(value=="updated"){
+                                    $("#tableID"+j+"_3").text(data[family_id][value]);
+                                }else if(value=="work_code"){
                                     $("#tableID"+j+"_5").text(data[family_id][value]);
-                                }else if(value=="max_rating"){
+                                }else if(value=="1690365766_4"){
                                     $("#tableID"+j+"_6").text(data[family_id][value]);
-                                }else if(value=="rating"){
+                                }else if(value=="item_quantity"){
                                     $("#tableID"+j+"_7").text(data[family_id][value]);
-                                }else if(value=="rating_percent"){
+                                }else if(value=="max_rating"){
                                     $("#tableID"+j+"_8").text(data[family_id][value]);
-                                }else if(value=="tender_amt"){
+                                }else if(value=="rating"){
                                     $("#tableID"+j+"_9").text(data[family_id][value]);
-                                }else if(value=="penalty_amt"){
+                                }else if(value=="rating_percent"){
                                     $("#tableID"+j+"_10").text(data[family_id][value]);
-                                }else if(value=="final_amt"){
+                                }else if(value=="amtBeforeRatingIntoQuant"){
                                     $("#tableID"+j+"_11").text(data[family_id][value]);
+                                }else if(value=="penaltyAmtWithQty"){
+                                    $("#tableID"+j+"_12").text(data[family_id][value]);
+                                }else if(value=="finalAmtIntoQuantity"){
+                                    $("#tableID"+j+"_13").text(data[family_id][value]);
                                 }else if(value=="total_max_rating"){
                                     $("#totalMaxRating").text(data[family_id][value]);
                                 }else if(value=="totalRatingGot"){
                                     $("#totalRatingGot").text(data[family_id][value]);
                                 }else if(value=="totalRatingPercent"){
                                     $("#totalRatingPercent").text(data[family_id][value]+"%");
-                                }else if(value=="totalAmount"){
+                                }else if(value=="TotalamtBeforeRatingIntoQuant"){
                                     $("#totalAmount").text(data[family_id][value]);
-                                }else if(value=="toal_penalty_amt"){
+                                }else if(value=="ToalPenaltyAmount"){
                                     $("#totalPenaltyAmt").text(data[family_id][value]);
-                                }else if(value=="toalRatingAMount"){
+                                }else if(value=="ToalAmountToPaidWithQty"){
                                     $("#totalRatingAmt").text(data[family_id][value]);
                                 }
                             
@@ -175,7 +186,7 @@ jQuery(document).ready(function(){
                 $('#example2').DataTable({
                     dom: 'Bfrtip', // Specify where the buttons will appear
                     buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
+                        'copy', 'csv', 'excel', 'pdf'
                     ]
                 });
                 }else{
@@ -204,16 +215,12 @@ $("#printButton").click(function(){
          var form_id=$("#date").data("info");
          // console.log(form_id);
 
-         var time1=$("#time1").val();
-         var time2=$("#time2").val();
-        if(time1!='' && time2==''){
-            alert("Enter correct Time");
+         // var time1=$("#time1").val();
+         // var time2=$("#time2").val();
+        if(trainNo=='' || date==''){
+            alert("Please select all field");
             location.reload();
-        }
-        else if(time2!='' && time1==''){
-            alert("Enter correct Time");
-            location.reload();
-        }
+        } 
         else{
             var url="<?php echo base_url().'/view/CreateForm/printFilterFinalBillingReport/1690450752274'; ?>";
 
@@ -224,9 +231,9 @@ $("#printButton").click(function(){
                 "method":"POST",
                 "data":{
                     "trainNo":trainNo,
-                    "date":date,
-                    "time1":time1,
-                    "time2":time2,
+                    "date":date
+                    // "time1":time1,
+                    // "time2":time2,
                 },
                 success:function(response){
                     //console.log(response);
@@ -234,12 +241,8 @@ $("#printButton").click(function(){
                         alert("No record Found");
                         return;
                     }
-                    // window.open().location.href=url;
-                    // var newWindow = window.open();
-                    // newWindow.document.write(response.view_content);
-                    // alert("he");
                     var newWindow=window.open("","Billing");
-                    console.log(newWindow);
+                    // console.log(newWindow);
 
                     // var newWindow = window.open();
                     // newWindow.document.write(response);
@@ -248,6 +251,7 @@ $("#printButton").click(function(){
                     } else {
                         // Write the response into the new window
                         newWindow.document.write(response);
+                        location.reload();
                     }
                 },
                 error:function(error) {

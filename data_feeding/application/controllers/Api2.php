@@ -54,15 +54,32 @@ class Api2 extends CI_Controller{
 			echo json_encode($response);
 			die();
 		}
-		$sql = 'SELECT family_id,DATE(create_datetime) as create_datetime FROM form_data WHERE family_id IN (SELECT family_id FROM form_data WHERE family_id IN (SELECT family_id FROM form_data WHERE family_id IN (SELECT family_id FROM form_data WHERE family_id IN (SELECT family_id FROM form_data WHERE field_id="1690365766_5" AND value= ?) AND  field_id="1690365766B_2" AND value= ?) AND field_id="1690365766_1" AND value=?) AND field_id="1690365766_4" AND value= ?) AND field_id="1690365766_2" AND value=?;';
+		//item_name with uom should be passed in work_item because it hardly match the input data with the table data
+		$sql = "SELECT DISTINCT family_id,DATE(create_datetime) as create_datetime
+              FROM form_data
+              WHERE family_id IN (
+                  SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_2'
+                  AND value= ?
+                  AND family_id IN (
+                      SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_4'
+                      AND value= ?
+                      AND family_id IN (
+                              SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_1'
+                              AND value= ? AND family_id IN
+                          (SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_5'
+                              AND value= ? AND family_id IN ( SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766B_2'
+                              AND value= ?)
+                           )
+                          
+                      )
+                  )
+              );";
 
 		// $params=['42. Repair and fixing of AC attendant berth.@1000$W_Test101',"Flush Valve|Per Item Test","12015","Seat No.1","111571|Test Type 2"];
-		$params=[$work,$work_item,$train_number,$toilet_gallery_berth_no,$coach_number];
+		// $params=[$work,$work_item,$train_number,$toilet_gallery_berth_no,$coach_number];
+        $params=[$coach_number,$toilet_gallery_berth_no,$train_number,$work,$work_item];
 		$query = $this->db->query($sql,$params);
 		$result = $query->row_array();
-		// echo "<pre>";
-		// print_r($result);
-		// die();
 		if(!is_null($result)){
 			$item_use_date=$result['create_datetime'];
 			$warrantyInDay=(int)$warrantyDay['warranty_days'];
@@ -1074,7 +1091,17 @@ class Api2 extends CI_Controller{
 	public function railwayAppDropDown(){
 		$this->load->helper('form_elements');
 		$login = $this->input->post("login");
-		$data=[];
+		$data = [];
+
+		//START//
+		$train = [];
+      	$res2 = $this->db->where("username",$login)->get("railway_mapping");
+        foreach($res2->result() as $row){
+            $train[] = $row->train_number;
+        }
+        if(count($train)==0){
+        	$train[0]="None";
+        }
 		//START//
 		$train_numbers = [];
 		$coach_numbers=[];
@@ -1083,9 +1110,9 @@ class Api2 extends CI_Controller{
 		$work_status=[];
 		$work_category=[];
 		$item_name=[];
-		$this->db->select("train_number");
-		$res1=$this->db->get("railway_trains");
-		$train_numbers=$res1->result_array();
+		// $this->db->select("train_number");
+		// $res1=$this->db->get("railway_trains");
+		// $train_numbers=$res1->result_array();
 
 		$this->db->select("coach_number,coach_category");
 		$res2=$this->db->get("railway_coach");
@@ -1112,7 +1139,7 @@ class Api2 extends CI_Controller{
 		$this->db->select("berth");
 		$res7=$this->db->get("railway_berth");
 		$berth=$res7->result_array();
-		$train=[];
+		// $train=[];
 		$eachBerth=[];
 		$eachCoach=[];
 		$work_status_array=[];
@@ -1120,9 +1147,9 @@ class Api2 extends CI_Controller{
 			$work_status_array[]=$row['status'];
 		}
 		$coach_locations=["Yard","Stick Line"];
-		foreach($train_numbers as $train_number){
-			$train[]=$train_number['train_number'];
-		}
+		// foreach($train_numbers as $train_number){
+		// 	$train[]=$train_number['train_number'];
+		// }
 		foreach($berth as $Berth){
 			$eachBerth[]=$Berth['berth'];
 		}
@@ -1214,7 +1241,6 @@ class Api2 extends CI_Controller{
 		$noData['train_number']=$train;
 		$noData['coach_number']=$eachCoach;
 		$noData['toilet_gallery_berth_no']=$eachBerth;
-		// $noData['data']=$data_mapping;
 		$response["status_code"]  = "200";
 		$response["message"]      = "Data Fetched Successfully..";
 		$response["result"]       = $newWorkListRepeated;

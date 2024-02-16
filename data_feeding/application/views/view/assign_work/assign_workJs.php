@@ -133,11 +133,9 @@
 
             var railway_mapping = [];
             var selectele = $("body").find(".train_numbers");
-
             selectele.each(function() {
               
               var type = $(this).attr("data-type");
-
               if(typeof type !== "undefined"){
                 
                 var username = $(this).attr("data-username");
@@ -175,6 +173,7 @@
                 $.post("<?php echo base_url("view/CreateForm/railwayMappingSaveChanges"); ?>",{
                     railway_mapping : JSON.stringify(railway_mapping)
                 },function(data){
+                    // console.log(data);
                     if(data=="200"){
                         swal("Changes Saved Successfully.");
                         location.reload();

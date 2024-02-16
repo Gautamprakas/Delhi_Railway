@@ -607,6 +607,9 @@ class CreateForm extends CI_Controller {
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL ) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690450752274"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
 
       //echo $wherestr;
 
@@ -960,6 +963,20 @@ class CreateForm extends CI_Controller {
 
       }
     }
+    $this->db->distinct();
+    $this->db->select('train_number,username');
+    $this->db->from('railway_mapping');
+    $this->db->where('username',$this->session->userdata("id"));
+    $train_dropdown_query = $this->db->get();
+    $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+    if($this->session->userdata("type")=="admin"){
+      $this->db->distinct();
+      $this->db->select('train_number,username');
+      $this->db->from('railway_mapping');
+      $train_dropdown_query = $this->db->get();
+      $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+
+    }
     // echo "<pre>";
     // print_r($new_data);
     // die();
@@ -1016,6 +1033,9 @@ class CreateForm extends CI_Controller {
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690450752274"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
 
       //echo $wherestr;
 
@@ -1427,6 +1447,20 @@ class CreateForm extends CI_Controller {
     // echo "<pre>";
     // print_r($itemWarrantyArray);
     // die();
+    $this->db->distinct();
+    $this->db->select('train_number,username');
+    $this->db->from('railway_mapping');
+    $this->db->where('username',$this->session->userdata("id"));
+    $train_dropdown_query = $this->db->get();
+    $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+    if($this->session->userdata("type")=="admin"){
+      $this->db->distinct();
+      $this->db->select('train_number,username');
+      $this->db->from('railway_mapping');
+      $train_dropdown_query = $this->db->get();
+      $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+
+    }
    
     $keys['item_list']="item_list";
     $key_label["item_list"]="Item List";
@@ -1474,6 +1508,9 @@ class CreateForm extends CI_Controller {
         $train_numbers=$trainNo;
       }
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690450752274"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
 
        if($train_numbers=="0"){
         $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
@@ -1971,7 +2008,10 @@ class CreateForm extends CI_Controller {
       
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
-      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690450752274"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
 
       //echo $wherestr;
 
@@ -2014,6 +2054,7 @@ class CreateForm extends CI_Controller {
     $itemQuery=$this->db->select("item_name,warranty_days")->get("railway_work");
     $itemWithWarranty=$itemQuery->result_array();
 
+    $count_row=0;
     foreach($data_res->result() as $row){
 
       if(!isset($data[$row->req_id])){
@@ -2166,6 +2207,7 @@ class CreateForm extends CI_Controller {
             $keys[$field_id2] = $field_id2;
           }
         }
+
       }
       $this->db->select('field, value,DATE(create_datetime) as create_datetime');
       $this->db->where('family_id', $row->family_id);
@@ -2213,6 +2255,10 @@ class CreateForm extends CI_Controller {
       $data[$row->req_id]["item_use_date"]=$item_use_date;
       $data[$row->req_id][$row->field_id] = $row->value;
       $data[$row->req_id]["child_id"]=$row->child_id;
+      // $count_row+=1;
+      //   if($count_row>100){
+      //     break;
+      //   }
     }
     foreach($data as $req_id=>$row){
       $work_code='';
@@ -2442,6 +2488,20 @@ class CreateForm extends CI_Controller {
     if($form_id=="1690450752274"){
       $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","warranty_status","Work_Done_Status",$typeOfStatus,"bulk_rating","child_id","approve_id"];
     }
+    $this->db->distinct();
+    $this->db->select('train_number,username');
+    $this->db->from('railway_mapping');
+    $this->db->where('username',$this->session->userdata("id"));
+    $train_dropdown_query = $this->db->get();
+    $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+    if($this->session->userdata("type")=="admin"){
+      $this->db->distinct();
+      $this->db->select('train_number,username');
+      $this->db->from('railway_mapping');
+      $train_dropdown_query = $this->db->get();
+      $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+
+    }
     // foreach($keys as $key){
     //   echo $key;
     // }
@@ -2494,7 +2554,10 @@ class CreateForm extends CI_Controller {
       
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
-      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL ) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690365766"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
 
       //echo $wherestr;
 
@@ -2537,6 +2600,7 @@ class CreateForm extends CI_Controller {
     $itemQuery=$this->db->select("item_name,warranty_days")->get("railway_work");
     $itemWithWarranty=$itemQuery->result_array();
 
+    $count_row=0;
     foreach($data_res->result() as $row){
 
       if(!isset($data[$row->req_id])){
@@ -2850,6 +2914,20 @@ class CreateForm extends CI_Controller {
     if($form_id=="1690450752274"){
       $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","warranty_status","Work_Done_Status","child_id","approve_id"];
     }
+    $this->db->distinct();
+    $this->db->select('train_number,username');
+    $this->db->from('railway_mapping');
+    $this->db->where('username',$this->session->userdata("id"));
+    $train_dropdown_query = $this->db->get();
+    $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+    if($this->session->userdata("type")=="admin"){
+      $this->db->distinct();
+      $this->db->select('train_number,username');
+      $this->db->from('railway_mapping');
+      $train_dropdown_query = $this->db->get();
+      $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+
+    }
     // foreach($keys as $key){
     //   echo $key;
     // }
@@ -2941,6 +3019,9 @@ class CreateForm extends CI_Controller {
         $train_numbers=$trainNo;
       }
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690365766"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
       if($this->session->userdata("type") == "admin"){
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$train_numbers);
        }
@@ -3433,6 +3514,9 @@ class CreateForm extends CI_Controller {
         $train_numbers=$trainNo;
       }
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690450752274"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
       if($this->session->userdata("type") == "admin"){
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$train_numbers);
        }
@@ -3441,29 +3525,45 @@ class CreateForm extends CI_Controller {
           $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
         }
 
-        $sql = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime
-        FROM form_data
-        WHERE form_id = ?
-          AND $wherestr
-          AND location LIKE ?";
-      $params[]=$form_id;
-      $params[]=$location."%";
-      if(isset($dateFilter) && !empty($dateFilter)){
-        $sql.=" AND DATE(update_datetime) = ? ";
-        $params[]=$dateFilter;
+      //   $sql = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime
+      //   FROM form_data
+      //   WHERE form_id = ?
+      //     AND $wherestr
+      //     AND location LIKE ?";
+      // $params[]=$form_id;
+      // $params[]=$location."%";
+      // if(isset($dateFilter) && !empty($dateFilter)){
+      //   $sql.=" AND DATE(update_datetime) = ? ";
+      //   $params[]=$dateFilter;
         
-      }
-      if(isset($time1) && !empty($time1) && isset($time2) && !empty($time2)){
-        $sql.=" AND TIME(update_datetime)>= ? AND TIME(update_datetime)<= ? ";
-        $params[]=$time1;
-        $params[]=$time2;
+      // }
+      // if(isset($time1) && !empty($time1) && isset($time2) && !empty($time2)){
+      //   $sql.=" AND TIME(update_datetime)>= ? AND TIME(update_datetime)<= ? ";
+      //   $params[]=$time1;
+      //   $params[]=$time2;
         
-      }
-      $sql.=" ;";
+      // }
+      // $sql.=" ;";
       // echo $sql;
       // print_r($params);
       // die();
-      $data_res=$this->db->query($sql,$params);
+      // $data_res=$this->db->query($sql,$params);
+        if(!empty($dateFilter)){
+          $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+                           ->where("form_id",$form_id)
+                           ->where("DATE(update_datetime)",$dateFilter)
+                           ->where("$wherestr",null)
+                           ->where("location like '$location%'",null)
+                           ->order_by("update_datetime","DESC")
+                           ->get('form_data');
+        }else{
+          $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+                           ->where("form_id",$form_id)
+                           ->where("$wherestr",null)
+                           ->where("location like '$location%'",null)
+                           ->order_by("update_datetime","DESC")
+                           ->get('form_data');
+        }
     }else{
       $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
                          ->where("form_id",$form_id)
@@ -3489,10 +3589,13 @@ class CreateForm extends CI_Controller {
       $key_label2 = [];
       $data2 = [];
     }
-    //print_r($data2);
+    //print_r($data_res->result());
+    // print_r($params);
+    //die();
     $itemQuery=$this->db->select("item_name,warranty_days")->get("railway_work");
     $itemWithWarranty=$itemQuery->result_array();
 
+    $count_row=0;
     foreach($data_res->result() as $row){
 
       if(!isset($data[$row->req_id])){
@@ -3684,7 +3787,6 @@ class CreateForm extends CI_Controller {
         if(isset($item['create_datetime']) && !empty($item['create_datetime'])){
           $item_use_date=$item['create_datetime'];
         }
-          
       }
       
       $data[$row->req_id]["item_list"]=$item_list_array;
@@ -3695,11 +3797,10 @@ class CreateForm extends CI_Controller {
       }else{
         $data[$row->req_id]["child_id"] = $row->child_id;
       }
-      // if(is_null($row->approve_id)){
-      //   $data[$row->req_id]["approve_id"] ='';
-      // }else{
-      //   $data[$row->req_id]["approve_id"] = $row->approve_id;
-      // }
+      $count_row+=1;
+        if($count_row>100){
+          break;
+      }
       
     }
     foreach($data as $req_id=>$row){
@@ -4014,6 +4115,9 @@ class CreateForm extends CI_Controller {
         $train_numbers=$trainNo;
       }
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690450752274"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
       if($this->session->userdata("type") == "admin"){
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$train_numbers);
        }
@@ -4454,6 +4558,9 @@ class CreateForm extends CI_Controller {
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690450752274"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
 
       //echo $wherestr;
 
@@ -4680,6 +4787,7 @@ class CreateForm extends CI_Controller {
     $ratingAverage=0;
     $toalRatingAMount=0;
     $totalAmount=0;
+    $amt='';
     foreach($data as $req_id=>$row){
       $work_code='';
       if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"])){
@@ -4715,13 +4823,16 @@ class CreateForm extends CI_Controller {
           }else if($percentage<55){
             $final_amt=$amt-($amt*40)/100;
           }
+          $data[$req_id]["amt_before_rating"]=$amt;
           $data[$req_id]["final_amt"]=$final_amt;
           $toalRatingAMount+=$final_amt;
         }else{
-          $data[$req_id]["final_amt"]="N/A";
+          $data[$req_id]["final_amt"]="";
+          $data[$req_id]["amt_before_rating"]=$amt;
         }
       }else{
-        $data[$req_id]["final_amt"]="N/A";
+        $data[$req_id]["final_amt"]="";
+        $data[$req_id]["amt_before_rating"]=$amt;
       }
       if(isset($row["1690450752274_2"])){
         if($row['1690450752274_2']=="Done"){
@@ -4742,6 +4853,8 @@ class CreateForm extends CI_Controller {
     // die();
     $new_data=array();
     $uom='';
+    $TotalamtBeforeRatingIntoQuant=0;
+    $TotalamtAfterRatingIntoQuant=0;
     foreach($data as $req_id=>$row){
        $warrantyStatus='';
        $item_name='';
@@ -4749,6 +4862,7 @@ class CreateForm extends CI_Controller {
        $coach_type='';
        $coach_no='';
        $uom='';
+       $finalAmtIntoQuantity='';
        if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
            $coachParts=explode("|",$row['1690365766_2']);
            if(count($coachParts)>1){
@@ -4766,6 +4880,19 @@ class CreateForm extends CI_Controller {
           $item_name=$itemWithUom[0];
           $uom=$itemWithUom[count($itemWithUom)-1];
           $item_quantity=$row2['item_quantity'];
+          if(isset($row['final_amt']) && !empty($row['final_amt'])){
+            $finalAmtIntoQuantity=(int)$item_quantity*(int)$row['final_amt'];
+            $TotalamtAfterRatingIntoQuant+=$finalAmtIntoQuantity;
+          }else{
+            $finalAmtIntoQuantity='';
+          }
+          
+          if(isset($row['amt_before_rating']) && !empty($row['amt_before_rating'])){
+            $amtBeforeRatingIntoQuant=(int)$item_quantity*(int)$row['amt_before_rating'];
+            $TotalamtBeforeRatingIntoQuant+=$amtBeforeRatingIntoQuant;
+          }else{
+            $amtBeforeRatingIntoQuant='';
+          }
           foreach($itemWithWarranty as $itemWarranty){
               if($itemWarranty['item_name']==$item_name){
                 $warrantyDay=(int)$itemWarranty['warranty_days'];
@@ -4804,7 +4931,9 @@ class CreateForm extends CI_Controller {
               "warranty_status"=>$warrantyStatus,
               "uom"=>$uom,
               "child_id"=>$row['child_id'],
-              "approve_id"=>$row['approve_id']
+              "approve_id"=>$row['approve_id'],
+              "finalAmtIntoQuantity"=>$finalAmtIntoQuantity,
+              "amtBeforeRatingIntoQuant"=>$amtBeforeRatingIntoQuant
           )
           );
 
@@ -4835,7 +4964,9 @@ class CreateForm extends CI_Controller {
               "warranty_status"=>$warrantyStatus,
               "uom"=>$uom,
               "child_id"=>$row['child_id'],
-              "approve_id"=>$row['approve_id']
+              "approve_id"=>$row['approve_id'],
+              "finalAmtIntoQuantity"=>"",
+              "amtBeforeRatingIntoQuant"=>""
           )
           );
 
@@ -4845,10 +4976,24 @@ class CreateForm extends CI_Controller {
     // print_r($ratingAverage);
    
     // die();
-   
+    $this->db->distinct();
+    $this->db->select('train_number,username');
+    $this->db->from('railway_mapping');
+    $this->db->where('username',$this->session->userdata("id"));
+    $train_dropdown_query = $this->db->get();
+    $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+    if($this->session->userdata("type")=="admin"){
+      $this->db->distinct();
+      $this->db->select('train_number,username');
+      $this->db->from('railway_mapping');
+      $train_dropdown_query = $this->db->get();
+      $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+
+    }
+
     $keys['item_list']="item_list";
     $key_label["item_list"]="Item List";
-    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","Work_Done_Status","amount","Rating Status","final_amt","work_code","warranty_status","child_id","approve_id"];
+    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","Work_Done_Status","amtBeforeRatingIntoQuant","Rating Status","finalAmtIntoQuantity","work_code","warranty_status","child_id","approve_id"];
     // echo "<pre>";
     // print_r($new_data);
  
@@ -4862,8 +5007,8 @@ class CreateForm extends CI_Controller {
     $intent["newdata"] = $new_data;
     $intent['newKeys']=$newKeys;
     $intent["ratingAverage"] = $ratingAverage;
-    $intent["toalRatingAMount"] = $toalRatingAMount;
-    $intent["totalAmount"] = $totalAmount;    
+    $intent["toalRatingAMount"] = $TotalamtAfterRatingIntoQuant;
+    $intent["totalAmount"] = $TotalamtBeforeRatingIntoQuant;    
     $intent["last_date"] = $last_date;;
     $intent["menuActive"] = "data_sheet";
     $intent["subMenuActive"]  = "data_sheet_billing";
@@ -4893,15 +5038,21 @@ class CreateForm extends CI_Controller {
       
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
-      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL ) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690450752274"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
 
-      //echo $wherestr;
+      // echo $wherestr;
+      // print_r($train_numbers);
+      // die();
 
       $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("$wherestr",null)
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
+                         ->where("billing_status","0")
                          ->order_by("update_datetime","DESC")
                          ->get('form_data');
 
@@ -5171,14 +5322,14 @@ class CreateForm extends CI_Controller {
           $toalRatingAMount+=$final_amt;
           $maxRatingWithWork+=3;
         }else{
-          $data[$req_id]["final_amt"]="N/A";
-          $data[$req_id]["tender_amt"]="N/A";
+          $data[$req_id]["final_amt"]="";
+          $data[$req_id]["tender_amt"]="";
           $data[$req_id]["rating_percent"]='';
           $data[$req_id]["penalty_amt"]='';
         }
       }else{
-        $data[$req_id]["final_amt"]="N/A";
-        $data[$req_id]["tender_amt"]="N/A";
+        $data[$req_id]["final_amt"]="";
+        $data[$req_id]["tender_amt"]="";
         $data[$req_id]["rating_percent"]='';
         $data[$req_id]["penalty_amt"]='';
       }
@@ -5201,6 +5352,10 @@ class CreateForm extends CI_Controller {
     // die();
     $new_data=array();
     $uom='';
+    $TotalamtBeforeRatingIntoQuant=0;
+    $TotalamtAfterRatingIntoQuant=0;
+    $ToalPenaltyAmount=0;
+    $ToalAmountToPaidWithQty=0;
     foreach($data as $req_id=>$row){
        $warrantyStatus='';
        $item_name='';
@@ -5225,6 +5380,19 @@ class CreateForm extends CI_Controller {
           $item_name=$itemWithUom[0];
           $uom=$itemWithUom[count($itemWithUom)-1];
           $item_quantity=$row2['item_quantity'];
+          if(isset($row['final_amt']) && !empty($row['final_amt']) && isset($row['tender_amt']) && !empty($row['tender_amt'])){
+            $finalAmtIntoQuantity=(int)$item_quantity*(int)$row['final_amt'];
+            $TotalamtAfterRatingIntoQuant+=$finalAmtIntoQuantity;
+            $amtBeforeRatingIntoQuant=(int)$item_quantity*(int)$row['tender_amt'];
+            $TotalamtBeforeRatingIntoQuant+=$amtBeforeRatingIntoQuant;
+            $penaltyAmtWithQty=$amtBeforeRatingIntoQuant-$finalAmtIntoQuantity;
+            $ToalAmountToPaidWithQty+=$finalAmtIntoQuantity;
+            $ToalPenaltyAmount+=$penaltyAmtWithQty;
+          }else{
+            $finalAmtIntoQuantity='';
+            $amtBeforeRatingIntoQuant='';
+            $penaltyAmtWithQty='';
+          }
           foreach($itemWithWarranty as $itemWarranty){
               if($itemWarranty['item_name']==$item_name){
                 $warrantyDay=(int)$itemWarranty['warranty_days'];
@@ -5267,7 +5435,14 @@ class CreateForm extends CI_Controller {
               "max_rating"=>"3",
               "tender_amt"=>$row['tender_amt'],
               "rating_percent"=>$row['rating_percent'],
-              "penalty_amt"=>$row['penalty_amt']
+              "penalty_amt"=>$row['penalty_amt'],
+              "finalAmtIntoQuantity"=>$finalAmtIntoQuantity,
+              "amtBeforeRatingIntoQuant"=>$amtBeforeRatingIntoQuant,
+              "TotalamtAfterRatingIntoQuant"=>$TotalamtAfterRatingIntoQuant,
+              "TotalamtBeforeRatingIntoQuant"=>$TotalamtBeforeRatingIntoQuant,
+              "penaltyAmtWithQty"=>$penaltyAmtWithQty,
+              "ToalPenaltyAmount"=>$ToalPenaltyAmount,
+              "ToalAmountToPaidWithQty"=>$ToalAmountToPaidWithQty
           )
           );
 
@@ -5302,7 +5477,14 @@ class CreateForm extends CI_Controller {
               "max_rating"=>"3",
               "tender_amt"=>$row['tender_amt'],
               "rating_percent"=>$row['rating_percent'],
-              "penalty_amt"=>$row['penalty_amt']
+              "penalty_amt"=>$row['penalty_amt'],
+              "finalAmtIntoQuantity"=>$finalAmtIntoQuantity,
+              "amtBeforeRatingIntoQuant"=>$amtBeforeRatingIntoQuant,
+              "TotalamtAfterRatingIntoQuant"=>$TotalamtAfterRatingIntoQuant,
+              "TotalamtBeforeRatingIntoQuant"=>$TotalamtBeforeRatingIntoQuant,
+              "penaltyAmtWithQty"=>$penaltyAmtWithQty,
+              "ToalPenaltyAmount"=>$ToalPenaltyAmount,
+              "ToalAmountToPaidWithQty"=>$ToalAmountToPaidWithQty
           )
           );
 
@@ -5312,17 +5494,72 @@ class CreateForm extends CI_Controller {
     // print_r($ratingAverage);
    
     // die();
-    $totalRatingPercent=($totalRatingGet/$maxRatingWithWork)*100;
+    if($maxRatingWithWork!=0){
+      $totalRatingPercent=($totalRatingGet/$maxRatingWithWork)*100;
+    }else{
+      $totalRatingPercent=0;
+    }
+    
    
     $keys['item_list']="item_list";
     $key_label["item_list"]="Item List";
-    $newKeys=['1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent","tender_amt","penalty_amt","final_amt"];
-    // echo "<pre>";
-    // print_r($new_data);
- 
+    $newKeys=['1690365766_1','updated','1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent","amtBeforeRatingIntoQuant","penaltyAmtWithQty","finalAmtIntoQuantity"];
+    $this->db->distinct();
+    $this->db->select("value");
+    $this->db->from("form_data");
+    $this->db->where("field_id","1690365766_1");
+    $query_1=$this->db->get();
+    $result_trains=$query_1->result_array();
+
+    $this->db->distinct();
+    $this->db->select('value');
+    $this->db->from('form_data');
+    $this->db->where('field_id', '1690365766_7');
+    $this->db->where('rating IS NOT NULL', null, false);
+    $date_query = $this->db->get();
+    $intent['date']=$date_query->result_array();
+
+    $this->db->distinct();
+    $this->db->select('value');
+    $this->db->from('form_data');
+    $this->db->where('field_id', '1690365766_8');
+    $this->db->where('rating IS NOT NULL', null, false);
+    $time1_query = $this->db->get();
+    $intent['time1']=$time1_query->result_array();
+
+    $this->db->distinct();
+    $this->db->select('value');
+    $this->db->from('form_data');
+    $this->db->where('field_id', '1690365766_9');
+    $this->db->where('rating IS NOT NULL', null, false);
+    $time2_query = $this->db->get();
+    $intent['time2']=$time2_query->result_array();
+
+    $this->db->distinct();
+    $this->db->select('train_number');
+    $this->db->from('railway_mapping');
+    $this->db->where('username',$this->session->userdata("id"));
+    $train_dropdown_query = $this->db->get();
+    $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+    if($this->session->userdata("type")=="admin"){
+      $this->db->distinct();
+      $this->db->select('train_number,username');
+      $this->db->from('railway_mapping');
+      $train_dropdown_query = $this->db->get();
+      $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+
+    }
+
+    $train_numbers_string = $this->session->userdata('train_numbers');
+    $train_numbers_dropdown=explode(",",$train_numbers_string);
+    // print_r($train_numbers_dropdown);
     // die();
-    $query_1=$this->db->select("username,train_number")->get("railway_mapping");
-    $intent['railway_trains']=$query_1->result_array();
+    if($this->session->userdata("type")=="dept"){
+      $intent['railway_trains']=$train_numbers_dropdown;
+    }else{
+      $intent['railway_trains']=$result_trains;
+    }
+    
     $intent['form_id']=$form_id;
     $intent["form_title"] = "Billing Report";
     $intent["key_label"] = $key_label;
@@ -5330,11 +5567,11 @@ class CreateForm extends CI_Controller {
     $intent["newdata"] = $new_data;
     $intent['newKeys']=$newKeys;
     $intent["ratingAverage"] = $ratingAverage;
-    $intent["toalRatingAMount"] = $toalRatingAMount;
-    $intent["totalAmount"] = $totalAmount; 
+    $intent["toalRatingAMount"] = $ToalAmountToPaidWithQty;
+    $intent["totalAmount"] = $TotalamtBeforeRatingIntoQuant; 
     $intent["totalRatingGot"] = $totalRatingGet;  
     $intent["total_max_rating"] = $maxRatingWithWork;  
-    $intent["toal_penalty_amt"] = $totalPenaltyAmt;  
+    $intent["toal_penalty_amt"] = $ToalPenaltyAmount;  
     $intent["totalRatingPercent"] = number_format($totalRatingPercent,2);  
     $intent["last_date"] = $last_date;
     $intent["menuActive"] = "data_sheet";
@@ -5359,7 +5596,7 @@ class CreateForm extends CI_Controller {
     $key_res = $this->db->select("field,field_id")->group_by("field_id")->order_by("field_id")->get_where("form_data",["form_id"=>$form_id]);
     $location = $this->session->userdata('location');
 
-    if( $this->session->userdata("type") == "dept" || $this->session->userdata("type") == "admin" ){
+    if( $this->session->userdata("type") == "dept" || $this->session->userdata("type") == "admin" ){ 
       
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
@@ -5368,36 +5605,44 @@ class CreateForm extends CI_Controller {
         $train_numbers=$trainNo;
       }
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690450752274"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
       //family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))
        if($train_numbers=="0"){
         $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
       }
       // echo $wherestr;
       // die();
-
-        $sql = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime,approve_id
-        FROM form_data
-        WHERE form_id = ?
-          AND $wherestr
-          AND rating IS NOT NULL 
-          AND location LIKE ?";
-      $params[]=$form_id;
-      $params[]=$location."%";
-      if(isset($date) && !empty($date)){
-        $sql.=" AND DATE(update_datetime) = ? ";
-        $params[]=$date;
-        
-      }
-      if(isset($time1) && !empty($time1) && isset($time2) && !empty($time2)){
-        $sql.=" AND TIME(update_datetime)>= ? AND TIME(update_datetime)<= ? ";
-        $params[]=$time1;
-        $params[]=$time2;
-        
-      }
-      $sql.=" ;";
-      $data_res=$this->db->query($sql,$params);
-      // echo $sql;
-      // die();
+      $new_params = [$date, $time1, $time2, $trainNo, $location . "%",$form_id];
+      // $sql_1 = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime, approve_id
+      //         FROM form_data
+      //         WHERE family_id IN (
+      //             SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_7'
+      //             AND value= ?
+      //             AND family_id IN (
+      //                 SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_8'
+      //                 AND TIME(value) >= TIME(?)
+      //                 AND family_id IN (
+      //                     SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_9'
+      //                     AND TIME(value) <= TIME(?)
+      //                     AND family_id IN (
+      //                         SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_1'
+      //                         AND value= ?
+      //                     )
+      //                 )
+      //             )
+      //         ) AND rating IS NOT NULL AND location LIKE ? AND form_id=? AND billing_status='0' ";
+      // $data_res=$this->db->query($sql_1,$new_params);
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
+                         ->where("form_id",$form_id)
+                         ->where("DATE(update_datetime)",$date)
+                         ->where("$wherestr",null)
+                         ->where("location like '$location%'",null)
+                         ->where("rating IS NOT NULL")
+                         ->where("billing_status","0")
+                         ->order_by("update_datetime","DESC")
+                         ->get('form_data');
 
     }else{
 
@@ -5433,6 +5678,7 @@ class CreateForm extends CI_Controller {
     //print_r($data2);
     $itemQuery=$this->db->select("item_name,warranty_days")->get("railway_work");
     $itemWithWarranty=$itemQuery->result_array();
+    $family_ids=[];
 
     foreach($data_res->result() as $row){
 
@@ -5554,6 +5800,7 @@ class CreateForm extends CI_Controller {
           }
         }
       }
+      $family_ids[]=$row->family_id;
       $this->db->select('field, value,DATE(create_datetime) as create_datetime');
       $this->db->where('family_id', $row->family_id);
       $this->db->where_in('field', array('Item List*', 'Item Quantity*'));
@@ -5667,14 +5914,14 @@ class CreateForm extends CI_Controller {
           $toalRatingAMount+=$final_amt;
           $maxRatingWithWork+=3;
         }else{
-          $data[$req_id]["final_amt"]="N/A";
-          $data[$req_id]["tender_amt"]="N/A";
+          $data[$req_id]["final_amt"]="";
+          $data[$req_id]["tender_amt"]="";
           $data[$req_id]["rating_percent"]='';
           $data[$req_id]["penalty_amt"]='';
         }
       }else{
-        $data[$req_id]["final_amt"]="N/A";
-        $data[$req_id]["tender_amt"]="N/A";
+        $data[$req_id]["final_amt"]="";
+        $data[$req_id]["tender_amt"]="";
         $data[$req_id]["rating_percent"]='';
         $data[$req_id]["penalty_amt"]='';
       }
@@ -5703,6 +5950,12 @@ class CreateForm extends CI_Controller {
     // die();
     $new_data=array();
     $uom='';
+    $username='';
+    $child_id='';
+    $TotalamtBeforeRatingIntoQuant=0;
+    $TotalamtAfterRatingIntoQuant=0;
+    $ToalAmountToPaidWithQty=0;
+    $ToalPenaltyAmount=0;
     foreach($data as $req_id=>$row){
        $warrantyStatus='';
        $item_name='';
@@ -5710,6 +5963,12 @@ class CreateForm extends CI_Controller {
        $coach_type='';
        $coach_no='';
        $uom='';
+       if(!empty($row['approve_id'])){
+        $username=$row['approve_id'];
+       }
+       if(!empty($row['child_id'])){
+        $child_id=$row['child_id'];
+       }
        if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
            $coachParts=explode("|",$row['1690365766_2']);
            if(count($coachParts)>1){
@@ -5727,6 +5986,19 @@ class CreateForm extends CI_Controller {
           $item_name=$itemWithUom[0];
           $uom=$itemWithUom[count($itemWithUom)-1];
           $item_quantity=$row2['item_quantity'];
+          if(isset($row['final_amt']) && !empty($row['final_amt']) && isset($row['tender_amt']) && !empty($row['tender_amt'])){
+            $finalAmtIntoQuantity=(int)$item_quantity*(int)$row['final_amt'];
+            $TotalamtAfterRatingIntoQuant+=$finalAmtIntoQuantity;
+            $amtBeforeRatingIntoQuant=(int)$item_quantity*(int)$row['tender_amt'];
+            $TotalamtBeforeRatingIntoQuant+=$amtBeforeRatingIntoQuant;
+            $penaltyAmtWithQty=$amtBeforeRatingIntoQuant-$finalAmtIntoQuantity;
+            $ToalAmountToPaidWithQty+=$finalAmtIntoQuantity;
+            $ToalPenaltyAmount+=$penaltyAmtWithQty;
+          }else{
+            $finalAmtIntoQuantity='';
+            $amtBeforeRatingIntoQuant='';
+            $penaltyAmtWithQty='';
+          }
           foreach($itemWithWarranty as $itemWarranty){
               if($itemWarranty['item_name']==$item_name){
                 $warrantyDay=(int)$itemWarranty['warranty_days'];
@@ -5777,7 +6049,14 @@ class CreateForm extends CI_Controller {
               "totalRatingGot"=>$totalRatingGet,
               "total_max_rating"=>$maxRatingWithWork,
               "toal_penalty_amt"=>$totalPenaltyAmt,
-              "totalRatingPercent"=>number_format($totalRatingPercent,2)
+              "totalRatingPercent"=>number_format($totalRatingPercent,2),
+              "finalAmtIntoQuantity"=>$finalAmtIntoQuantity,
+              "amtBeforeRatingIntoQuant"=>$amtBeforeRatingIntoQuant,
+              "TotalamtAfterRatingIntoQuant"=>$TotalamtAfterRatingIntoQuant,
+              "TotalamtBeforeRatingIntoQuant"=>$TotalamtBeforeRatingIntoQuant,
+              "penaltyAmtWithQty"=>$penaltyAmtWithQty,
+              "ToalPenaltyAmount"=>$ToalPenaltyAmount,
+              "ToalAmountToPaidWithQty"=>$ToalAmountToPaidWithQty
           )
           );
 
@@ -5820,23 +6099,55 @@ class CreateForm extends CI_Controller {
               "totalRatingGot"=>$totalRatingGet,
               "total_max_rating"=>$maxRatingWithWork,
               "toal_penalty_amt"=>$totalPenaltyAmt,
-              "totalRatingPercent"=>number_format($totalRatingPercent,2)
+              "totalRatingPercent"=>number_format($totalRatingPercent,2),
+              "finalAmtIntoQuantity"=>"",
+              "amtBeforeRatingIntoQuant"=>"",
+              "TotalamtAfterRatingIntoQuant"=>$TotalamtAfterRatingIntoQuant,
+              "TotalamtBeforeRatingIntoQuant"=>$TotalamtBeforeRatingIntoQuant,
+              "penaltyAmtWithQty"=>"",
+              "ToalPenaltyAmount"=>$ToalPenaltyAmount,
+              "ToalAmountToPaidWithQty"=>$ToalAmountToPaidWithQty
 
           )
           );
 
       }
     }
-    $username='';
-    if(!empty($trainNo)){
-      $this->db->select("username");
-      $this->db->where("train_number",$trainNo);
-      $query=$this->db->get("railway_mapping");
-      $result_username=$query->row_array();
-      foreach($result_username as $row){
-        $username=$row;
+    // echo $username.$child_id;
+    // die();
+    if(count($data)>0){
+      foreach($data as $req_id=>$row){
+        if(isset($row['system_family_id'])){
+            $dataForUpdate=array("billing_status"=>"1");
+            $this->db->where("family_id",$row['system_family_id']);
+            $this->db->update("form_data",$dataForUpdate);
+        }
       }
+      $this->db->where("train_number", $trainNo);
+      $this->db->where("type", "dept");
+      $this->db->where_in("username",array($username,$child_id));
+      $res = $this->db->get("railway_mapping");
+      if(count($res->result_array())>0){
+        $batch_data=$res->result_array();
+        $this->db->trans_begin();
+        $this->db->insert_batch("railway_mapping_history",$batch_data);
+        if($this->db->affected_rows()>0){
+          $this->db->where("train_number",$trainNo);
+          $this->db->delete("railway_mapping");
+          if($this->db->affected_rows()>0){
+            $this->db->trans_commit();
+          }else{
+            $this->db->trans_rollback();
+          }
+        }else{
+          $this->db->trans_rollback();
+        }
+      }
+      // echo "<pre>";
+      // print_r($res->result_array());
+      // die();
     }
+
     $intent['train_number'] = $trainNo;
     $intent['date']=$date;
     $intent['time1']=$time1;
@@ -5845,11 +6156,11 @@ class CreateForm extends CI_Controller {
     $intent['total_max_rating']=$maxRatingWithWork;
     $intent['totalRatingGot']=$totalRatingGet;
     $intent['totalRatingPercent']=number_format($totalRatingPercent,2);
-    $intent['totalAmount']=$totalAmount;
-    $intent['toal_penalty_amt']=$totalPenaltyAmt;
-    $intent['toalRatingAMount']=$toalRatingAMount;
+    $intent['totalAmount']=$TotalamtBeforeRatingIntoQuant;
+    $intent['toal_penalty_amt']=$ToalPenaltyAmount;
+    $intent['toalRatingAMount']=$ToalAmountToPaidWithQty;
     $intent['username']=$username;
-    $newKeys=['1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent","tender_amt","penalty_amt","final_amt"];
+    $newKeys=['1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent","amtBeforeRatingIntoQuant","penaltyAmtWithQty","TotalamtAfterRatingIntoQuant"];
     $intent['newKeys']=$newKeys;
     $this->load->view('view/reports/final_billing_report_sample', $intent);
 
@@ -5861,8 +6172,8 @@ class CreateForm extends CI_Controller {
   public function filterFinalBillingReport( $form_id ){
     $trainNo=$this->input->post("trainNo");
     $date=$this->input->post("date");
-    $time1=$this->input->post("time1");
-    $time2=$this->input->post("time2");
+    // $time1=$this->input->post("time1");
+    // $time2=$this->input->post("time2");
 
     ini_set('memory_limit', '-1');
     $this->db = $this->load->database("default",TRUE);  
@@ -5882,35 +6193,49 @@ class CreateForm extends CI_Controller {
       }
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
       //family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))
+      if($form_id=="1690450752274"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
        if($train_numbers=="0"){
         $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
       }
-      // echo $wherestr;
-      // die();
+      //$new_params = [$date, $time1, $time2, $trainNo, $location . "%",$form_id];
+      $new_params = [$date,$trainNo,$this->session->userdata("id"),$location . "%",$form_id];
+      // $sql_1 = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime, approve_id
+      //         FROM form_data
+      //         WHERE family_id IN (
+      //             SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_7'
+      //             AND value= ?
+      //             AND family_id IN (
+      //                 SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_1'
+      //                 AND value= ? AND  (approve_id IS NULL OR approve_id = ?)
+      //             )
+      //         ) AND rating IS NOT NULL AND location LIKE ? AND form_id=? AND billing_status='0' ";
+      // $sql_1 = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime, approve_id
+      //         FROM form_data
+      //         WHERE family_id IN (
+      //             SELECT DISTINCT family_id FROM form_data WHERE DATE(update_datetime)= ?
+      //             AND family_id IN (
+      //                 SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_1'
+      //             AND value= ? AND  (approve_id IS NULL OR approve_id = ?)
+      //             )
+      //         ) AND rating IS NOT NULL AND location LIKE ? AND form_id=? AND billing_status='0' ";
 
-        $sql = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime,approve_id
-        FROM form_data
-        WHERE form_id = ?
-          AND $wherestr
-          AND rating IS NOT NULL 
-          AND location LIKE ?";
-      $params[]=$form_id;
-      $params[]=$location."%";
-      if(isset($date) && !empty($date)){
-        $sql.=" AND DATE(update_datetime) = ? ";
-        $params[]=$date;
-        
-      }
-      if(isset($time1) && !empty($time1) && isset($time2) && !empty($time2)){
-        $sql.=" AND TIME(update_datetime)>= ? AND TIME(update_datetime)<= ? ";
-        $params[]=$time1;
-        $params[]=$time2;
-        
-      }
-      $sql.=" ;";
-      $data_res=$this->db->query($sql,$params);
-      // echo $sql;
+
+      // echo $sql_1;
+      // print_r($new_params);
       // die();
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
+                         ->where("form_id",$form_id)
+                         ->where("DATE(update_datetime)",$date)
+                         ->where("$wherestr",null)
+                         ->where("location like '$location%'",null)
+                         ->where("rating IS NOT NULL")
+                         ->where("billing_status","0")
+                         ->order_by("update_datetime","DESC")
+                         ->get('form_data');
+      // $data_res=$this->db->query($sql_1,$new_params);
+
 
     }else{
 
@@ -6188,14 +6513,14 @@ class CreateForm extends CI_Controller {
           $toalRatingAMount+=$final_amt;
           $maxRatingWithWork+=3;
         }else{
-          $data[$req_id]["final_amt"]="N/A";
-          $data[$req_id]["tender_amt"]="N/A";
+          $data[$req_id]["final_amt"]="";
+          $data[$req_id]["tender_amt"]="";
           $data[$req_id]["rating_percent"]='';
           $data[$req_id]["penalty_amt"]='';
         }
       }else{
-        $data[$req_id]["final_amt"]="N/A";
-        $data[$req_id]["tender_amt"]="N/A";
+        $data[$req_id]["final_amt"]="";
+        $data[$req_id]["tender_amt"]="";
         $data[$req_id]["rating_percent"]='';
         $data[$req_id]["penalty_amt"]='';
       }
@@ -6229,6 +6554,10 @@ class CreateForm extends CI_Controller {
     
     $new_data=array();
     $uom='';
+    $TotalamtBeforeRatingIntoQuant=0;
+    $TotalamtAfterRatingIntoQuant=0;
+    $ToalPenaltyAmount=0;
+    $ToalAmountToPaidWithQty=0;
     foreach($data as $req_id=>$row){
        $warrantyStatus='';
        $item_name='';
@@ -6253,6 +6582,19 @@ class CreateForm extends CI_Controller {
           $item_name=$itemWithUom[0];
           $uom=$itemWithUom[count($itemWithUom)-1];
           $item_quantity=$row2['item_quantity'];
+          if(isset($row['final_amt']) && !empty($row['final_amt']) && isset($row['tender_amt']) && !empty($row['tender_amt'])){
+            $finalAmtIntoQuantity=(int)$item_quantity*(int)$row['final_amt'];
+            $TotalamtAfterRatingIntoQuant+=$finalAmtIntoQuantity;
+            $amtBeforeRatingIntoQuant=(int)$item_quantity*(int)$row['tender_amt'];
+            $TotalamtBeforeRatingIntoQuant+=$amtBeforeRatingIntoQuant;
+            $penaltyAmtWithQty=$amtBeforeRatingIntoQuant-$finalAmtIntoQuantity;
+            $ToalAmountToPaidWithQty+=$finalAmtIntoQuantity;
+            $ToalPenaltyAmount+=$penaltyAmtWithQty;
+          }else{
+            $finalAmtIntoQuantity='';
+            $amtBeforeRatingIntoQuant='';
+            $penaltyAmtWithQty='';
+          }
           foreach($itemWithWarranty as $itemWarranty){
               if($itemWarranty['item_name']==$item_name){
                 $warrantyDay=(int)$itemWarranty['warranty_days'];
@@ -6303,7 +6645,14 @@ class CreateForm extends CI_Controller {
               "totalRatingGot"=>$totalRatingGet,
               "total_max_rating"=>$maxRatingWithWork,
               "toal_penalty_amt"=>$totalPenaltyAmt,
-              "totalRatingPercent"=>number_format($totalRatingPercent,2)
+              "totalRatingPercent"=>number_format($totalRatingPercent,2),
+              "finalAmtIntoQuantity"=>$finalAmtIntoQuantity,
+              "amtBeforeRatingIntoQuant"=>$amtBeforeRatingIntoQuant,
+              "TotalamtAfterRatingIntoQuant"=>$TotalamtAfterRatingIntoQuant,
+              "TotalamtBeforeRatingIntoQuant"=>$TotalamtBeforeRatingIntoQuant,
+              "penaltyAmtWithQty"=>$penaltyAmtWithQty,
+              "ToalPenaltyAmount"=>$ToalPenaltyAmount,
+              "ToalAmountToPaidWithQty"=>$ToalAmountToPaidWithQty
           )
           );
 
@@ -6346,7 +6695,14 @@ class CreateForm extends CI_Controller {
               "totalRatingGot"=>$totalRatingGet,
               "total_max_rating"=>$maxRatingWithWork,
               "toal_penalty_amt"=>$totalPenaltyAmt,
-              "totalRatingPercent"=>number_format($totalRatingPercent,2)
+              "totalRatingPercent"=>number_format($totalRatingPercent,2),
+              "finalAmtIntoQuantity"=>"",
+              "amtBeforeRatingIntoQuant"=>"",
+              "TotalamtAfterRatingIntoQuant"=>$TotalamtAfterRatingIntoQuant,
+              "TotalamtBeforeRatingIntoQuant"=>$TotalamtBeforeRatingIntoQuant,
+              "penaltyAmtWithQty"=>"",
+              "ToalPenaltyAmount"=>$ToalPenaltyAmount,
+              "ToalAmountToPaidWithQty"=>$ToalAmountToPaidWithQty
 
           )
           );
@@ -6854,6 +7210,9 @@ class CreateForm extends CI_Controller {
         $train_numbers=$trainNo;
       }
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690450752274"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
       //family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))
        if($train_numbers=="0"){
         $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
@@ -7117,14 +7476,17 @@ class CreateForm extends CI_Controller {
               $final_amt=$amt-($amt*40)/100;
             }
           $data[$req_id]["final_amt"]=$final_amt;
+          $data[$req_id]["amt_before_rating"]=$amt;
           $totalRatingAmount+=$final_amt;
         }else{
-          $data[$req_id]["final_amt"]="N/A";
-          $data[$req_id]["amount"]="N/A";
+          $data[$req_id]["final_amt"]="";
+          $data[$req_id]["amount"]="";
+          $data[$req_id]["amt_before_rating"]=$amt;
         }
       }else{
-        $data[$req_id]["final_amt"]="N/A";
-        $data[$req_id]["amount"]="N/A";
+        $data[$req_id]["final_amt"]="";
+        $data[$req_id]["amount"]="";
+        $data[$req_id]["amt_before_rating"]='';
 
       }
       if(isset($row["1690450752274_2"])){
@@ -7143,6 +7505,8 @@ class CreateForm extends CI_Controller {
       $typeOfStatus="Status";
     }
     $new_data=array();
+    $TotalamtAfterRatingIntoQuant=0;
+    $TotalamtBeforeRatingIntoQuant=0;
     foreach($data as $req_id=>$row){
        $item_name='';
        $item_quantity='';
@@ -7167,6 +7531,19 @@ class CreateForm extends CI_Controller {
           $item_name=$itemWithUom[0];
           $uom=$itemWithUom[count($itemWithUom)-1];
           $item_quantity=$row2['item_quantity'];
+          if(isset($row['final_amt']) && !empty($row['final_amt'])){
+            $finalAmtIntoQuantity=(int)$item_quantity*(int)$row['final_amt'];
+            $TotalamtAfterRatingIntoQuant+=$finalAmtIntoQuantity;
+          }else{
+            $finalAmtIntoQuantity='';
+          }
+          
+          if(isset($row['amt_before_rating']) && !empty($row['amt_before_rating'])){
+            $amtBeforeRatingIntoQuant=(int)$item_quantity*(int)$row['amt_before_rating'];
+            $TotalamtBeforeRatingIntoQuant+=$amtBeforeRatingIntoQuant;
+          }else{
+            $amtBeforeRatingIntoQuant='';
+          }
           foreach($itemWithWarranty as $itemWarranty){
               if($itemWarranty['item_name']==$item_name){
                 $warrantyDay=(int)$itemWarranty['warranty_days'];
@@ -7209,7 +7586,11 @@ class CreateForm extends CI_Controller {
               "totalAmount"=>number_format($totalAmount,2),
               "uom"=>$uom,
               "child_id"=>$row['child_id'],
-              "approve_id"=>$row['approve_id']
+              "approve_id"=>$row['approve_id'],
+              "finalAmtIntoQuantity"=>$finalAmtIntoQuantity,
+              "amtBeforeRatingIntoQuant"=>$amtBeforeRatingIntoQuant,
+              "TotalamtAfterRatingIntoQuant"=>$TotalamtAfterRatingIntoQuant,
+              "TotalamtBeforeRatingIntoQuant"=>$TotalamtBeforeRatingIntoQuant
           )
           );
 
@@ -7244,7 +7625,11 @@ class CreateForm extends CI_Controller {
               "totalAmount"=>number_format($totalAmount,2),
               "uom"=>$uom,
               "child_id"=>$row['child_id'],
-              "approve_id"=>$row['approve_id']
+              "approve_id"=>$row['approve_id'],
+              "finalAmtIntoQuantity"=>"",
+              "amtBeforeRatingIntoQuant"=>"",
+              "TotalamtAfterRatingIntoQuant"=>$TotalamtAfterRatingIntoQuant,
+              "TotalamtBeforeRatingIntoQuant"=>$TotalamtBeforeRatingIntoQuant
           )
           );
 
@@ -8430,18 +8815,35 @@ class CreateForm extends CI_Controller {
     $status = $this->input->post("status");
     $datetime = date("Y-m-d H:i:s");
     $id = $this->session->userdata("id");
-    // foreach($remarks as $row){
-    //   // echo $row['req_id'];
-    //   // echo $row['remark'];
-    //   echo "<pre>";
-    //   print_r($row);
-    // }
-    // die();
-
     if($status=="Verified"){
       foreach($remarks as $row){
           $this->db->where("req_id",$row['req_id']);
           $this->db->update("form_data",["status"=>"Verified","approve_datetime"=>$datetime,"approve_id"=>$id,"remarks"=>$row['remark']]);
+
+          $query = $this->db->distinct()
+                            ->select('family_id')
+                            ->where('req_id',$row['req_id'])
+                            ->get('form_data');
+
+          $family_id_result = $query->row_array();
+          $family_id=$family_id_result['family_id'];
+          if(empty($family_id)){
+            die();
+          }
+          $res = $this->db->get_where("form_data_update",["family_id"=>$family_id]);
+          $arr = [];
+          $form_id = '';
+          foreach($res->result_array() as $index => $row1){
+            $form_id = $row1["form_id"];
+            foreach($row1 as $key => $value){
+              if($key!="record_id"){
+                $arr[$index][$key] = $value; 
+              }
+            }
+          }
+          $this->db->insert_batch("form_data",$arr);
+
+          $this->db->delete("form_data_update",["family_id"=>$family_id]);
       }
     }
     if($status=="Rejected"){
@@ -8674,6 +9076,10 @@ class CreateForm extends CI_Controller {
       }
     }
 
+    // echo "<pre>";
+    // print_r($users);
+    // die();
+
     $intent["users"] = $users;
     $intent["type"] = $type;
     $intent["train_numbers"] = $train_numbers;
@@ -8716,6 +9122,12 @@ class CreateForm extends CI_Controller {
           "assigned_at" => $assigned_at
         ];
         $delete_username_data[] = $row->username;
+      }
+    }
+    foreach($railway_mapping as $row){
+      if(count($row->assign)==0){
+        $this->db->where("username",$row->username);
+        $this->db->delete("railway_mapping");
       }
     }
 

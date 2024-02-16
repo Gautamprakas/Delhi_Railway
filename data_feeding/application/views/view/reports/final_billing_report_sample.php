@@ -65,7 +65,7 @@
         <th colspan="6" style="text-align: right;">Maintenance JEE/SSE - <?php echo $username ;?></th>
       </tr>
       <tr>
-        <th colspan="5" style="text-align: left;">Date <?php echo $date ; ?></th>
+        <th colspan="5" style="text-align: left;">Date -<?php echo $date ; ?></th>
         <th colspan="6" style="text-align: right;">Maintenance Slot - From <?php echo $time1 ; ?>AM To <?php echo $time2 ; ?>PM</th>
       </tr>
     </thead>
@@ -127,7 +127,7 @@
     <?php }?>
 <?php }?>
   </tbody>
-    <tfoot>
+    <tfoot style="font-weight: bold;">
         <tr>
             <th colspan="5">Total Rating</th>
             <td><?php echo $total_max_rating; ?></td>

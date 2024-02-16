@@ -15,7 +15,7 @@
                           <select  id="selectTrain" required>
                             <option value="">--Select Train Number--</option>
                         <?php
-                            foreach ($railway_trains as $row) { ?>
+                            foreach ($train_numbers_dropdown as $row) { ?>
                              
                                 <option value="<?php echo $row['train_number']; ?>" required>
                                     <?php echo $row['train_number']; ?>
