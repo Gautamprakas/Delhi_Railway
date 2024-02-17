@@ -17,8 +17,8 @@
                         <?php
                             foreach ($train_numbers_dropdown as $row) { ?>
                              
-                                <option value="<?php echo $row['train_number']; ?>" required>
-                                    <?php echo $row['train_number']; ?>
+                                <option value="<?php echo $row['value']; ?>" required>
+                                    <?php echo $row['value']; ?>
                                 </option>
                             <?php } ?>
                         

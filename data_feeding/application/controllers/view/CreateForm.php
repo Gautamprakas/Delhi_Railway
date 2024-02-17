@@ -606,9 +606,9 @@ class CreateForm extends CI_Controller {
       
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
-      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL ) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE  approve_id='%s')",$this->session->userdata("id"));
       if($form_id=="1690450752274"){
-        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE approve_id='%s')",$this->session->userdata("id"));
       }
 
       //echo $wherestr;
@@ -964,15 +964,18 @@ class CreateForm extends CI_Controller {
       }
     }
     $this->db->distinct();
-    $this->db->select('train_number,username');
-    $this->db->from('railway_mapping');
-    $this->db->where('username',$this->session->userdata("id"));
+    $this->db->select('value,approve_id');
+    $this->db->from('form_data');
+    $this->db->where("field_id","1690365766_1");
+    $this->db->where('approve_id',$this->session->userdata("id"));
     $train_dropdown_query = $this->db->get();
     $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
     if($this->session->userdata("type")=="admin"){
       $this->db->distinct();
-      $this->db->select('train_number,username');
-      $this->db->from('railway_mapping');
+      $this->db->select('value,approve_id');
+      $this->db->from('form_data');
+      $this->db->where("approve_id IS NOT NULL");
+      $this->db->where("field_id","1690365766_1");
       $train_dropdown_query = $this->db->get();
       $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
 
@@ -1032,11 +1035,10 @@ class CreateForm extends CI_Controller {
       
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
-      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE  approve_id='%s')",$this->session->userdata("id"));
       if($form_id=="1690450752274"){
-        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
-      }
-
+          $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE approve_id='%s')",$this->session->userdata("id"));
+        }
       //echo $wherestr;
 
       $data_res = $this->db->select("record_id,child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
@@ -1448,15 +1450,18 @@ class CreateForm extends CI_Controller {
     // print_r($itemWarrantyArray);
     // die();
     $this->db->distinct();
-    $this->db->select('train_number,username');
-    $this->db->from('railway_mapping');
-    $this->db->where('username',$this->session->userdata("id"));
+    $this->db->select('value,approve_id');
+    $this->db->from('form_data');
+    $this->db->where("field_id","1690365766_1");
+    $this->db->where('approve_id',$this->session->userdata("id"));
     $train_dropdown_query = $this->db->get();
     $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
     if($this->session->userdata("type")=="admin"){
       $this->db->distinct();
-      $this->db->select('train_number,username');
-      $this->db->from('railway_mapping');
+      $this->db->select('value,approve_id');
+      $this->db->from('form_data');
+      $this->db->where("approve_id IS NOT NULL");
+      $this->db->where("field_id","1690365766_1");
       $train_dropdown_query = $this->db->get();
       $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
 
@@ -1508,14 +1513,19 @@ class CreateForm extends CI_Controller {
         $train_numbers=$trainNo;
       }
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
-      if($form_id=="1690450752274"){
+      if($form_id=="1690450752274" && !empty($trainNo)){
         $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
       }
+      if($form_id=="1690450752274" && empty($trainNo)){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE approve_id='%s')",$this->session->userdata("id"));
+      }
 
-       if($train_numbers=="0"){
+      if($train_numbers=="0" && $this->session->userdata("type") == "admin"){
         $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
       }
-      
+      if(!empty($trainNo) && $this->session->userdata("type") == "admin"){
+        $$wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$train_numbers);
+      }
 
       //echo $wherestr;
 
@@ -2008,9 +2018,9 @@ class CreateForm extends CI_Controller {
       
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
-      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE ( approve_id='%s' OR approve_id IS NULL))",$this->session->userdata("id"));
       if($form_id=="1690450752274"){
-        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE approve_id='%s')",$this->session->userdata("id"));
       }
 
       //echo $wherestr;
@@ -2488,16 +2498,20 @@ class CreateForm extends CI_Controller {
     if($form_id=="1690450752274"){
       $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","warranty_status","Work_Done_Status",$typeOfStatus,"bulk_rating","child_id","approve_id"];
     }
+
     $this->db->distinct();
-    $this->db->select('train_number,username');
-    $this->db->from('railway_mapping');
-    $this->db->where('username',$this->session->userdata("id"));
+    $this->db->select('value,approve_id');
+    $this->db->from('form_data');
+    $this->db->where("field_id","1690365766_1");
+    $this->db->where('approve_id',$this->session->userdata("id"));
     $train_dropdown_query = $this->db->get();
     $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
     if($this->session->userdata("type")=="admin"){
       $this->db->distinct();
-      $this->db->select('train_number,username');
-      $this->db->from('railway_mapping');
+      $this->db->select('value,approve_id');
+      $this->db->from('form_data');
+      $this->db->where("approve_id IS NOT NULL");
+      $this->db->where("field_id","1690365766_1");
       $train_dropdown_query = $this->db->get();
       $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
 
@@ -2554,9 +2568,9 @@ class CreateForm extends CI_Controller {
       
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
-      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL ) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE  approve_id='%s')",$this->session->userdata("id"));
       if($form_id=="1690365766"){
-        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE approve_id='%s')",$this->session->userdata("id"));
       }
 
       //echo $wherestr;
@@ -2915,15 +2929,18 @@ class CreateForm extends CI_Controller {
       $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","warranty_status","Work_Done_Status","child_id","approve_id"];
     }
     $this->db->distinct();
-    $this->db->select('train_number,username');
-    $this->db->from('railway_mapping');
-    $this->db->where('username',$this->session->userdata("id"));
+    $this->db->select('value,approve_id');
+    $this->db->from('form_data');
+    $this->db->where("field_id","1690365766_1");
+    $this->db->where('approve_id',$this->session->userdata("id"));
     $train_dropdown_query = $this->db->get();
     $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
     if($this->session->userdata("type")=="admin"){
       $this->db->distinct();
-      $this->db->select('train_number,username');
-      $this->db->from('railway_mapping');
+      $this->db->select('value,approve_id');
+      $this->db->from('form_data');
+      $this->db->where("approve_id IS NOT NULL");
+      $this->db->where("field_id","1690365766_1");
       $train_dropdown_query = $this->db->get();
       $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
 
@@ -3019,14 +3036,17 @@ class CreateForm extends CI_Controller {
         $train_numbers=$trainNo;
       }
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
-      if($form_id=="1690365766"){
+      if($form_id=="1690365766" && !empty($trainNo)){
         $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
+      if($form_id=="1690365766" && empty($trainNo)){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE approve_id='%s')",$this->session->userdata("id"));
       }
       if($this->session->userdata("type") == "admin"){
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$train_numbers);
        }
 
-      if($train_numbers=="0"){
+      if($train_numbers=="0" && $this->session->userdata("type") == "admin"){
           $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
         }
     
@@ -3513,41 +3533,28 @@ class CreateForm extends CI_Controller {
       if(isset($trainNo) && !empty($trainNo)){
         $train_numbers=$trainNo;
       }
-      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
-      if($form_id=="1690450752274"){
+      // $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690365766" && empty($trainNo)){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE  (approve_id='%s' OR approve_id IS NULL))",$this->session->userdata("id"));
+      }
+      if($form_id=="1690365766" && !empty($trainNo)){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
+      if($form_id=="1690450752274" && !empty($trainNo)){
         $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
+      if($form_id=="1690450752274" && empty($trainNo)){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE  approve_id='%s')",$this->session->userdata("id"));
       }
       if($this->session->userdata("type") == "admin"){
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$train_numbers);
-       }
+      }
 
-      if($train_numbers=="0"){
+      if($train_numbers=="0" && $this->session->userdata("type") == "admin"){
           $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
-        }
-
-      //   $sql = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime
-      //   FROM form_data
-      //   WHERE form_id = ?
-      //     AND $wherestr
-      //     AND location LIKE ?";
-      // $params[]=$form_id;
-      // $params[]=$location."%";
-      // if(isset($dateFilter) && !empty($dateFilter)){
-      //   $sql.=" AND DATE(update_datetime) = ? ";
-      //   $params[]=$dateFilter;
-        
-      // }
-      // if(isset($time1) && !empty($time1) && isset($time2) && !empty($time2)){
-      //   $sql.=" AND TIME(update_datetime)>= ? AND TIME(update_datetime)<= ? ";
-      //   $params[]=$time1;
-      //   $params[]=$time2;
-        
-      // }
-      // $sql.=" ;";
-      // echo $sql;
-      // print_r($params);
+      }
+      // echo $wherestr;
       // die();
-      // $data_res=$this->db->query($sql,$params);
         if(!empty($dateFilter)){
           $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
                            ->where("form_id",$form_id)
@@ -4048,81 +4055,23 @@ class CreateForm extends CI_Controller {
     // echo $location;
     // die();
     if($this->session->userdata("type")=="dept" || $this->session->userdata("type") == "admin"){
-      //     $sql1 = sprintf("SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime ,approve_id
-      //         FROM `form_data` WHERE form_id= '%s'
-      //         AND family_id IN (
-      //             SELECT family_id
-      //             FROM form_data
-      //             WHERE approve_id IS NULL OR approve_id ='%s'","1690450752274",$this->session->userdata("id"));
-      // $sql2="SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime ,approve_id
-      //         FROM `form_data` WHERE form_id= '1690450752274'
-      //         AND family_id IN (";
-      // $params = array();
-      // if (!empty($trainNo)) {
-      //     $sql1 .= " AND (field_id = '1690365766_1' AND value = ?)";
-      //     $sql2.="SELECT family_id FROM form_data WHERE field_id = '1690365766_1' AND value = ?";
-      //     $params[] = $trainNo;
-      // }
-      // // if(!empty($dateFilter)){
-      // //   $sql1.=" AND DATE(update_datetime) = ? ";
-      // //   $params[]=$dateFilter;
-      // // }
-
-      // if (!empty($berth) && count($params)>0) {
-      //     $sql1 .= " OR (field_id = '1690365766_4' AND value = ?)";
-      //     $params[] = $berth;
-      // }
-      // if (!empty($berth) && count($params)==0) {
-      //     $sql1 .= " AND (field_id = '1690365766_4' AND value = ?)";
-      //     $params[] = $berth;
-      // }
-
-      // if (!empty($work_status) && count($params)>0) {
-      //     $sql1 .= " OR (field_id = '1690365766_6' AND value = ?)";
-      //     $params[] = $work_status;
-      // }
-      // if (!empty($work_status) && count($params)==0) {
-      //     $sql1 .= " AND (field_id = '1690365766_6' AND value = ?)";
-      //     $params[] = $work_status;
-      // }
-
-      // if (!empty($coach_no) && count($params)>0) {
-      //     $sql1 .= " OR (field_id = '1690365766_2' AND value = ?)";
-      //     $params[] = $coach_no;
-      // }
-      // if (!empty($coach_no) && count($params)==0) {
-      //     $sql1 .= " AND (field_id = '1690365766_2' AND value = ?)";
-      //     $params[] = $coach_no;
-      // }
-
-      // $sql1 .= " GROUP BY family_id";
-
-      // if (count($params) > 0) {
-      //     $sql1 .= " HAVING COUNT(DISTINCT field_id) = " . count($params);
-      // }
-
-      // //$sql1 .= ") AND form_id = ? ;";
-      // if(empty($dateFilter)){
-      //   $sql1 .= ")  ;";
-      //   // $params[] = $form_id;
-      // }else{
-      //   $sql1 .= ") AND DATE(update_datetime) =? ;";
-      //   $params[]=$dateFilter;
-      // }
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
       if(isset($trainNo) && !empty($trainNo)){
         $train_numbers=$trainNo;
       }
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
-      if($form_id=="1690450752274"){
+      if($form_id=="1690450752274" && !empty($trainNo)){
         $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      }
+      if($form_id=="1690450752274" && empty($trainNo)){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE approve_id='%s')",$this->session->userdata("id"));
       }
       if($this->session->userdata("type") == "admin"){
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$train_numbers);
        }
 
-      if($train_numbers=="0"){
+      if($train_numbers=="0" && $this->session->userdata("type") == "admin"){
           $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
         }
 
@@ -4557,11 +4506,10 @@ class CreateForm extends CI_Controller {
       
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
-      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE  approve_id='%s')",$this->session->userdata("id"));
       if($form_id=="1690450752274"){
-        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE approve_id='%s')",$this->session->userdata("id"));
       }
-
       //echo $wherestr;
 
       $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
@@ -4977,15 +4925,18 @@ class CreateForm extends CI_Controller {
    
     // die();
     $this->db->distinct();
-    $this->db->select('train_number,username');
-    $this->db->from('railway_mapping');
-    $this->db->where('username',$this->session->userdata("id"));
+    $this->db->select('value,approve_id');
+    $this->db->from('form_data');
+    $this->db->where("field_id","1690365766_1");
+    $this->db->where('approve_id',$this->session->userdata("id"));
     $train_dropdown_query = $this->db->get();
     $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
     if($this->session->userdata("type")=="admin"){
       $this->db->distinct();
-      $this->db->select('train_number,username');
-      $this->db->from('railway_mapping');
+      $this->db->select('value,approve_id');
+      $this->db->from('form_data');
+      $this->db->where("approve_id IS NOT NULL");
+      $this->db->where("field_id","1690365766_1");
       $train_dropdown_query = $this->db->get();
       $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
 
@@ -5038,11 +4989,10 @@ class CreateForm extends CI_Controller {
       
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
-      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL ) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE  approve_id='%s')",$this->session->userdata("id"));
       if($form_id=="1690450752274"){
-        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE approve_id='%s')",$this->session->userdata("id"));
       }
-
       // echo $wherestr;
       // print_r($train_numbers);
       // die();
@@ -5062,6 +5012,7 @@ class CreateForm extends CI_Controller {
                          ->where("form_id",$form_id)
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
+                         ->where("billing_status","0")
                          ->order_by("update_datetime","DESC")
                          ->get('form_data');
     }
@@ -5536,15 +5487,18 @@ class CreateForm extends CI_Controller {
     $intent['time2']=$time2_query->result_array();
 
     $this->db->distinct();
-    $this->db->select('train_number');
-    $this->db->from('railway_mapping');
-    $this->db->where('username',$this->session->userdata("id"));
+    $this->db->select('value,approve_id');
+    $this->db->from('form_data');
+    $this->db->where("field_id","1690365766_1");
+    $this->db->where('approve_id',$this->session->userdata("id"));
     $train_dropdown_query = $this->db->get();
     $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
     if($this->session->userdata("type")=="admin"){
       $this->db->distinct();
-      $this->db->select('train_number,username');
-      $this->db->from('railway_mapping');
+      $this->db->select('value,approve_id');
+      $this->db->from('form_data');
+      $this->db->where("field_id","1690365766_1");
+      $this->db->where("approve_id IS NOT NULL");
       $train_dropdown_query = $this->db->get();
       $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
 
@@ -5604,36 +5558,16 @@ class CreateForm extends CI_Controller {
       if(isset($trainNo) && !empty($trainNo)){
         $train_numbers=$trainNo;
       }
-      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
-      if($form_id=="1690450752274"){
+      // $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+      if($form_id=="1690450752274" && !empty($trainNo)){
         $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
       }
-      //family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))
-       if($train_numbers=="0"){
-        $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
+      if(!empty($trainNo) && $this->session->userdata("type") == "admin"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$train_numbers);
       }
       // echo $wherestr;
       // die();
-      $new_params = [$date, $time1, $time2, $trainNo, $location . "%",$form_id];
-      // $sql_1 = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime, approve_id
-      //         FROM form_data
-      //         WHERE family_id IN (
-      //             SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_7'
-      //             AND value= ?
-      //             AND family_id IN (
-      //                 SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_8'
-      //                 AND TIME(value) >= TIME(?)
-      //                 AND family_id IN (
-      //                     SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_9'
-      //                     AND TIME(value) <= TIME(?)
-      //                     AND family_id IN (
-      //                         SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_1'
-      //                         AND value= ?
-      //                     )
-      //                 )
-      //             )
-      //         ) AND rating IS NOT NULL AND location LIKE ? AND form_id=? AND billing_status='0' ";
-      // $data_res=$this->db->query($sql_1,$new_params);
+      //$new_params = [$date, $time1, $time2, $trainNo, $location . "%",$form_id];
       $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("DATE(update_datetime)",$date)
@@ -6184,7 +6118,7 @@ class CreateForm extends CI_Controller {
     $location = $this->session->userdata('location');
 
     if( $this->session->userdata("type") == "dept" || $this->session->userdata("type") == "admin" ){
-      
+  
       $train_numbers = $this->session->userdata('train_numbers');
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
       $params=[];
@@ -6192,39 +6126,14 @@ class CreateForm extends CI_Controller {
         $train_numbers=$trainNo;
       }
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
-      //family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))
-      if($form_id=="1690450752274"){
+      if($form_id=="1690450752274" && !empty($trainNo)){
         $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
       }
-       if($train_numbers=="0"){
-        $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
+      if(!empty($trainNo) && $this->session->userdata("type") == "admin"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$train_numbers);
       }
       //$new_params = [$date, $time1, $time2, $trainNo, $location . "%",$form_id];
-      $new_params = [$date,$trainNo,$this->session->userdata("id"),$location . "%",$form_id];
-      // $sql_1 = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime, approve_id
-      //         FROM form_data
-      //         WHERE family_id IN (
-      //             SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_7'
-      //             AND value= ?
-      //             AND family_id IN (
-      //                 SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_1'
-      //                 AND value= ? AND  (approve_id IS NULL OR approve_id = ?)
-      //             )
-      //         ) AND rating IS NOT NULL AND location LIKE ? AND form_id=? AND billing_status='0' ";
-      // $sql_1 = "SELECT child_id, geo_loc, create_datetime, update_datetime, value, req_id, field_id, status, family_id, member_id, location, rating, approve_datetime, rating_datetime, approve_id
-      //         FROM form_data
-      //         WHERE family_id IN (
-      //             SELECT DISTINCT family_id FROM form_data WHERE DATE(update_datetime)= ?
-      //             AND family_id IN (
-      //                 SELECT DISTINCT family_id FROM form_data WHERE field_id='1690365766_1'
-      //             AND value= ? AND  (approve_id IS NULL OR approve_id = ?)
-      //             )
-      //         ) AND rating IS NOT NULL AND location LIKE ? AND form_id=? AND billing_status='0' ";
-
-
-      // echo $sql_1;
-      // print_r($new_params);
-      // die();
+      // $new_params = [$date,$trainNo,$this->session->userdata("id"),$location . "%"];
       $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("DATE(update_datetime)",$date)
@@ -7210,12 +7119,19 @@ class CreateForm extends CI_Controller {
         $train_numbers=$trainNo;
       }
       $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
-      if($form_id=="1690450752274"){
+      if($form_id=="1690450752274" && !empty($trainNo)){
         $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
       }
+      if($form_id=="1690450752274" && empty($trainNo)){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE approve_id='%s')",$this->session->userdata("id"));
+      }
       //family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))
-       if($train_numbers=="0"){
+       if($train_numbers=="0" && $this->session->userdata("type")=="admin"){
         $wherestr = "family_id IN (SELECT DISTINCT family_id FROM form_data)";
+      }
+      if(!empty($train_numbers) && $this->session->userdata("type")=="admin"){
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$train_numbers);
+
       }
       // echo $wherestr;
       // die();
@@ -8817,8 +8733,17 @@ class CreateForm extends CI_Controller {
     $id = $this->session->userdata("id");
     if($status=="Verified"){
       foreach($remarks as $row){
-          $this->db->where("req_id",$row['req_id']);
-          $this->db->update("form_data",["status"=>"Verified","approve_datetime"=>$datetime,"approve_id"=>$id,"remarks"=>$row['remark']]);
+          // $this->db->distinct();
+          // $this->db->select("family_id");
+          // $this->db->where("req_id",$row['req_id']);
+          // $family_id_res_req_id=$this->db->get("form_data");
+          // $family_id_for_req_id_array=$family_id_res_req_id->row_array();
+          // $family_id_for_req_id=$family_id_for_req_id_array['family_id'];
+          // if(empty($family_id_for_req_id)){
+          //   die();
+          // }
+          // $this->db->where("req_id",$row['req_id']);
+          // $this->db->update("form_data",["status"=>"Verified","approve_datetime"=>$datetime,"approve_id"=>$id,"remarks"=>$row['remark']]);
 
           $query = $this->db->distinct()
                             ->select('family_id')
@@ -8830,6 +8755,12 @@ class CreateForm extends CI_Controller {
           if(empty($family_id)){
             die();
           }
+          $this->db->where("family_id",$family_id);
+          $this->db->update("form_data",["status"=>"Verified","approve_datetime"=>$datetime,"approve_id"=>$id,"remarks"=>$row['remark']]);
+
+          $this->db->where("family_id",$family_id);
+          $this->db->update("form_data_update",["status"=>"Verified","approve_datetime"=>$datetime,"approve_id"=>$id,"remarks"=>$row['remark']]);
+
           $res = $this->db->get_where("form_data_update",["family_id"=>$family_id]);
           $arr = [];
           $form_id = '';
