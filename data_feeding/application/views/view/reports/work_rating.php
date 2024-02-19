@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="block-header">
                     <!-- Create Form -->
-                    <div class="card">
+                    <div class="card" style="overflow-x: scroll";>
                     <form class="form-group form-float">
                       <table class="custom-table" style="width: 100%;font-weight: bold;">
                         <thead>
@@ -124,12 +124,13 @@
                                         
 </tbody>
 </table>
-<div class='icon-button-demo' style='display: inline-flex;'><button type='button'  class='btn bg-red btn-circle waves-effect waves-circle waves-float rating-button' data-status='Verified' data-rating='1' >1<i class='material-icons'>star_rate</i></button><button type='button' class='btn bg-amber btn-circle waves-effect waves-circle waves-float rating-button' data-status='Verified' data-rating='2' >2<i class='material-icons'>star_rate</i></button><button type='button'  class='btn bg-light-green btn-circle waves-effect waves-circle waves-float rating-button' data-status='Verified' data-rating='3'>3<i class='material-icons'>star_rate</i></button></div>"
+<?php if($this->session->userdata("type")=="dept"){ ?>
+<div class='icon-button-demo' style='display: inline-flex;'><button type='button'  class='btn bg-black btn-circle waves-effect waves-circle waves-float rating-button' data-status='Verified' data-rating='0' >0<i class='material-icons'>star_rate</i><button type='button'  class='btn bg-red btn-circle waves-effect waves-circle waves-float rating-button' data-status='Verified' data-rating='1' >1<i class='material-icons'>star_rate</i></button><button type='button' class='btn bg-amber btn-circle waves-effect waves-circle waves-float rating-button' data-status='Verified' data-rating='2' >2<i class='material-icons'>star_rate</i></button><button type='button'  class='btn bg-light-green btn-circle waves-effect waves-circle waves-float rating-button' data-status='Verified' data-rating='3'>3<i class='material-icons'>star_rate</i></button></div>
                         </div>
                     </div>
                 </div>
             </div>
-
+<?php } ?>
 
 
 

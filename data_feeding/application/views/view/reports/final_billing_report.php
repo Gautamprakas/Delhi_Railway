@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="block-header">
                     <!-- Create Form -->
-                    <div class="card">
+                    <div class="card" style="overflow-x: scroll";>
                     <form class="form-group form-float">
                       <table class="custom-table" style="width: 100%;font-weight: bold;">
                         <thead>

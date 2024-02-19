@@ -389,7 +389,7 @@ jQuery(document).ready(function(){
                 swal("Please select at least one Work.");
                 return;
             }
-            // console.log(ratingData);
+            console.log(ratingData);
             swal({
                 title: "Are you sure?",
                 text: "You want to give "+rating+ " star rating to the selected work.",

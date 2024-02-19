@@ -174,7 +174,7 @@ jQuery(document).ready(function(){
                                 else if(value=="Status"){
                                     $("#tableID"+j+"_12").html(data[family_id][value]);
                                 }
-                                else if(value=="Rating Status"){
+                                else if(value=="rating"){
                                     $("#tableID"+j+"_15").html(data[family_id][value]);
                                 }else if(value=="uom"){
                                     $("#tableID"+j+"_11").text(data[family_id][value]);
