@@ -124,7 +124,7 @@ jQuery(document).ready(function(){
                                     $("#tableID"+j+"_8").html(data[family_id][value]);
                                 }else if(value=="work_code"){
                                     $("#tableID"+j+"_10").text(data[family_id][value]);
-                                }else if(value=="warranty_status"){
+                                }else if(value=="new_warranty_status"){
                                     $("#tableID"+j+"_11").html(data[family_id][value]);
                                 }else if(value=="1690365766_1"){
                                     $("#tableID"+j+"_2").text(data[family_id][value]);

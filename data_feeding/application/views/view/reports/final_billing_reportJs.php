@@ -250,6 +250,9 @@ $("#printButton").click(function(){
                         alert("Pop-up blocked. Please allow pop-ups for this site.");
                     } else {
                         // Write the response into the new window
+                        newWindow.document.body.innerHTML = '';
+
+                        // Write the response into the new window
                         newWindow.document.write(response);
                         location.reload();
                     }

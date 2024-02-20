@@ -880,11 +880,11 @@ class CreateForm extends CI_Controller {
     foreach($data as $req_id=>$row){
        $item_name='';
        $item_quantity='';
-       $warrantyStatus='';
+       $warrantyStatus=0;
        $uom='';
        if(count($row['item_list'])>0){
         foreach($row['item_list'] as $row2){
-          $warrantyStatus='';
+          $warrantyStatus=0;
           $uom='';
           $itemWithUom=explode("|",$row2['item_name']);
           $item_name=$itemWithUom[0];
@@ -899,8 +899,8 @@ class CreateForm extends CI_Controller {
                 if($interval->days>$warrantyDay){
                   $warrantyStatus=0;
                 }else{
-                  $warrantyLeftInDays=$warrantyDay-$interval->days;
-                      $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
+                  $warrantyStatus=$warrantyDay-$interval->days;
+                      // $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
                 }
               }
           }
@@ -964,8 +964,8 @@ class CreateForm extends CI_Controller {
 
       }
     }
-    foreach($new_data as $data){
-      foreach($data as $req_id=>$row){
+    foreach($new_data as &$data){
+      foreach($data as $req_id=>&$row){
         $trainNo=$row['1690365766_1'];
         $coachNo=$row['1690365766_2'];
         $coachLoc=$row['1690365766_3'];
@@ -976,21 +976,19 @@ class CreateForm extends CI_Controller {
         $item_use_date=new DateTime($row['updated']);
         foreach($new_data as &$data1){
           foreach($data1 as $req_id1=>&$row1){
-            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>$item_use_date){
-              if($row1['warranty_status']!=0){
-                $row1['warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
+            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>=$item_use_date){
+              if($row1['warranty_status']==0){
+                $row1['new_warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
               }else{
-                $row1['warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
+                $row1['new_warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
               }
-
-
             }
           }
         }
-
-
-      }
-    }  
+      $row['new_warranty_status']="<span class='font-bold col-teal'>{$row['warranty_status']}</span>";
+    }
+  }
+     
 
     $this->db->distinct();
     $this->db->select('value,approve_id');
@@ -1016,7 +1014,7 @@ class CreateForm extends CI_Controller {
     $keys['item_list']="item_list";
     $key_label["item_list"]="Item List";
      // echo "<pre>";
-    $newKeys=['1690365766_1','updated','1690365766_5',"item_name","item_quantity","uom","work_date","is_six_month","work_code","warranty_status","child_id","approve_id"];
+    $newKeys=['1690365766_1','updated','1690365766_5',"item_name","item_quantity","uom","work_date","is_six_month","work_code","new_warranty_status","child_id","approve_id"];
     $query_1=$this->db->select("train_number")->get("railway_trains");
     $query_2=$this->db->select("coach_number")->get("railway_coach");
     $query_3=$this->db->select("status")->get("railway_work_status");
@@ -2042,12 +2040,17 @@ class CreateForm extends CI_Controller {
     $key_res = $this->db->select("field,field_id")->group_by("field_id")->order_by("field_id")->get_where("form_data",["form_id"=>$form_id]);
  //   $this->db->cache_off();
     $location = $this->session->userdata('location');
-
     if( $this->session->userdata("type") == "dept" ){
-      
-      $train_numbers = $this->session->userdata('train_numbers');
+      $data_train["train_numbers"]=[];
+      $res = $this->db->where("username",$this->session->userdata("id"))->get("railway_mapping");
+            foreach($res->result() as $row){
+                $data_train["train_numbers"][] = $row->train_number;
+            }
+      $train_numbers = implode(",",$data_train["train_numbers"]);
+
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
-      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE ( approve_id='%s' OR approve_id IS NULL))",$this->session->userdata("id"));
+
+      $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
       if($form_id=="1690450752274"){
         $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE approve_id='%s')",$this->session->userdata("id"));
       }
@@ -2088,7 +2091,7 @@ class CreateForm extends CI_Controller {
       $data2 = [];
     }
     // echo "<pre>";
-    // print_r($data2);
+    // print_r($data_res->result());
     // die();
     $itemQuery=$this->db->select("item_name,warranty_days")->get("railway_work");
     $itemWithWarranty=$itemQuery->result_array();
@@ -2316,7 +2319,7 @@ class CreateForm extends CI_Controller {
         }
       }
     }
-    //echo $this->session->userdata("type"); 
+    // echo $this->session->userdata("type"); 
     // echo "<pre>";
     // print_r($data);
     // die();
@@ -2337,7 +2340,7 @@ class CreateForm extends CI_Controller {
            $item_quantity='';
            $coach_type='';
            $coach_no='';
-           $warrantyStatus='';
+           $warrantyStatus=0;
            $uom='';
            if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
                $coachParts=explode("|",$row['1690365766_2']);
@@ -2350,7 +2353,7 @@ class CreateForm extends CI_Controller {
            }
           if(count($row['item_list'])>0){
             foreach($row['item_list'] as $row2){
-              $warrantyStatus='';
+              $warrantyStatus=0;
               $uom='';
               $itemWithUom=explode("|",$row2['item_name']);
               $item_name=$itemWithUom[0];
@@ -2366,7 +2369,7 @@ class CreateForm extends CI_Controller {
                       $warrantyStatus=0;
                     }else{
                       $warrantyLeftInDays=$warrantyDay-$interval->days;
-                      $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
+                      $warrantyStatus=$warrantyLeftInDays;
                     }
                   }
               }
@@ -2436,7 +2439,7 @@ class CreateForm extends CI_Controller {
            $item_quantity='';
            $coach_type='';
            $coach_no='';
-           $warrantyStatus='';
+           $warrantyStatus=0;
            $uom='';
            if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
                $coachParts=explode("|",$row['1690365766_2']);
@@ -2449,7 +2452,7 @@ class CreateForm extends CI_Controller {
            }
            if(count($row['item_list'])>0){
             foreach($row['item_list'] as $row2){
-              $warrantyStatus='';
+              $warrantyStatus=0;
               $uom='';
               $itemWithUom=explode("|",$row2['item_name']);
               $item_name=$itemWithUom[0];
@@ -2464,8 +2467,8 @@ class CreateForm extends CI_Controller {
                     if($interval->days>$warrantyDay){
                       $warrantyStatus=0;
                     }else{
-                      $warrantyLeftInDays=$warrantyDay-$interval->days;
-                      $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
+                      $warrantyStatus=$warrantyDay-$interval->days;
+                      // $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
                     }
                   }
               }
@@ -2521,9 +2524,8 @@ class CreateForm extends CI_Controller {
           }
         }
       }
-
-    foreach($new_data as $data){
-      foreach($data as $req_id=>$row){
+    foreach($new_data as &$data){
+      foreach($data as $req_id=>&$row){
         $trainNo=$row['1690365766_1'];
         $coachNo=$row['1690365766_2'];
         $coachLoc=$row['1690365766_3'];
@@ -2534,44 +2536,46 @@ class CreateForm extends CI_Controller {
         $item_use_date=new DateTime($row['updated']);
         foreach($new_data as &$data1){
           foreach($data1 as $req_id1=>&$row1){
-            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>$item_use_date){
-              if($row1['warranty_status']!=0){
-                $row1['warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
+            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>=$item_use_date){
+              if($row1['warranty_status']==0){
+                $row1['new_warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
               }else{
-                $row1['warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
+                $row1['new_warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
               }
-
-
             }
           }
         }
-
+      $row['new_warranty_status']="<span class='font-bold col-teal'>{$row['warranty_status']}</span>";
 
       }
-    }  
+    } 
+
     // echo "<pre>";
     // print_r($new_data);
     // die();
     $keys['item_list']="item_list";
     $key_label["item_list"]="Item List";
      // echo "<pre>";
-    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom",$typeOfStatus,"work_code","warranty_status","child_id","approve_id"];
+    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom",$typeOfStatus,"work_code","new_warranty_status","child_id","approve_id"];
     if($form_id=="1690450752274"){
-      $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","warranty_status","Work_Done_Status",$typeOfStatus,"bulk_rating","child_id","approve_id"];
+      $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","new_warranty_status","Work_Done_Status",$typeOfStatus,"bulk_rating","child_id","approve_id"];
     }
-
-    $this->db->distinct();
-    $this->db->select('value,approve_id');
-    $this->db->from('form_data');
-    $this->db->where("field_id","1690365766_1");
-    $this->db->where('approve_id',$this->session->userdata("id"));
-    $train_dropdown_query = $this->db->get();
-    $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+    if($this->session->userdata("type")=="dept"){
+      $this->db->distinct();
+      $this->db->select('value,approve_id');
+      $this->db->from('form_data');
+      $this->db->where($wherestr,null);
+      $this->db->where("field_id","1690365766_1");
+      // $this->db->where("field_id","1690365766_1");
+      // $this->db->where('approve_id',$this->session->userdata("id"));
+      $train_dropdown_query = $this->db->get();
+      $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
+    }
     if($this->session->userdata("type")=="admin"){
       $this->db->distinct();
       $this->db->select('value,approve_id');
       $this->db->from('form_data');
-      $this->db->where("approve_id IS NOT NULL");
+      // $this->db->where("approve_id IS NOT NULL");
       $this->db->where("field_id","1690365766_1");
       $train_dropdown_query = $this->db->get();
       $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
@@ -2889,14 +2893,14 @@ class CreateForm extends CI_Controller {
       $typeOfStatus="Status";
     }
     $new_data=array();
-    $warrantyStatus='';
+    $warrantyStatus=0;
     $uom='';
     foreach($data as $req_id=>$row){
              $item_name='';
              $item_quantity='';
              $coach_type='';
              $coach_no='';
-             $warrantyStatus='';
+             $warrantyStatus=0;
              $uom='';
              if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
                  $coachParts=explode("|",$row['1690365766_2']);
@@ -2909,7 +2913,7 @@ class CreateForm extends CI_Controller {
              }
              if(count($row['item_list'])>0){
               foreach($row['item_list'] as $row2){
-                $warrantyStatus='';
+                $warrantyStatus=0;
                 $uom='';
                 $itemWithUom=explode("|",$row2['item_name']);
                 $item_name=$itemWithUom[0];
@@ -2924,8 +2928,8 @@ class CreateForm extends CI_Controller {
                       if($interval->days>$warrantyDay){
                         $warrantyStatus=0;
                       }else{
-                        $warrantyLeftInDays=$warrantyDay-$interval->days;
-                        $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
+                        $warrantyStatus=$warrantyDay-$interval->days;
+                        // $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
                       }
                     }
                 }
@@ -2982,8 +2986,8 @@ class CreateForm extends CI_Controller {
           
     }
 
-    foreach($new_data as $data){
-      foreach($data as $req_id=>$row){
+    foreach($new_data as &$data){
+      foreach($data as $req_id=>&$row){
         $trainNo=$row['1690365766_1'];
         $coachNo=$row['1690365766_2'];
         $coachLoc=$row['1690365766_3'];
@@ -2994,29 +2998,27 @@ class CreateForm extends CI_Controller {
         $item_use_date=new DateTime($row['updated']);
         foreach($new_data as &$data1){
           foreach($data1 as $req_id1=>&$row1){
-            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>$item_use_date){
-              if($row1['warranty_status']!=0){
-                $row1['warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
+            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>=$item_use_date){
+              if($row1['warranty_status']==0){
+                $row1['new_warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
               }else{
-                $row1['warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
+                $row1['new_warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
               }
-
-
             }
           }
         }
-
+      $row['new_warranty_status']="<span class='font-bold col-teal'>{$row['warranty_status']}</span>";
 
       }
-    } 
+    }
     
 
     $keys['item_list']="item_list";
     $key_label["item_list"]="Item List";
      // echo "<pre>";
-    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom",$typeOfStatus,"work_code","warranty_status","child_id","approve_id"];
+    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom",$typeOfStatus,"work_code","new_warranty_status","child_id","approve_id"];
     if($form_id=="1690450752274"){
-      $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","warranty_status","Work_Done_Status","child_id","approve_id"];
+      $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","new_warranty_status","Work_Done_Status","child_id","approve_id"];
     }
     $this->db->distinct();
     $this->db->select('value,approve_id');
@@ -3402,7 +3404,7 @@ class CreateForm extends CI_Controller {
       $typeOfStatus="Status";
     }
     $new_data=array();
-    $warrantyStatus='';
+    $warrantyStatus=0;
     $uon='';
     if($form_id!="1690365766"){
         foreach($data as $req_id=>$row){
@@ -3410,7 +3412,7 @@ class CreateForm extends CI_Controller {
            $item_quantity='';
            $coach_type='';
            $coach_no='';
-           $warrantyStatus='';
+           $warrantyStatus=0;
            $uom='';
            if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
                $coachParts=explode("|",$row['1690365766_2']);
@@ -3423,7 +3425,7 @@ class CreateForm extends CI_Controller {
            }
            if(count($row['item_list'])>0){
             foreach($row['item_list'] as $row2){
-              $warrantyStatus='';
+              $warrantyStatus=0;
               $uom='';
               $itemWithUom=explode("|",$row2['item_name']);
               $item_name=$itemWithUom[0];
@@ -3438,8 +3440,8 @@ class CreateForm extends CI_Controller {
                     if($interval->days>$warrantyDay){
                       $warrantyStatus=0;
                     }else{
-                      $warrantyLeftInDays=$warrantyDay-$interval->days;
-                      $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
+                      $warrantyStatus=$warrantyDay-$interval->days;
+                      // $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
                     }
                   }
               }
@@ -3507,7 +3509,7 @@ class CreateForm extends CI_Controller {
            $item_quantity='';
            $coach_type='';
            $coach_no='';
-           $warrantyStatus='';
+           $warrantyStatus=0;
            $uom='';
            if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
                $coachParts=explode("|",$row['1690365766_2']);
@@ -3535,8 +3537,8 @@ class CreateForm extends CI_Controller {
                     if($interval->days>$warrantyDay){
                       $warrantyStatus=0;
                     }else{
-                      $warrantyLeftInDays=$warrantyDay-$interval->days;
-                      $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
+                      $warrantyStatus=$warrantyDay-$interval->days;
+                      // $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
                     }
                   }
               }
@@ -3592,8 +3594,8 @@ class CreateForm extends CI_Controller {
           }
         }
       }
-      foreach($new_data as $data){
-      foreach($data as $req_id=>$row){
+  foreach($new_data as &$data){
+      foreach($data as $req_id=>&$row){
         $trainNo=$row['1690365766_1'];
         $coachNo=$row['1690365766_2'];
         $coachLoc=$row['1690365766_3'];
@@ -3604,21 +3606,19 @@ class CreateForm extends CI_Controller {
         $item_use_date=new DateTime($row['updated']);
         foreach($new_data as &$data1){
           foreach($data1 as $req_id1=>&$row1){
-            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>$item_use_date){
-              if($row1['warranty_status']!=0){
-                $row1['warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
+            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>=$item_use_date){
+              if($row1['warranty_status']==0){
+                $row1['new_warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
               }else{
-                $row1['warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
+                $row1['new_warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
               }
-
-
             }
           }
         }
-
+      $row['new_warranty_status']="<span class='font-bold col-teal'>{$row['warranty_status']}</span>";
 
       }
-    } 
+    }
     $result=json_encode($new_data);
     print_r($result);
   }
@@ -3646,18 +3646,32 @@ class CreateForm extends CI_Controller {
     $location = $this->session->userdata('location');
 
     if( $this->session->userdata("type") == "dept" || $this->session->userdata("type") == "admin" ){
-      
-      $train_numbers = $this->session->userdata('train_numbers');
+      $data_train["train_numbers"]=[];
+      $res = $this->db->where("username",$this->session->userdata("id"))->get("railway_mapping");
+            foreach($res->result() as $row){
+                $data_train["train_numbers"][] = $row->train_number;
+            }
+      $train_numbers = implode(",",$data_train["train_numbers"]);
       $train_numbers = strlen($train_numbers)>0?$train_numbers:"0";
       if(isset($trainNo) && !empty($trainNo)){
         $train_numbers=$trainNo;
       }
       // $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
       if($form_id=="1690365766" && empty($trainNo)){
-        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE  (approve_id='%s' OR approve_id IS NULL))",$this->session->userdata("id"));
+        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR (approve_id IS NULL AND value IN (%s)) ))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
       }
       if($form_id=="1690365766" && !empty($trainNo)){
-        $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
+        $this->db->select("train_number");
+        $this->db->where("username",$this->session->userdata("id"));
+        $this->db->where("train_number",$trainNo);
+        $is_train_assign=$this->db->get("railway_mapping");
+
+        if(count($is_train_assign->result_array())>0){
+          $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s' OR approve_id IS NULL ) AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$trainNo);
+        }else{
+          $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND ( approve_id='%s') AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$trainNo);
+        }
+        
       }
       if($form_id=="1690450752274" && !empty($trainNo)){
         $wherestr = sprintf("family_id IN (SELECT DISTINCT family_id FROM form_data WHERE field_id = '%s' AND approve_id='%s' AND value IN (%s))",TRAIN_NUMBER_FIELD_ID,$this->session->userdata("id"),$train_numbers);
@@ -3923,10 +3937,6 @@ class CreateForm extends CI_Controller {
       }else{
         $data[$row->req_id]["child_id"] = $row->child_id;
       }
-      $count_row+=1;
-        if($count_row>100){
-          break;
-      }
       
     }
     foreach($data as $req_id=>$row){
@@ -3955,7 +3965,7 @@ class CreateForm extends CI_Controller {
       $typeOfStatus="Status";
     }
     $new_data=array();
-    $warrantyStatus='';
+    $warrantyStatus=0;
     $uon='';
     if($form_id!="1690365766"){
         foreach($data as $req_id=>$row){
@@ -3963,7 +3973,7 @@ class CreateForm extends CI_Controller {
            $item_quantity='';
            $coach_type='';
            $coach_no='';
-           $warrantyStatus='';
+           $warrantyStatus=0;
            $uom='';
            if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
                $coachParts=explode("|",$row['1690365766_2']);
@@ -3976,7 +3986,7 @@ class CreateForm extends CI_Controller {
            }
            if(count($row['item_list'])>0){
             foreach($row['item_list'] as $row2){
-              $warrantyStatus='';
+              $warrantyStatus=0;
               $uom='';
               $itemWithUom=explode("|",$row2['item_name']);
               $item_name=$itemWithUom[0];
@@ -3991,8 +4001,8 @@ class CreateForm extends CI_Controller {
                     if($interval->days>$warrantyDay){
                       $warrantyStatus=0;
                     }else{
-                      $warrantyLeftInDays=$warrantyDay-$interval->days;
-                      $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
+                      $warrantyStatus=$warrantyDay-$interval->days;
+                      // $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
                     }
                   }
               }
@@ -4062,7 +4072,7 @@ class CreateForm extends CI_Controller {
            $item_quantity='';
            $coach_type='';
            $coach_no='';
-           $warrantyStatus='';
+           $warrantyStatus=0;
            $uom='';
            if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
                $coachParts=explode("|",$row['1690365766_2']);
@@ -4075,7 +4085,7 @@ class CreateForm extends CI_Controller {
            }
            if(count($row['item_list'])>0){
             foreach($row['item_list'] as $row2){
-              $warrantyStatus='';
+              $warrantyStatus=0;
               $uom='';
               $itemWithUom=explode("|",$row2['item_name']);
               $item_name=$itemWithUom[0];
@@ -4090,8 +4100,8 @@ class CreateForm extends CI_Controller {
                     if($interval->days>$warrantyDay){
                       $warrantyStatus=0;
                     }else{
-                      $warrantyLeftInDays=$warrantyDay-$interval->days;
-                      $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
+                      $warrantyStatus=$warrantyDay-$interval->days;
+                      // $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
                     }
                   }
               }
@@ -4147,8 +4157,8 @@ class CreateForm extends CI_Controller {
           }
         }
       }
-    foreach($new_data as $data){
-      foreach($data as $req_id=>$row){
+    foreach($new_data as &$data){
+      foreach($data as $req_id=>&$row){
         $trainNo=$row['1690365766_1'];
         $coachNo=$row['1690365766_2'];
         $coachLoc=$row['1690365766_3'];
@@ -4159,21 +4169,19 @@ class CreateForm extends CI_Controller {
         $item_use_date=new DateTime($row['updated']);
         foreach($new_data as &$data1){
           foreach($data1 as $req_id1=>&$row1){
-            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>$item_use_date){
-              if($row1['warranty_status']!=0){
-                $row1['warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
+            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>=$item_use_date){
+              if($row1['warranty_status']==0){
+                $row1['new_warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
               }else{
-                $row1['warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
+                $row1['new_warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
               }
-
-
             }
           }
         }
-
+      $row['new_warranty_status']="<span class='font-bold col-teal'>{$row['warranty_status']}</span>";
 
       }
-    }  
+    }
     $result=json_encode($new_data);
     print_r($result);
   }
@@ -4514,7 +4522,7 @@ class CreateForm extends CI_Controller {
     }
     $new_data=array();
     $uom='';
-    $warrantyStatus='';
+    $warrantyStatus=0;
     foreach($data as $req_id=>$row){
        $item_name='';
        $item_quantity='';
@@ -4539,7 +4547,7 @@ class CreateForm extends CI_Controller {
           $item_name=$itemWithUom[0];
           $uom=$itemWithUom[count($itemWithUom)-1];
           $item_quantity=$row2['item_quantity'];
-          $warrantyStatus='';
+          $warrantyStatus=0;
           foreach($itemWithWarranty as $itemWarranty){
               if($itemWarranty['item_name']==$item_name){
                 $warrantyDay=(int)$itemWarranty['warranty_days'];
@@ -4549,8 +4557,8 @@ class CreateForm extends CI_Controller {
                 if($interval->days>$warrantyDay){
                   $warrantyStatus=0;
                 }else{
-                  $warrantyLeftInDays=$warrantyDay-$interval->days;
-                      $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
+                  $warrantyStatus=$warrantyDay-$interval->days;
+                      // $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
                 }
               }
           }
@@ -4616,8 +4624,8 @@ class CreateForm extends CI_Controller {
 
       }
     }
-    foreach($new_data as $data){
-      foreach($data as $req_id=>$row){
+    foreach($new_data as &$data){
+      foreach($data as $req_id=>&$row){
         $trainNo=$row['1690365766_1'];
         $coachNo=$row['1690365766_2'];
         $coachLoc=$row['1690365766_3'];
@@ -4628,21 +4636,20 @@ class CreateForm extends CI_Controller {
         $item_use_date=new DateTime($row['updated']);
         foreach($new_data as &$data1){
           foreach($data1 as $req_id1=>&$row1){
-            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>$item_use_date){
-              if($row1['warranty_status']!=0){
-                $row1['warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
+            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>=$item_use_date){
+              if($row1['warranty_status']==0){
+                $row1['new_warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
               }else{
-                $row1['warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
+                $row1['new_warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
               }
-
-
             }
           }
         }
-
+      $row['new_warranty_status']="<span class='font-bold col-teal'>{$row['warranty_status']}</span>";
 
       }
-    }  
+    } 
+
     $filterdCategoryData=array();
     if(empty($workCategory)){
       $result=json_encode($new_data);
@@ -4982,7 +4989,7 @@ class CreateForm extends CI_Controller {
     $TotalamtBeforeRatingIntoQuant=0;
     $TotalamtAfterRatingIntoQuant=0;
     foreach($data as $req_id=>$row){
-       $warrantyStatus='';
+       $warrantyStatus=0;
        $item_name='';
        $item_quantity='';
        $coach_type='';
@@ -5001,7 +5008,7 @@ class CreateForm extends CI_Controller {
        if(count($row['item_list'])>0){
         foreach($row['item_list'] as $row2){
           $uom='';
-          $warrantyStatus='';
+          $warrantyStatus=0;
           $itemWithUom=explode("|",$row2['item_name']);
           $item_name=$itemWithUom[0];
           $uom=$itemWithUom[count($itemWithUom)-1];
@@ -5028,8 +5035,8 @@ class CreateForm extends CI_Controller {
                 if($interval->days>$warrantyDay){
                   $warrantyStatus=0;
                 }else{
-                  $warrantyLeftInDays=$warrantyDay-$interval->days;
-                      $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
+                  $warrantyStatus=$warrantyDay-$interval->days;
+                      // $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
                 }
               }
           }
@@ -5099,8 +5106,8 @@ class CreateForm extends CI_Controller {
 
       }
     }
-    foreach($new_data as $data){
-      foreach($data as $req_id=>$row){
+    foreach($new_data as &$data){
+      foreach($data as $req_id=>&$row){
         $trainNo=$row['1690365766_1'];
         $coachNo=$row['1690365766_2'];
         $coachLoc=$row['1690365766_3'];
@@ -5111,21 +5118,19 @@ class CreateForm extends CI_Controller {
         $item_use_date=new DateTime($row['updated']);
         foreach($new_data as &$data1){
           foreach($data1 as $req_id1=>&$row1){
-            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>$item_use_date){
-              if($row1['warranty_status']!=0){
-                $row1['warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
+            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>=$item_use_date){
+              if($row1['warranty_status']==0){
+                $row1['new_warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
               }else{
-                $row1['warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
+                $row1['new_warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
               }
-
-
             }
           }
         }
-
+      $row['new_warranty_status']="<span class='font-bold col-teal'>{$row['warranty_status']}</span>";
 
       }
-    }  
+    } 
     // echo "<pre>";
     // print_r($ratingAverage);
    
@@ -5150,7 +5155,7 @@ class CreateForm extends CI_Controller {
 
     $keys['item_list']="item_list";
     $key_label["item_list"]="Item List";
-    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","Work_Done_Status","amtBeforeRatingIntoQuant","rating","finalAmtIntoQuantity","work_code","warranty_status","child_id","approve_id"];
+    $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","Work_Done_Status","amtBeforeRatingIntoQuant","rating","finalAmtIntoQuantity","work_code","new_warranty_status","child_id","approve_id"];
     // echo "<pre>";
     // print_r($new_data);
  
@@ -7639,7 +7644,7 @@ class CreateForm extends CI_Controller {
        $item_quantity='';
        $coach_type='';
        $coach_no='';
-       $warrantyStatus='';
+       $warrantyStatus=0;
        $uom='';
        if(isset($row['1690365766_2']) && !empty($row['1690365766_2'])){
            $coachParts=explode("|",$row['1690365766_2']);
@@ -7652,7 +7657,7 @@ class CreateForm extends CI_Controller {
        }
        if(count($row['item_list'])>0){
         foreach($row['item_list'] as $row2){
-          $warrantyStatus='';
+          $warrantyStatus=0;
           $uom='';
           $itemWithUom=explode("|",$row2['item_name']);
           $item_name=$itemWithUom[0];
@@ -7680,8 +7685,8 @@ class CreateForm extends CI_Controller {
                 if($interval->days>$warrantyDay){
                   $warrantyStatus=0;
                 }else{
-                  $warrantyLeftInDays=$warrantyDay-$interval->days;
-                      $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
+                  $warrantyStatus=$warrantyDay-$interval->days;
+                      // $warrantyStatus="<span class='font-bold col-teal'>{$warrantyLeftInDays}</span>";
                 }
               }
           }
@@ -7763,8 +7768,8 @@ class CreateForm extends CI_Controller {
 
       }
     }
-    foreach($new_data as $data){
-      foreach($data as $req_id=>$row){
+    foreach($new_data as &$data){
+      foreach($data as $req_id=>&$row){
         $trainNo=$row['1690365766_1'];
         $coachNo=$row['1690365766_2'];
         $coachLoc=$row['1690365766_3'];
@@ -7775,18 +7780,16 @@ class CreateForm extends CI_Controller {
         $item_use_date=new DateTime($row['updated']);
         foreach($new_data as &$data1){
           foreach($data1 as $req_id1=>&$row1){
-            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>$item_use_date){
-              if($row1['warranty_status']!=0){
-                $row1['warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
+            if($row1['1690365766_1']==$trainNo && $row1['1690365766_2']==$coachNo && $row1['1690365766_3']==$coachLoc && $row1['1690365766_4']==$toilt_berth && $row1['1690365766_5']==$workList && $row1['item_name']==$item_name && $row1['system_family_id']!=$family_id && new DateTime($row1['updated'])>=$item_use_date){
+              if($row1['warranty_status']==0){
+                $row1['new_warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
               }else{
-                $row1['warranty_status']="<span class='font-bold col-pink'>Not In Warranty</span>";
+                $row1['new_warranty_status']="<span class='font-bold col-teal'>In Warranty</span>";
               }
-
-
             }
           }
         }
-
+      $row['new_warranty_status']="<span class='font-bold col-teal'>{$row['warranty_status']}</span>";
 
       }
     }  

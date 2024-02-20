@@ -189,7 +189,7 @@ jQuery(document).ready(function(){
                                     $("#tableID"+j+"_16").text(data[family_id][value]);
                                 }else if(value=="work_code"){
                                     $("#tableID"+j+"_17").text(data[family_id][value]);
-                                }else if(value=="warranty_status"){
+                                }else if(value=="new_warranty_status"){
                                     $("#tableID"+j+"_18").html(data[family_id][value]);
                                 }else if(value=="ratingAverage"){
                                     $("#avgRating").text(data[family_id][value]);

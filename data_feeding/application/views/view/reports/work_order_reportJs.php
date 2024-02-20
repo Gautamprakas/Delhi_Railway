@@ -182,7 +182,7 @@ jQuery(document).ready(function(){
                                     $("#tableID"+j+"_15").text(data[family_id][value]);
                                 }else if(value=="work_code"){
                                     $("#tableID"+j+"_13").text(data[family_id][value]);
-                                }else if(value=="warranty_status"){
+                                }else if(value=="new_warranty_status"){
                                     $("#tableID"+j+"_14").html(data[family_id][value]);
                                 }else if(value=="uom"){
                                     $("#tableID"+j+"_11").text(data[family_id][value]);
