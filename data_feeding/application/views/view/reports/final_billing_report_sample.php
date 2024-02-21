@@ -39,9 +39,18 @@
         display: flex; /* Enable flex container */
         align-items: center;
         }
-    #printButton.hidden {
-            display: none;
-        }
+        @media print {
+            @page {
+                size: landscape; /* Set the page size to portrait mode */
+                margin: 1cm; /* Set margins as needed */
+            }
+            #printButton{
+              display: none;
+            }
+            thead {
+                display: table-header-group;
+            }
+        }        
   </style>
 </head>
 <body>
@@ -89,45 +98,24 @@
                 <tr>
                     <td><?php echo ++$i; ?></td>
                     <?php foreach($newKeys as $key){ ?>
-                            <?php if($key == "1690365766_5"){ 
-                                $workGlobal=$row[$key];
-                                $work="work";
-                                if(isset($row[$key])){ // Fixed the missing closing parenthesis here
-                                    $work = $row[$key];
-                                    $workParts = explode("|", $work);
-                                    if(count($workParts) > 1){
-                                        $work = $workParts[0];
-                                        $valueParts = explode("-", $work);
-                                        if(count($valueParts) > 1){
-                                            $work = $valueParts[1];
-                                        }
-                                    }
-                                }
-                            ?>
-                            <td><?php echo $work; ?></td>
-                            <?php }else if($key=="amount"){
-                                    if(isset($workGlobal)){
-                                        $amt=explode("@", $workGlobal);
-                                        if(count($amt)>1){
-                                            $amt_parts=explode("$",$amt[1]);
-                                            $amt=$amt_parts[0];
-                                        }else{
-                                            $amt="N/A";
-                                        }
-                                    }
-                            ?>
-                            <td><?php echo $amt; ?></td>
-                            <?php } else { ?>
-                                <td><?php echo isset($row[$key]) ? $row[$key] : ''; ?></td>
-                        <?php } ?>
+                                <td><?php echo isset($row[$key]) ? $row[$key] : '_'; ?>
                     <?php }?>
                 </tr>
             <?php } ?>
         <?php }?>
     <?php }?>
 <?php }?>
+<tr style="font-weight:bold;">
+            <td colspan="5">Total Rating</td>
+            <td><?php echo $total_max_rating; ?></td>
+            <td><?php echo $totalRatingGot; ?></td>
+            <td><?php echo $totalRatingPercent."%"; ?></td>
+            <td><?php echo number_format($totalAmount,2); ?></td>
+            <td><?php echo $toal_penalty_amt; ?></td>
+            <td><?php echo number_format($toalRatingAMount,2) ; ?></td>
+</tr>
   </tbody>
-    <tfoot style="font-weight: bold;">
+<!--     <tfoot style="font-weight: bold;">
         <tr>
             <th colspan="5">Total Rating</th>
             <td><?php echo $total_max_rating; ?></td>
@@ -137,7 +125,7 @@
             <td><?php echo $toal_penalty_amt; ?></td>
             <td><?php echo number_format($toalRatingAMount,2) ; ?></td>
         </tr>
-    </tfoot>
+    </tfoot> -->
 </table>
 <br>
 <br>

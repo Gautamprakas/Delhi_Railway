@@ -85,7 +85,7 @@ jQuery(document).ready(function(){
             location.reload();
         } 
         else{
-        var url="<?php echo base_url().'/view/CreateForm/filterFinalBillingReport/1690450752274'; ?>";
+        var url="<?php echo base_url().'/view/CreateForm/filterFinalBillingReport/1690365766'; ?>";
 
         console.log(trainNo+date+time1+time2+url);
         // return;
@@ -225,7 +225,7 @@ $("#printButton").click(function(){
             location.reload();
         } 
         else{
-            var url="<?php echo base_url().'/view/CreateForm/printFilterFinalBillingReport/1690450752274'; ?>";
+            var url="<?php echo base_url().'/view/CreateForm/printFilterFinalBillingReport/1690365766'; ?>";
 
             // console.log(trainNo+date+time1+time2+url);
             $.ajax({
@@ -245,7 +245,7 @@ $("#printButton").click(function(){
                         return;
                     }
                     var newWindow=window.open("","Billing");
-                    // console.log(response);
+                    // console.log(newWindow);
 
                     // var newWindow = window.open();
                     // newWindow.document.write(response);

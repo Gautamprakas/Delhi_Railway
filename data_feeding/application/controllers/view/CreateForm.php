@@ -5179,13 +5179,15 @@ class CreateForm extends CI_Controller {
     $intent["footerJs"]    = "view/reports/data_sheet_billingJs";
     $this->load->view("view/include/template",$intent);
   }
-  public function finalBillingReport( $form_id ){
+  public function finalBillingReport( $form_id2 ){
+
 
     ini_set('memory_limit', '-1');
     //$this->output->cache(5);
     //$this->output->enable_profiler(TRUE);
 
     $this->db = $this->load->database("default",TRUE);  
+    $form_id="1690450752274";
   //  $this->db->cache_on();
     $form_res = $this->db->get_where("form_created",["form_id"=>$form_id]);
     $form_title = $form_res->row()->form_title;
@@ -5195,6 +5197,11 @@ class CreateForm extends CI_Controller {
     $key_res = $this->db->select("field,field_id")->group_by("field_id")->order_by("field_id")->get_where("form_data",["form_id"=>$form_id]);
  //   $this->db->cache_off();
     $location = $this->session->userdata('location');
+    if($form_id2=="1690365766"){
+        $billing_status=1;
+    }else{
+      $billing_status=0;
+    }
 
     if( $this->session->userdata("type") == "dept" ){
       
@@ -5207,14 +5214,13 @@ class CreateForm extends CI_Controller {
       // echo $wherestr;
       // print_r($train_numbers);
       // die();
-
       $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,approve_id")
                          ->where("form_id",$form_id)
                          ->where("$wherestr",null)
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
                          ->where("rating >",0)
-                         ->where("billing_status","0")
+                         ->where("billing_status",$billing_status)
                          ->order_by("update_datetime","DESC")
                          ->get('form_data');
 
@@ -5225,7 +5231,7 @@ class CreateForm extends CI_Controller {
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
                          ->where("rating >",0)
-                         ->where("billing_status","0")
+                         ->where("billing_status",$billing_status)
                          ->order_by("update_datetime","DESC")
                          ->get('form_data');
     }
@@ -5466,13 +5472,13 @@ class CreateForm extends CI_Controller {
           $totalAmount+=$amt;
           $rating=(int)$row['rating'];
           $percentage=($rating/3)*100;
-          if($percentage>85){
+          if($percentage>=85){
             $final_amt=$amt;
-          }else if(($percentage<=85) && ($percentage>75)){
+          }else if(($percentage<85) && ($percentage>=75)){
             $final_amt=$amt-($amt*5)/100;
-          }else if(($percentage<=75) && ($percentage>65)){
+          }else if(($percentage<75) && ($percentage>=65)){
             $final_amt=$amt-($amt*10)/100;
-          }else if(($percentage<=65) && ($percentage>=55)){
+          }else if(($percentage<65) && ($percentage>=55)){
             $final_amt=$amt-($amt*20)/100;
           }else if($percentage<55){
             $final_amt=$amt-($amt*40)/100;
@@ -5521,6 +5527,9 @@ class CreateForm extends CI_Controller {
     $ToalPenaltyAmount=0;
     $ToalAmountToPaidWithQty=0;
     foreach($data as $req_id=>$row){
+      $finalAmtIntoQuantity=0;
+      $amtBeforeRatingIntoQuant=0;
+      $penaltyAmtWithQty=0;
        $warrantyStatus='';
        $item_name='';
        $item_quantity='';
@@ -5654,10 +5663,6 @@ class CreateForm extends CI_Controller {
 
       }
     }
-    // echo "<pre>";
-    // print_r($ratingAverage);
-   
-    // die();
     if($maxRatingWithWork!=0){
       $totalRatingPercent=($totalRatingGet/$maxRatingWithWork)*100;
     }else{
@@ -5667,7 +5672,7 @@ class CreateForm extends CI_Controller {
    
     $keys['item_list']="item_list";
     $key_label["item_list"]="Item List";
-    $newKeys=['1690365766_1','updated','1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent","amtBeforeRatingIntoQuant","penaltyAmtWithQty","finalAmtIntoQuantity"];
+    $newKeys=['1690365766_1','updated','1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent1","amtBeforeRatingIntoQuant","penaltyAmtWithQty1","finalAmtIntoQuantity1"];
     $this->db->distinct();
     $this->db->select("value");
     $this->db->from("form_data");
@@ -5716,7 +5721,27 @@ class CreateForm extends CI_Controller {
       $intent['train_numbers_dropdown']=$train_dropdown_query->result_array();
 
     }
-
+    // echo $totalRatingPercent;
+    // echo $TotalamtBeforeRatingIntoQuant;
+    // echo "<br>".$ToalPenaltyAmount."<br>";
+    if($totalRatingPercent>=85){
+      $ToalPenaltyAmount=0;
+    }else if(($totalRatingPercent<85) && ($totalRatingPercent>=75)){
+      //echo "yes";
+      $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.05);
+      // echo $ToalPenaltyAmount;
+    }else if(($totalRatingPercent<75) && ($totalRatingPercent>=65)){
+      $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.10);
+    }else if(($totalRatingPercent<65) && ($totalRatingPercent>=55)){
+      $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.20);
+    }else if($totalRatingPercent<55){
+      $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.40);
+    }
+    // echo "<br>".$ToalAmountToPaidWithQty."<br>"; 
+    $ToalAmountToPaidWithQty=$TotalamtBeforeRatingIntoQuant-$ToalPenaltyAmount;
+    // echo $ToalAmountToPaidWithQty;
+    // echo "<br>".$ToalPenaltyAmount;
+    // die();
     $train_numbers_string = $this->session->userdata('train_numbers');
     $train_numbers_dropdown=explode(",",$train_numbers_string);
     // print_r($train_numbers_dropdown);
@@ -5726,7 +5751,10 @@ class CreateForm extends CI_Controller {
     }else{
       $intent['railway_trains']=$result_trains;
     }
-    
+    // echo "<pre>";
+    // print_r($new_data);
+   
+    // die();
     $intent['form_id']=$form_id;
     $intent["form_title"] = "Billing Report";
     $intent["key_label"] = $key_label;
@@ -5741,15 +5769,20 @@ class CreateForm extends CI_Controller {
     $intent["toal_penalty_amt"] = $ToalPenaltyAmount;  
     $intent["totalRatingPercent"] = number_format($totalRatingPercent,2);  
     $intent["last_date"] = $last_date;
+    if($form_id2=="1690365766"){
+      $intent["subMenuActive"]  = "billing_done_report";
+      $intent["footerJs"]    = "view/reports/billing_doneJs";
+    }else{
+      $intent["subMenuActive"]  = "final_billing_report";
+      $intent["footerJs"]    = "view/reports/final_billing_reportJs";
+    }
     $intent["menuActive"] = "data_sheet";
-    $intent["subMenuActive"]  = "final_billing_report";
     $intent["headerCss"]   = "view/reports/data_sheetCss";
     $intent["mainContent"] = "view/reports/final_billing_report";
-    $intent["footerJs"]    = "view/reports/final_billing_reportJs";
     $this->load->view("view/include/template",$intent);
   }
 
-  public function printFilterFinalBillingReport( $form_id ){
+  public function printFilterFinalBillingReport( $form_id2 ){
     $trainNo=$this->input->post("trainNo");
     $date=$this->input->post("date");
     $time1=$this->input->post("time1");
@@ -5757,6 +5790,12 @@ class CreateForm extends CI_Controller {
 
     ini_set('memory_limit', '-1');
     $this->db = $this->load->database("default",TRUE);  
+    $form_id="1690450752274";
+    if($form_id2=="1690365766"){
+        $billing_status=1;
+    }else{
+      $billing_status=0;
+    }
     $form_res = $this->db->get_where("form_created",["form_id"=>$form_id]);
     $form_title = $form_res->row()->form_title;
     $form_for = $form_res->row()->form_for;
@@ -5788,7 +5827,7 @@ class CreateForm extends CI_Controller {
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
                          ->where("rating >",0)
-                         ->where("billing_status","0")
+                         ->where("billing_status",$billing_status)
                          ->order_by("update_datetime","DESC")
                          ->get('form_data');
 
@@ -6042,13 +6081,13 @@ class CreateForm extends CI_Controller {
           $totalAmount+=$amt;
           $rating=(int)$row['rating'];
           $percentage=($rating/3)*100;
-          if($percentage>85){
+          if($percentage>=85){
             $final_amt=$amt;
-          }else if(($percentage<=85) && ($percentage>75)){
+          }else if(($percentage<85) && ($percentage>=75)){
             $final_amt=$amt-($amt*5)/100;
-          }else if(($percentage<=75) && ($percentage>65)){
+          }else if(($percentage<75) && ($percentage>=65)){
             $final_amt=$amt-($amt*10)/100;
-          }else if(($percentage<=65) && ($percentage>=55)){
+          }else if(($percentage<65) && ($percentage>=55)){
             $final_amt=$amt-($amt*20)/100;
           }else if($percentage<55){
             $final_amt=$amt-($amt*40)/100;
@@ -6104,6 +6143,7 @@ class CreateForm extends CI_Controller {
     $TotalamtAfterRatingIntoQuant=0;
     $ToalAmountToPaidWithQty=0;
     $ToalPenaltyAmount=0;
+    $count_data=1;
     foreach($data as $req_id=>$row){
        $warrantyStatus='';
        $item_name='';
@@ -6160,6 +6200,22 @@ class CreateForm extends CI_Controller {
                 }
               }
           }
+          if($count_data==count($data)){
+            if($totalRatingPercent>=85){
+                $ToalPenaltyAmount=0;
+              }else if(($totalRatingPercent<85) && ($totalRatingPercent>=75)){
+                //echo "yes";
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.05);
+                // echo $ToalPenaltyAmount;
+              }else if(($totalRatingPercent<75) && ($totalRatingPercent>=65)){
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.10);
+              }else if(($totalRatingPercent<65) && ($totalRatingPercent>=55)){
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.20);
+              }else if($totalRatingPercent<55){
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.40);
+              }
+            $ToalAmountToPaidWithQty=$TotalamtBeforeRatingIntoQuant-$ToalPenaltyAmount;
+        }
           $new_data[]=array(
             $req_id=>array(
               $typeOfStatus=>$row[$typeOfStatus],
@@ -6203,13 +6259,29 @@ class CreateForm extends CI_Controller {
               "TotalamtAfterRatingIntoQuant"=>$TotalamtAfterRatingIntoQuant,
               "TotalamtBeforeRatingIntoQuant"=>$TotalamtBeforeRatingIntoQuant,
               "penaltyAmtWithQty"=>$penaltyAmtWithQty,
-              "ToalPenaltyAmount"=>$ToalPenaltyAmount,
+              "ToalPenaltyAmount"=>number_format($ToalPenaltyAmount),
               "ToalAmountToPaidWithQty"=>$ToalAmountToPaidWithQty
           )
           );
 
         }
       }else{
+        if($count_data==count($data)){
+            if($totalRatingPercent>=85){
+                $ToalPenaltyAmount=0;
+              }else if(($totalRatingPercent<85) && ($totalRatingPercent>=75)){
+                //echo "yes";
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.05);
+                // echo $ToalPenaltyAmount;
+              }else if(($totalRatingPercent<75) && ($totalRatingPercent>=65)){
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.10);
+              }else if(($totalRatingPercent<65) && ($totalRatingPercent>=55)){
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.20);
+              }else if($totalRatingPercent<55){
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.40);
+              }
+            $ToalAmountToPaidWithQty=$TotalamtBeforeRatingIntoQuant-$ToalPenaltyAmount;
+        }
         $new_data[]=array(
             $req_id=>array(
               $typeOfStatus=>$row[$typeOfStatus],
@@ -6253,17 +6325,18 @@ class CreateForm extends CI_Controller {
               "TotalamtAfterRatingIntoQuant"=>$TotalamtAfterRatingIntoQuant,
               "TotalamtBeforeRatingIntoQuant"=>$TotalamtBeforeRatingIntoQuant,
               "penaltyAmtWithQty"=>"",
-              "ToalPenaltyAmount"=>$ToalPenaltyAmount,
+              "ToalPenaltyAmount"=>number_format($ToalPenaltyAmount),
               "ToalAmountToPaidWithQty"=>$ToalAmountToPaidWithQty
 
           )
           );
 
       }
+      $count_data+=1;
     }
     // echo $username.$child_id;
     // die();
-    if(count($data)>0){
+    if(count($data)>0 && $billing_status!=1){
       foreach($data as $req_id=>$row){
         if(isset($row['system_family_id'])){
             $dataForUpdate=array("billing_status"=>"1");
@@ -6308,7 +6381,7 @@ class CreateForm extends CI_Controller {
     $intent['toal_penalty_amt']=$ToalPenaltyAmount;
     $intent['toalRatingAMount']=$ToalAmountToPaidWithQty;
     $intent['username']=$username;
-    $newKeys=['1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent","amtBeforeRatingIntoQuant","penaltyAmtWithQty","TotalamtAfterRatingIntoQuant"];
+    $newKeys=['1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent1","amtBeforeRatingIntoQuant","penaltyAmtWithQty1","TotalamtAfterRatingIntoQuant1"];
     $intent['newKeys']=$newKeys;
     $this->load->view('view/reports/final_billing_report_sample', $intent);
 
@@ -6317,7 +6390,7 @@ class CreateForm extends CI_Controller {
 
   }
 
-  public function filterFinalBillingReport( $form_id ){
+  public function filterFinalBillingReport( $form_id2 ){
     $trainNo=$this->input->post("trainNo");
     $date=$this->input->post("date");
     // $time1=$this->input->post("time1");
@@ -6325,12 +6398,17 @@ class CreateForm extends CI_Controller {
 
     ini_set('memory_limit', '-1');
     $this->db = $this->load->database("default",TRUE);  
+    $form_id="1690450752274";
+    if($form_id2=="1690365766"){
+        $billing_status=1;
+    }else{
+      $billing_status=0;
+    }
     $form_res = $this->db->get_where("form_created",["form_id"=>$form_id]);
     $form_title = $form_res->row()->form_title;
     $form_for = $form_res->row()->form_for;
     $key_res = $this->db->select("field,field_id")->group_by("field_id")->order_by("field_id")->get_where("form_data",["form_id"=>$form_id]);
     $location = $this->session->userdata('location');
-
     if( $this->session->userdata("type") == "dept" || $this->session->userdata("type") == "admin" ){
   
       $train_numbers = $this->session->userdata('train_numbers');
@@ -6355,7 +6433,7 @@ class CreateForm extends CI_Controller {
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
                          ->where("rating >",0)
-                         ->where("billing_status","0")
+                         ->where("billing_status",$billing_status)
                          ->order_by("update_datetime","DESC")
                          ->get('form_data');
       // $data_res=$this->db->query($sql_1,$new_params);
@@ -6617,13 +6695,13 @@ class CreateForm extends CI_Controller {
           $totalAmount+=$amt;
           $rating=(int)$row['rating'];
           $percentage=($rating/3)*100;
-          if($percentage>85){
+          if($percentage>=85){
             $final_amt=$amt;
-          }else if(($percentage<=85) && ($percentage>75)){
+          }else if(($percentage<85) && ($percentage>=75)){
             $final_amt=$amt-($amt*5)/100;
-          }else if(($percentage<=75) && ($percentage>65)){
+          }else if(($percentage<75) && ($percentage>=65)){
             $final_amt=$amt-($amt*10)/100;
-          }else if(($percentage<=65) && ($percentage>=55)){
+          }else if(($percentage<65) && ($percentage>=55)){
             $final_amt=$amt-($amt*20)/100;
           }else if($percentage<55){
             $final_amt=$amt-($amt*40)/100;
@@ -6667,7 +6745,7 @@ class CreateForm extends CI_Controller {
       $typeOfStatus="Status";
     }
     // echo "<pre>";
-    // print_r($data);
+    // print_r(count($data));
     // die();
     if(isset($totalRatingGet) && isset($maxRatingWithWork) && $maxRatingWithWork
       !=0){
@@ -6682,7 +6760,11 @@ class CreateForm extends CI_Controller {
     $TotalamtAfterRatingIntoQuant=0;
     $ToalPenaltyAmount=0;
     $ToalAmountToPaidWithQty=0;
+    $count_data=1;
     foreach($data as $req_id=>$row){
+      $finalAmtIntoQuantity=0;
+      $amtBeforeRatingIntoQuant=0;
+      $penaltyAmtWithQty=0;
        $warrantyStatus='';
        $item_name='';
        $item_quantity='';
@@ -6732,6 +6814,22 @@ class CreateForm extends CI_Controller {
                 }
               }
           }
+          if($count_data==count($data)){
+            if($totalRatingPercent>=85){
+                $ToalPenaltyAmount=0;
+              }else if(($totalRatingPercent<85) && ($totalRatingPercent>=75)){
+                //echo "yes";
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.05);
+                // echo $ToalPenaltyAmount;
+              }else if(($totalRatingPercent<75) && ($totalRatingPercent>=65)){
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.10);
+              }else if(($totalRatingPercent<65) && ($totalRatingPercent>=55)){
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.20);
+              }else if($totalRatingPercent<55){
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.40);
+              }
+            $ToalAmountToPaidWithQty=$TotalamtBeforeRatingIntoQuant-$ToalPenaltyAmount;
+          }
           $new_data[]=array(
             $req_id=>array(
               $typeOfStatus=>$row[$typeOfStatus],
@@ -6775,13 +6873,30 @@ class CreateForm extends CI_Controller {
               "TotalamtAfterRatingIntoQuant"=>$TotalamtAfterRatingIntoQuant,
               "TotalamtBeforeRatingIntoQuant"=>$TotalamtBeforeRatingIntoQuant,
               "penaltyAmtWithQty"=>$penaltyAmtWithQty,
-              "ToalPenaltyAmount"=>$ToalPenaltyAmount,
+              "ToalPenaltyAmount"=>number_format($ToalPenaltyAmount),
               "ToalAmountToPaidWithQty"=>$ToalAmountToPaidWithQty
           )
           );
 
         }
       }else{
+
+        if($count_data==count($data)){
+            if($totalRatingPercent>=85){
+                $ToalPenaltyAmount=0;
+              }else if(($totalRatingPercent<85) && ($totalRatingPercent>=75)){
+                //echo "yes";
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.05);
+                // echo $ToalPenaltyAmount;
+              }else if(($totalRatingPercent<75) && ($totalRatingPercent>=65)){
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.10);
+              }else if(($totalRatingPercent<65) && ($totalRatingPercent>=55)){
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.20);
+              }else if($totalRatingPercent<55){
+                $ToalPenaltyAmount=($TotalamtBeforeRatingIntoQuant*0.40);
+              }
+            $ToalAmountToPaidWithQty=$TotalamtBeforeRatingIntoQuant-$ToalPenaltyAmount;
+        }
         $new_data[]=array(
             $req_id=>array(
               $typeOfStatus=>$row[$typeOfStatus],
@@ -6825,13 +6940,13 @@ class CreateForm extends CI_Controller {
               "TotalamtAfterRatingIntoQuant"=>$TotalamtAfterRatingIntoQuant,
               "TotalamtBeforeRatingIntoQuant"=>$TotalamtBeforeRatingIntoQuant,
               "penaltyAmtWithQty"=>"",
-              "ToalPenaltyAmount"=>$ToalPenaltyAmount,
+              "ToalPenaltyAmount"=>number_format($ToalPenaltyAmount),
               "ToalAmountToPaidWithQty"=>$ToalAmountToPaidWithQty
 
           )
           );
-
       }
+      $count_data+=1;
     }
     echo json_encode($new_data);
 

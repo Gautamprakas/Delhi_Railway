@@ -231,9 +231,9 @@
                                <li class="<?php if(strcasecmp($subMenuActive, 'warranty_report') == 0) echo 'active'; ?>">
                                    <a href="<?php echo base_url('view/CreateForm/reportInWarranty/1690450752274'); ?>">Resend For Rating</a>
                                </li>
-                               <!-- <li class="<?php if(strcasecmp($subMenuActive, 'final_billing') == 0) echo 'active'; ?>">
-                                   <a href="<?php echo base_url('view/CreateForm/finalBilling/1690450752274'); ?>">Final Billing</a>
-                               </li> -->
+                               <li class="<?php if(strcasecmp($subMenuActive, 'billing_done_report') == 0) echo 'active'; ?>">
+                                   <a href="<?php echo base_url('view/CreateForm/finalBillingReport/1690365766'); ?>">Billing Done Report</a>
+                               </li>
                                <li class="<?php if(strcasecmp($subMenuActive, 'final_billing_report') == 0) echo 'active'; ?>">
                                    <a href="<?php echo base_url('view/CreateForm/finalBillingReport/1690450752274'); ?>">Final Billing Report</a>
                                </li>
