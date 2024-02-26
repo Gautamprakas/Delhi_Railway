@@ -104,7 +104,7 @@ jQuery(document).ready(function(){
                 tableBody.innerHTML = '';
                 var tableCol=17;
                 if(form_id=="1690450752274"){
-                    tableCol=19;
+                    tableCol=20;
                 }
                 //return;
                 var j=1;
@@ -187,12 +187,14 @@ jQuery(document).ready(function(){
                                     $("#tableID"+j+"_14").html(data[family_id][value]);
                                 }else if(value=="uom"){
                                     $("#tableID"+j+"_11").text(data[family_id][value]);
+                                }else if(value=="zero_rating"){
+                                    $("#tableID"+j+"_18").html(data[family_id][value]);
+                                }else if(value=="child_id"){
+                                    $("#tableID"+j+"_19").html(data[family_id][value]);
+                                }else if(value=="approve_id"){
+                                    $("#tableID"+j+"_20").text(data[family_id][value]);
                                 }else if(value=="bulk_rating"){
                                     $("#tableID"+j+"_17").html(data[family_id][value]);
-                                }else if(value=="child_id"){
-                                    $("#tableID"+j+"_18").html(data[family_id][value]);
-                                }else if(value=="approve_id"){
-                                    $("#tableID"+j+"_19").text(data[family_id][value]);
                                 }
                             
                             
@@ -335,10 +337,22 @@ jQuery(document).ready(function(){
             btndiv = btn.closest('div');
             btndiv.find("button.status_action_rating").prop('disabled', true);
             var req_id = $(this).val();
+            console.log(req_id);
             var status = $(this).attr("data-status");
             var rating = $(this).attr("data-rating");
             var familyid = $(this).attr("data-familyid");
-
+            zero_rating=[];
+            var checkboxes1=$("input.checkbox1:checked");
+            checkboxes1.each(function () {
+                var CheckBoxreq_id = $(this).val();
+                var CheckBoxfamilyid = $(this).attr("data-familyid");
+                zero_rating.push({
+                    family_id:CheckBoxfamilyid
+                });
+            });
+            console.log(req_id);
+            console.log("hello");
+            console.log(familyid);
             swal({
                 title: "Are you sure?",
                 text: "You want to give "+rating+ " star rating to the work.",
@@ -351,7 +365,8 @@ jQuery(document).ready(function(){
                     req_id:req_id,
                     status:status,
                     rating:rating,
-                    family_id:familyid
+                    family_id:familyid,
+                    zero_rating:zero_rating
                 },function(data){
                     if(data=="200"){
                         swal("Data "+status+".");
@@ -368,7 +383,10 @@ jQuery(document).ready(function(){
 
         $("body").on("click", ".rating-button", function () {
             var checkboxes = $("input.checkbox:checked");
+            var checkboxes1=$("input.checkbox1:checked");
+
             var ratingData = [];
+            var zero_rating=[];
             var rating = $(this).data('rating');
             checkboxes.each(function () {
                 var req_id = $(this).val();
@@ -384,12 +402,20 @@ jQuery(document).ready(function(){
                     rating:rating
                 });
             });
+            checkboxes1.each(function () {
+                var req_id = $(this).val();
+                var familyid = $(this).attr("data-familyid");
+                zero_rating.push({
+                    family_id:familyid
+                });
+            });
             if (ratingData.length === 0) {
                 // No checkboxes are selected
                 swal("Please select at least one Work.");
                 return;
             }
             console.log(ratingData);
+            console.log(zero_rating);
             swal({
                 title: "Are you sure?",
                 text: "You want to give "+rating+ " star rating to the selected work.",
@@ -399,7 +425,8 @@ jQuery(document).ready(function(){
                 showLoaderOnConfirm: true,
             }, function () {
                 $.post("<?php echo base_url("view/CreateForm/updateStatusOfReqRatingBulk"); ?>",{
-                    ratingData:ratingData
+                    ratingData:ratingData,
+                    zero_rating:zero_rating
                 },function(data){
                     console.log(data);
                     if(data=="200"){

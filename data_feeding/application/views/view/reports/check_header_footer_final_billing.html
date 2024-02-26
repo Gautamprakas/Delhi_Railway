@@ -13,15 +13,23 @@
             height: auto;
             margin: auto;
         }
-    table, th, td {
-      border: 1px solid black;
-      border-collapse: collapse;
-      align-content: center;
-    }
-    th, td {
-      padding: 8px;
-/*      text-align: left;*/
-    }
+    .table-no-borders th,
+        .table-no-borders td {
+            border: none;
+            padding: 8px;
+            text-align: center;
+        }
+    .table-with-borders {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-with-borders th,
+        .table-with-borders td {
+            border: 1px solid;
+            padding: 8px;
+            text-align: center;
+        }
     .additional-info {
             margin-top: 20px;
             display: flex;
@@ -56,7 +64,7 @@
 </head>
 <body>
 <div class="card">
-  <table id="my-table">
+  <table id="my-table" class="table-with-borders">
     <thead>
       <tr>
         <th colspan="11">SBS Enterprise</th>
@@ -419,10 +427,16 @@
 <br>
 <br>
 
-<div class="additional-info">
-    <p><strong>Railway JEE/C&W ND Name:</strong></p>
-    <p><strong>Contractor Supervisor Name:</strong></p>
-</div>
+<table class="table-no-borders" style="width: 100%;">
+    <tr>
+        <th colspan="5" style="text-align: center;">Railway JEE/C&W ND Name</th>
+        <th colspan="5" style="text-align: center;">Contractor Supervisor Name</th>
+    </tr>
+    <tr style="font-weight: bold;">
+        <td colspan="5" style="text-align: center;">Prakash Gautam</td>
+        <td colspan="5" style="text-align: center;">Rahul Gautam</td>
+    </tr>
+</table>
 <div style="align-content:center;">
 <button id="printButton" onclick="printDocument()" style="align-content:center;">Print</button>
 </div>

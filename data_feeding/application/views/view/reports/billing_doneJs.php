@@ -68,6 +68,7 @@ jQuery(document).ready(function(){
          trainNo=$("#selectTrain").val();
          date=$("#date").val();
          var form_id=$("#date").data("info");
+         var username=$("#submitTrain").data("info");
          // console.log(form_id);
 
          // time1=$("#time1").val();
@@ -175,6 +176,8 @@ jQuery(document).ready(function(){
                                     $("#totalPenaltyAmt").text(data[family_id][value]);
                                 }else if(value=="ToalAmountToPaidWithQty"){
                                     $("#totalRatingAmt").text(data[family_id][value]);
+                                }else if(username=="dept"){
+                                    $("#tableID"+j+"_11").text("_");
                                 }
                             
                                 
@@ -184,6 +187,11 @@ jQuery(document).ready(function(){
                     }
                     j+=1;
                     
+                }
+                if(username=="dept"){
+                    $("#totalAmount").text("_");
+                    $("#totalRatingAmt").text("_");
+                    $("#totalPenaltyAmt").text("_");
                 }
             });
                 $('#example2').DataTable({

@@ -2057,7 +2057,7 @@ class CreateForm extends CI_Controller {
 
       //echo $wherestr;
 
-      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,zero_rating")
                          ->where("form_id",$form_id)
                          ->where("$wherestr",null)
                          ->where("location like '$location%'",null)
@@ -2066,7 +2066,7 @@ class CreateForm extends CI_Controller {
 
     }else{
 
-      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,zero_rating")
                          ->where("form_id",$form_id)
                          ->where("location like '$location%'",null)
                          ->order_by("update_datetime","DESC")
@@ -2110,6 +2110,7 @@ class CreateForm extends CI_Controller {
           if($form_id==USER_WORK_DONE_ACTION){
             $status_1 = '';
             $bulk_rating='';
+            $zero_rating_checkbox='';
             if( $row->status == "Pending" ){
               $status_1 .= "<div class='icon-button-demo' style='display: inline-flex;'><button type='button' class='btn bg-black btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='0' data-familyid='$row->family_id'>0<i class='material-icons'>star_rate</i><button type='button' class='btn bg-red btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='1' data-familyid='$row->family_id'>1<i class='material-icons'>star_rate</i></button><button type='button' class='btn bg-amber btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='2' data-familyid='$row->family_id'>2<i class='material-icons'>star_rate</i></button><button type='button' class='btn bg-light-green btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='3' data-familyid='$row->family_id'>3<i class='material-icons'>star_rate</i></button></div>";
 
@@ -2120,13 +2121,26 @@ class CreateForm extends CI_Controller {
                   </div>
                   <input type='text' class='remarks-input' placeholder='Add remarks...' />
               </div>";
+              $zero_rating_checkbox="<div class='icon-button-demo' style='display: inline-flex;'>
+                  <div class='checkbox-wrapper'>
+                      <input type='checkbox' class='checkbox1 bg-teal' data-status='Verified' value='{$row->req_id}' id='checkbox1_{$row->req_id}' data-familyid='{$row->family_id}' />
+                      <label for='checkbox1_{$row->req_id}' class='checkbox-label'></label>
+                  </div>
+              </div>";
             }
             if( $row->status == "Verified" ){
               $status_1 .= "<span class='font-bold'>$row->rating<i class='material-icons'>star_rate</i></span>";
               $bulk_rating="<span class='font-bold'>$row->rating<i class='material-icons'>star_rate</i></span>";
+              if($row->zero_rating=="1"){
+                $zero_rating_checkbox='';
+              }else{
+                $zero_rating_checkbox="No Panelty";
+              }
+              
             }
             $data[$row->req_id]["Rating Status"] = $status_1;
             $data[$row->req_id]["bulk_rating"]=$bulk_rating;
+            $data[$row->req_id]["zero_rating"]=$zero_rating_checkbox;
             $key_label["Rating Status"] = "Rating Status";
             $keys["Rating Status"] = "Rating Status";
           }else{
@@ -2150,18 +2164,27 @@ class CreateForm extends CI_Controller {
         }else{
           $status_1 = '';
           $bulk_rating='';
+          $zero_rating_checkbox='';
+          if($row->zero_rating=="1"){
+                $zero_rating_checkbox='';
+          }else{
+            $zero_rating_checkbox="No Panelty";
+          }
           if( $row->status == "Pending" ){
             $status_1 .= "<span class='font-bold col-pink'>Pending</span>";
             $bulk_rating .= "<span class='font-bold col-pink'>Pending</span>";
+            // $zero_rating_checkbox .= "<span class='font-bold col-pink'>Pending</span>";
           }
           if( $row->status == "Verified" ){
             $status_1 .= "<span class='font-bold col-teal'>Verified</span>";
             $bulk_rating .= "<span class='font-bold col-teal'>Verified</span>";
+            //$zero_rating_checkbox .= "<span class='font-bold col-teal'>Verified</span>";
           }
           $data[$row->req_id]["Status"] = $status_1;
           $key_label["Status"] = "Status";
           $keys["Status"] = "Status";
           $data[$row->req_id]["bulk_rating"] = $bulk_rating;
+          $data[$row->req_id]["zero_rating"] = $zero_rating_checkbox;
         }
 
         foreach($key_res->result() as $col){
@@ -2397,7 +2420,8 @@ class CreateForm extends CI_Controller {
                   "uom"=>$uom,
                   "child_id"=>$row['child_id'],
                   "approve_id"=>$row['approve_id'],
-                  "bulk_rating"=>$row['bulk_rating']
+                  "bulk_rating"=>$row['bulk_rating'],
+                  "zero_rating"=>$row['zero_rating']
                 )
               );
 
@@ -2427,7 +2451,8 @@ class CreateForm extends CI_Controller {
                   "uom"=>$uom,
                   "child_id"=>$row['child_id'],
                   "approve_id"=>$row['approve_id'],
-                  "bulk_rating"=>$row['bulk_rating']
+                  "bulk_rating"=>$row['bulk_rating'],
+                  "zero_rating"=>$row['zero_rating']
               )
               );
 
@@ -2558,7 +2583,7 @@ class CreateForm extends CI_Controller {
      // echo "<pre>";
     $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom",$typeOfStatus,"work_code","new_warranty_status","child_id","approve_id"];
     if($form_id=="1690450752274"){
-      $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","new_warranty_status","Work_Done_Status",$typeOfStatus,"bulk_rating","child_id","approve_id"];
+      $newKeys=['1690365766_1','updated','1690365766_2',"coach_type","1690365766_4","1690365766_5","1690365766_6","item_name","item_quantity","uom","1690450752274_2","work_code","new_warranty_status","Work_Done_Status",$typeOfStatus,"bulk_rating","zero_rating","child_id","approve_id"];
     }
     if($this->session->userdata("type")=="dept"){
       $this->db->distinct();
@@ -3689,7 +3714,7 @@ class CreateForm extends CI_Controller {
       // echo $wherestr;
       // die();
         if(!empty($dateFilter)){
-          $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+          $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,zero_rating")
                            ->where("form_id",$form_id)
                            ->where("DATE(update_datetime)",$dateFilter)
                            ->where("$wherestr",null)
@@ -3697,7 +3722,7 @@ class CreateForm extends CI_Controller {
                            ->order_by("update_datetime","DESC")
                            ->get('form_data');
         }else{
-          $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+          $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,zero_rating")
                            ->where("form_id",$form_id)
                            ->where("$wherestr",null)
                            ->where("location like '$location%'",null)
@@ -3705,7 +3730,7 @@ class CreateForm extends CI_Controller {
                            ->get('form_data');
         }
     }else{
-      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime")
+      $data_res = $this->db->select("child_id,geo_loc,create_datetime,update_datetime,value,req_id,field_id,status,family_id,member_id,location,rating,approve_datetime,rating_datetime,zero_rating")
                          ->where("form_id",$form_id)
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
@@ -3750,7 +3775,7 @@ class CreateForm extends CI_Controller {
             $status_1 = '';
             $bulk_rating='';
             if( $row->status == "Pending" ){
-              $status_1 .= "<div class='icon-button-demo' style='display: inline-flex;'><button type='button'  class='btn bg-black btn-circle waves-effect waves-circle waves-float rating-button' data-status='Verified' data-rating='0' >0<i class='material-icons'>star_rate</i><button type='button' class='btn bg-red btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='1' data-familyid='$row->family_id'>1<i class='material-icons'>star_rate</i></button><button type='button' class='btn bg-amber btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='2' data-familyid='$row->family_id'>2<i class='material-icons'>star_rate</i></button><button type='button' class='btn bg-light-green btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='3' data-familyid='$row->family_id'>3<i class='material-icons'>star_rate</i></button></div>";
+              $status_1 .= "<div class='icon-button-demo' style='display: inline-flex;'><button type='button' class='btn bg-black btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='0' data-familyid='$row->family_id'>0<i class='material-icons'>star_rate</i><button type='button' class='btn bg-red btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='1' data-familyid='$row->family_id'>1<i class='material-icons'>star_rate</i></button><button type='button' class='btn bg-amber btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='2' data-familyid='$row->family_id'>2<i class='material-icons'>star_rate</i></button><button type='button' class='btn bg-light-green btn-circle waves-effect waves-circle waves-float status_action_rating' data-status='Verified' value='$row->req_id' data-rating='3' data-familyid='$row->family_id'>3<i class='material-icons'>star_rate</i></button></div>";
 
               $bulk_rating="<div class='icon-button-demo' style='display: inline-flex;'>
                   <div class='checkbox-wrapper'>
@@ -3759,13 +3784,26 @@ class CreateForm extends CI_Controller {
                   </div>
                   <input type='text' class='remarks-input' placeholder='Add remarks...' />
               </div>";
+            $zero_rating_checkbox="<div class='icon-button-demo' style='display: inline-flex;'>
+                  <div class='checkbox-wrapper'>
+                      <input type='checkbox' class='checkbox1 bg-teal' data-status='Verified' value='{$row->req_id}' id='checkbox1_{$row->req_id}' data-familyid='{$row->family_id}' />
+                      <label for='checkbox1_{$row->req_id}' class='checkbox-label'></label>
+                  </div>
+              </div>";
             }
             if( $row->status == "Verified" ){
               $status_1 .= "<span class='font-bold'>$row->rating<i class='material-icons'>star_rate</i></span>";
-              $bulk_rating .= "<span class='font-bold'>$row->rating<i class='material-icons'>star_rate</i></span>";
+              $bulk_rating="<span class='font-bold'>$row->rating<i class='material-icons'>star_rate</i></span>";
+              if($row->zero_rating=="1"){
+                $zero_rating_checkbox='';
+              }else{
+                $zero_rating_checkbox="No Panelty";
+              }
+              
             }
             $data[$row->req_id]["bulk_rating"] = $bulk_rating;
             $data[$row->req_id]["Rating Status"] = $status_1;
+            $data[$row->req_id]["zero_rating"] = $zero_rating_checkbox;
             $key_label["Rating Status"] = "Rating Status";
             $keys["Rating Status"] = "Rating Status";
           }else{
@@ -3789,6 +3827,12 @@ class CreateForm extends CI_Controller {
         }else{
           $status_1 = '';
           $bulk_rating='';
+          $zero_rating_checkbox='';
+          if($row->zero_rating=="1"){
+            $zero_rating_checkbox='';
+          }else{
+            $zero_rating_checkbox="No Panelty";
+          }
           if( $row->status == "Pending" ){
             $status_1 .= "<span class='font-bold col-pink'>Pending</span>";
             $bulk_rating= "<span class='font-bold col-pink'>Pending</span>";
@@ -3799,6 +3843,7 @@ class CreateForm extends CI_Controller {
           }
           $data[$row->req_id]["Status"] = $status_1;
           $data[$row->req_id]["bulk_rating"] = $bulk_rating;
+          $data[$row->req_id]["zero_rating"] = $zero_rating_checkbox;
           $key_label["Status"] = "Status";
           $keys["Status"] = "Status";
         }
@@ -4030,7 +4075,8 @@ class CreateForm extends CI_Controller {
                   "uom"=>$uom,
                   "child_id"=>$row['child_id'],
                   "approve_id"=>$row['approve_id'],
-                  "bulk_rating"=>$row['bulk_rating']
+                  "bulk_rating"=>$row['bulk_rating'],
+                  "zero_rating"=>$row['zero_rating']
               )
               );
 
@@ -4060,7 +4106,8 @@ class CreateForm extends CI_Controller {
                   "uom"=>$uom,
                   "child_id"=>$row['child_id'],
                   "approve_id"=>$row['approve_id'],
-                  "bulk_rating"=>$row['bulk_rating']
+                  "bulk_rating"=>$row['bulk_rating'],
+                  "zero_rating"=>$row['zero_rating']
               )
               );
 
@@ -5219,7 +5266,7 @@ class CreateForm extends CI_Controller {
                          ->where("$wherestr",null)
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
-                         ->where("rating >",0)
+                         ->where("zero_rating","1")
                          ->where("billing_status",$billing_status)
                          ->order_by("update_datetime","DESC")
                          ->get('form_data');
@@ -5230,7 +5277,7 @@ class CreateForm extends CI_Controller {
                          ->where("form_id",$form_id)
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
-                         ->where("rating >",0)
+                         ->where("zero_rating","1")
                          ->where("billing_status",$billing_status)
                          ->order_by("update_datetime","DESC")
                          ->get('form_data');
@@ -5455,7 +5502,7 @@ class CreateForm extends CI_Controller {
         }
       }
       $data[$req_id]["work_code"]=$work_code;
-      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"]) && isset($row["rating"]) && !empty($row['rating'])){
+      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"]) && isset($row["rating"])){
         $ratingTotal+=(int)$row['rating'];
         $ratingAverage=$ratingTotal/$countRatingAvg;
         // echo "Total Rating is ".$ratingTotal." and average rating now is ".$ratingAverage."<br>";
@@ -5464,7 +5511,7 @@ class CreateForm extends CI_Controller {
         $amt='';
         $workWithCode=explode("$",$workList);
         $workListParts=explode("@",$workWithCode[0]);
-        if(count($workListParts)>1){
+        if(count($workListParts)>0){
           $currentRating=(int)$row['rating'];
           $totalRatingGet+=$currentRating;
           $ratingPercent=($currentRating/3)*100;
@@ -5754,7 +5801,22 @@ class CreateForm extends CI_Controller {
     // echo "<pre>";
     // print_r($new_data);
    
-    // die();
+    if($this->session->userdata("type")=="admin"){
+      $newKeys=['1690365766_1','updated','1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent1","amtBeforeRatingIntoQuant","penaltyAmtWithQty1","finalAmtIntoQuantity1"];
+    }else{
+      $newKeys=['1690365766_1','updated','1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent1","amtBeforeRatingIntoQuant1","penaltyAmtWithQty1","finalAmtIntoQuantity1"];
+    }
+    if($this->session->userdata("type")=="dept"){
+      $intent["toalRatingAMount"] = "_";
+      $intent["totalAmount"] = "_";
+      $intent["toal_penalty_amt"] ="_"; 
+    }else{
+      $intent["toalRatingAMount"] = number_format($ToalAmountToPaidWithQty,2);
+      $intent["totalAmount"] = number_format($TotalamtBeforeRatingIntoQuant,2);
+      $intent["toal_penalty_amt"] = number_format($ToalPenaltyAmount,2);  
+    }
+
+    $intent['type_user']=$this->session->userdata("type");
     $intent['form_id']=$form_id;
     $intent["form_title"] = "Billing Report";
     $intent["key_label"] = $key_label;
@@ -5762,11 +5824,8 @@ class CreateForm extends CI_Controller {
     $intent["newdata"] = $new_data;
     $intent['newKeys']=$newKeys;
     $intent["ratingAverage"] = $ratingAverage;
-    $intent["toalRatingAMount"] = $ToalAmountToPaidWithQty;
-    $intent["totalAmount"] = $TotalamtBeforeRatingIntoQuant; 
     $intent["totalRatingGot"] = $totalRatingGet;  
     $intent["total_max_rating"] = $maxRatingWithWork;  
-    $intent["toal_penalty_amt"] = $ToalPenaltyAmount;  
     $intent["totalRatingPercent"] = number_format($totalRatingPercent,2);  
     $intent["last_date"] = $last_date;
     if($form_id2=="1690365766"){
@@ -5796,6 +5855,9 @@ class CreateForm extends CI_Controller {
     }else{
       $billing_status=0;
     }
+    $user_details_res=$this->db->get_where("users",["username"=>$this->session->userdata("id")]);
+    $user_name=$user_details_res->row()->name;
+
     $form_res = $this->db->get_where("form_created",["form_id"=>$form_id]);
     $form_title = $form_res->row()->form_title;
     $form_for = $form_res->row()->form_for;
@@ -5826,7 +5888,7 @@ class CreateForm extends CI_Controller {
                          ->where("$wherestr",null)
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
-                         ->where("rating >",0)
+                         ->where("zero_rating","1")
                          ->where("billing_status",$billing_status)
                          ->order_by("update_datetime","DESC")
                          ->get('form_data');
@@ -6064,7 +6126,7 @@ class CreateForm extends CI_Controller {
         }
       }
       $data[$req_id]["work_code"]=$work_code;
-      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"]) && isset($row["rating"]) && !empty($row['rating'])){
+      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"]) && isset($row["rating"])){
         $ratingTotal+=(int)$row['rating'];
         $ratingAverage=$ratingTotal/$countRatingAvg;
         // echo "Total Rating is ".$ratingTotal." and average rating now is ".$ratingAverage."<br>";
@@ -6073,7 +6135,7 @@ class CreateForm extends CI_Controller {
         $amt='';
         $workWithCode=explode("$",$workList);
         $workListParts=explode("@",$workWithCode[0]);
-        if(count($workListParts)>1){
+        if(count($workListParts)>0){
           $currentRating=(int)$row['rating'];
           $totalRatingGet+=$currentRating;
           $ratingPercent=($currentRating/3)*100;
@@ -6364,11 +6426,24 @@ class CreateForm extends CI_Controller {
           $this->db->trans_rollback();
         }
       }
-      // echo "<pre>";
-      // print_r($res->result_array());
-      // die();
+    }
+    $contractor_name='';
+    if(isset($child_id) && !empty($child_id)){
+      $contractor_res=$this->db->get_where("users",["username"=>$child_id]);
+      $contractor_name=$contractor_res->row()->name;
+    }
+    if($this->session->userdata("type")=="dept"){
+      $intent["toalRatingAMount"] = "_";
+      $intent["totalAmount"] = "_";
+      $intent["toal_penalty_amt"] ="_"; 
+    }else{
+      $intent["toalRatingAMount"] = number_format($ToalAmountToPaidWithQty,2);
+      $intent["totalAmount"] = number_format($TotalamtBeforeRatingIntoQuant,2);
+      $intent["toal_penalty_amt"] = number_format($ToalPenaltyAmount,2);  
     }
 
+    $intent['user_name']=$user_name;
+    $intent['contractor_name']=$contractor_name;
     $intent['train_number'] = $trainNo;
     $intent['date']=$date;
     $intent['time1']=$time1;
@@ -6377,11 +6452,13 @@ class CreateForm extends CI_Controller {
     $intent['total_max_rating']=$maxRatingWithWork;
     $intent['totalRatingGot']=$totalRatingGet;
     $intent['totalRatingPercent']=number_format($totalRatingPercent,2);
-    $intent['totalAmount']=$TotalamtBeforeRatingIntoQuant;
-    $intent['toal_penalty_amt']=$ToalPenaltyAmount;
-    $intent['toalRatingAMount']=$ToalAmountToPaidWithQty;
     $intent['username']=$username;
-    $newKeys=['1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent1","amtBeforeRatingIntoQuant","penaltyAmtWithQty1","TotalamtAfterRatingIntoQuant1"];
+    if($this->session->userdata("type")=="admin"){
+      $newKeys=['1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent1","amtBeforeRatingIntoQuant","penaltyAmtWithQty1","TotalamtAfterRatingIntoQuant1"];
+    }else{
+      $newKeys=['1690365766_2',"work_code","1690365766_4","item_quantity","max_rating","rating","rating_percent1","amtBeforeRatingIntoQuant1","penaltyAmtWithQty1","TotalamtAfterRatingIntoQuant1"];
+    }
+    
     $intent['newKeys']=$newKeys;
     $this->load->view('view/reports/final_billing_report_sample', $intent);
 
@@ -6432,7 +6509,7 @@ class CreateForm extends CI_Controller {
                          ->where("$wherestr",null)
                          ->where("location like '$location%'",null)
                          ->where("rating IS NOT NULL")
-                         ->where("rating >",0)
+                         ->where("zero_rating","1")
                          ->where("billing_status",$billing_status)
                          ->order_by("update_datetime","DESC")
                          ->get('form_data');
@@ -6678,7 +6755,8 @@ class CreateForm extends CI_Controller {
         }
       }
       $data[$req_id]["work_code"]=$work_code;
-      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"]) && isset($row["rating"]) && !empty($row['rating'])){
+      // echo "yes";
+      if(isset($row["1690365766_5"]) && !empty($row["1690365766_5"]) && isset($row["rating"])){
         $ratingTotal+=(int)$row['rating'];
         $ratingAverage=$ratingTotal/$countRatingAvg;
         // echo "Total Rating is ".$ratingTotal." and average rating now is ".$ratingAverage."<br>";
@@ -6687,7 +6765,9 @@ class CreateForm extends CI_Controller {
         $amt='';
         $workWithCode=explode("$",$workList);
         $workListParts=explode("@",$workWithCode[0]);
-        if(count($workListParts)>1){
+        // echo "yes";
+        if(count($workListParts)>0){
+          // echo "yes";
           $currentRating=(int)$row['rating'];
           $totalRatingGet+=$currentRating;
           $ratingPercent=($currentRating/3)*100;
@@ -6734,9 +6814,9 @@ class CreateForm extends CI_Controller {
         }
       }
     }
-    // echo "<pre> yes";
+    // echo $maxRatingWithWork;
+    // echo "<pre>";
     // print_r($data);
-    // echo is_null($data);
     // die();
     
     if($this->session->userdata("type")=="dept"){
@@ -6761,6 +6841,7 @@ class CreateForm extends CI_Controller {
     $ToalPenaltyAmount=0;
     $ToalAmountToPaidWithQty=0;
     $count_data=1;
+    $allOverMaxRating=0;
     foreach($data as $req_id=>$row){
       $finalAmtIntoQuantity=0;
       $amtBeforeRatingIntoQuant=0;
@@ -9234,15 +9315,26 @@ class CreateForm extends CI_Controller {
     $status = $this->input->post("status");
     $rating = $this->input->post("rating");
     $family_id = $this->input->post("family_id");
+    $zero_rating=$this->input->post("zero_rating");
     $datetime = date("Y-m-d H:i:s");
     $id = $this->session->userdata("id");
 
     if($status=="Verified"){
+      if(!is_null($zero_rating)){
+        foreach($zero_rating as $row){
+        // print_r($row['family_id']);
+          if(isset($row['family_id']) && $row['family_id']===$family_id){
+            $this->db->where("family_id",$family_id);
+            $this->db->update("form_data",["zero_rating"=>"0"]);
+          }
+        }
+      }
       $this->db->where("req_id",$req_id);
       $this->db->update("form_data",["status"=>"Verified","approve_datetime"=>$datetime]);
 
       $this->db->where("family_id",$family_id);
       $this->db->update("form_data",["rating"=>$rating,"rating_datetime"=>$datetime]);
+
       echo "200";
     }else{
       echo "error";
@@ -9257,8 +9349,21 @@ class CreateForm extends CI_Controller {
         $ratingData = $this->input->post("ratingData");
         $datetime = date("Y-m-d H:i:s");
         $id = $this->session->userdata("id");
+        $zero_rating=$this->input->post("zero_rating");
         foreach($ratingData as $row){
           if($row['status']=="Verified"){
+              if(!is_null($zero_rating)){
+                foreach($zero_rating as $row_rating){
+                // print_r($row['family_id']);
+                  if(isset($row['family_id']) && $row_rating['family_id']===$row['family_id']){
+                    $this->db->where("family_id",$row['family_id']);
+                    $this->db->update("form_data",["zero_rating"=>"0"]);
+                    // echo "Update zero rating of family_id ".$row_rating['family_id'].PHP_EOL.$row_rating['family_id'];
+                    // die();
+                  }
+                }
+              }
+              //die();
               $this->db->where("req_id",$row['req_id']);
               $this->db->update("form_data",["status"=>"Verified","remarks"=>$row['remark'],"approve_datetime"=>$datetime]);
               if ($this->db->affected_rows() == 0) {

@@ -86,7 +86,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <button type="button" id="submitTrain" class="btn btn-success">
+                                <button type="button" id="submitTrain" class="btn btn-success" data-info="<?php echo $type_user ;?>">
                                                Submit
                                             </button>
                             </td>
@@ -151,18 +151,6 @@
                                     }
                                 }
                             ?>
-                            <td class="font-12" style="/*background: #e3f2fd;*/text-transform: capitalize;"><?php echo $work; ?></td>
-                            <?php }else if($key=="amount"){
-                                    if(isset($workGlobal)){
-                                        $amt=explode("@", $workGlobal);
-                                        if(count($amt)>1){
-                                            $amt_parts=explode("$",$amt[1]);
-                                            $amt=$amt_parts[0];
-                                        }else{
-                                            $amt="N/A";
-                                        }
-                                    }
-                            ?>
                             <td class="font-12" style="/*background: #e3f2fd;*/text-transform: capitalize;"><?php echo $amt; ?></td>
                             <?php } else { ?>
                                 <td class="font-12" style="/*background: #e3f2fd;*/text-transform: capitalize;"><?php echo isset($row[$key]) ? $row[$key] : '_'; ?></td>
@@ -193,9 +181,9 @@
         <td id="totalMaxRating" class="font-12" style="/*background: #e3f2fd;*/"><?php echo $total_max_rating; ?></td>
         <td id="totalRatingGot" class="font-12" style="/*background: #e3f2fd;*/"><?php echo $totalRatingGot; ?></td>
         <td id="totalRatingPercent" class="font-12" style="/*background: #e3f2fd;*/"><?php echo $totalRatingPercent."%"; ?></td>
-        <td id="totalAmount" class="font-12" style="/*background: #e3f2fd;*/"><?php echo number_format($totalAmount,2); ?></td>
+        <td id="totalAmount" class="font-12" style="/*background: #e3f2fd;*/"><?php echo $totalAmount; ?></td>
         <td id="totalPenaltyAmt" class="font-12" style="/*background: #e3f2fd;*/"><?php echo $toal_penalty_amt; ?></td>
-        <td id="totalRatingAmt" class="font-12" style="/*background: #e3f2fd;*/"><?php echo number_format($toalRatingAMount,2) ; ?></td>
+        <td id="totalRatingAmt" class="font-12" style="/*background: #e3f2fd;*/"><?php echo $toalRatingAMount ; ?></td>
     </tr>
                     
 </tfoot>

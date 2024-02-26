@@ -62,13 +62,12 @@ jQuery(document).ready(function(){
             });
             var selectedOption = $("#selectTrain option:selected");
             var username = selectedOption.attr("data-info");
-            console.log(username);
-
     $("#submitTrain").click(function(){
          trainNo=$("#selectTrain").val();
          date=$("#date").val();
          var form_id=$("#date").data("info");
-         // console.log(form_id);
+         var username=$("#submitTrain").data("info");
+         console.log("Hi"+username);
 
          // time1=$("#time1").val();
          // time2=$("#time2").val();
@@ -160,7 +159,7 @@ jQuery(document).ready(function(){
                                 }else if(value=="penaltyAmtWithQty"){
                                     // $("#tableID"+j+"_12").text(data[family_id][value]);
                                     $("#tableID"+j+"_12").text("_");
-                                }else if(value=="finalAmtIntoQuantity"){
+                                }else if(value=="finalAmtIntoQuantity" ){
                                     // $("#tableID"+j+"_13").text(data[family_id][value]);
                                     $("#tableID"+j+"_13").text("_");
                                 }else if(value=="total_max_rating"){
@@ -175,7 +174,10 @@ jQuery(document).ready(function(){
                                     $("#totalPenaltyAmt").text(data[family_id][value]);
                                 }else if(value=="ToalAmountToPaidWithQty"){
                                     $("#totalRatingAmt").text(data[family_id][value]);
+                                }else if(username=="dept"){
+                                    $("#tableID"+j+"_11").text("_");
                                 }
+                            
                             
                                 
                                 
@@ -184,6 +186,11 @@ jQuery(document).ready(function(){
                     }
                     j+=1;
                     
+                }
+                if(username=="dept"){
+                    $("#totalAmount").text("_");
+                    $("#totalRatingAmt").text("_");
+                    $("#totalPenaltyAmt").text("_");
                 }
             });
                 $('#example2').DataTable({

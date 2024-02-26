@@ -86,7 +86,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <button type="button" id="submitTrain" class="btn btn-success">
+                                <button type="button" id="submitTrain" class="btn btn-success" data-info="<?php echo $type_user ;?>">
                                                Submit
                                             </button>
                             </td>

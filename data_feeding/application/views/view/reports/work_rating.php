@@ -84,6 +84,7 @@
                                                 <th class="font-12" style="background: #2196f3;">Work Done Status</th>
                                                 <th class="font-12" style="background: #2196f3;">Rating</th>
                                                 <th class="font-12" style="background: #2196f3;">Bulk Rating</th>
+                                                <th class="font-12" style="background: #2196f3;">No Material</th>
                                                 <th class="font-12" style="background: #2196f3;">Data Feed By</th>
                                                 <th class="font-12" style="background: #2196f3;">Approved By</th>
                                             </tr>
